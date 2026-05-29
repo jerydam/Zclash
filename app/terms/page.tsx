@@ -162,14 +162,14 @@ const SECTIONS: Section[] = [
     content: (
       <>
         <p>
-          Welcome to PrimeIQ — a peer-to-peer quiz dueling platform where players stake
-          tokens and compete for rewards on-chain. By accessing or using PrimeIQ at
+          Welcome to Z-clash — a peer-to-peer quiz dueling platform where players stake
+          tokens and compete for rewards on-chain. By accessing or using Z-clash at
           pay.faucetdrops.io or through any associated services, you agree to these Terms and
           Conditions ("Terms").
         </p>
         <p>
           These Terms form a legally binding agreement between you ("Player" or "you") and
-          PrimeIQ ("we," "us," or "our"). If you do not agree, please do not use our Service.
+          Z-clash ("we," "us," or "our"). If you do not agree, please do not use our Service.
         </p>
       </>
     ),
@@ -185,7 +185,7 @@ const SECTIONS: Section[] = [
         <ul>
           <li>You can only use the platform with minipay.</li>
           <li>You are solely responsible for the security of your wallet, private keys, and seed phrase.</li>
-          <li>PrimeIQ is never liable for losses due to wallet mismanagement, phishing, or key exposure.</li>
+          <li>Z-clash is never liable for losses due to wallet mismanagement, phishing, or key exposure.</li>
           <li>All transactions submitted through your connected wallet are your responsibility.</li>
         </ul>
       </>
@@ -216,7 +216,7 @@ const SECTIONS: Section[] = [
     content: (
       <>
         <p>
-          PrimeIQ charges a flat escrow fee to cover on-chain resolution costs and platform
+          Z-clash charges a flat escrow fee to cover on-chain resolution costs and platform
           operations. This fee is deducted at stake time.
         </p>
         <ul>
@@ -242,7 +242,7 @@ const SECTIONS: Section[] = [
           <li>Smart contract bugs or exploits could result in loss of funds — use at your own risk.</li>
           <li>Blockchain network congestion or failures may delay or prevent transactions.</li>
           <li>Gas fees are borne by the player and are separate from the escrow fee.</li>
-          <li>PrimeIQ does not custody your funds — the contract does.</li>
+          <li>Z-clash does not custody your funds — the contract does.</li>
         </ul>
       </>
     ),
@@ -278,7 +278,7 @@ const SECTIONS: Section[] = [
         <ul>
           <li>Questions are reviewed algorithmically but not manually curated.</li>
           <li>Disputed questions do not void a completed duel or entitle players to a refund.</li>
-          <li>PrimeIQ is not responsible for errors in AI-generated content.</li>
+          <li>Z-clash is not responsible for errors in AI-generated content.</li>
         </ul>
       </>
     ),
@@ -290,7 +290,7 @@ const SECTIONS: Section[] = [
       <>
         <p>To the fullest extent permitted by applicable law:</p>
         <ul>
-          <li>PrimeIQ provides the platform "as is" with no guarantees of uptime or accuracy.</li>
+          <li>Z-clash provides the platform "as is" with no guarantees of uptime or accuracy.</li>
           <li>We are not liable for financial losses from smart contract interactions, network issues, or wallet errors.</li>
           <li>Our total liability to you for any claim shall not exceed the escrow fee paid in the relevant duel.</li>
           <li>We are not liable for indirect, incidental, or consequential damages of any kind.</li>
@@ -303,7 +303,7 @@ const SECTIONS: Section[] = [
     title: "Termination",
     content: (
       <p>
-        We reserve the right to suspend or terminate your access to PrimeIQ at our sole
+        We reserve the right to suspend or terminate your access to Z-clash at our sole
         discretion, without prior notice, if you violate these Terms or engage in conduct harmful
         to the platform or its players. You may stop using the platform at any time; pending
         on-chain transactions remain subject to smart contract logic regardless of account status.
@@ -375,7 +375,7 @@ export default function TermsPage() {
           <div className="highlight-card">
             <div className="highlight-title">⚡ Platform Fee</div>
             <div className="highlight-text">
-              PrimeIQ charges a flat escrow fee on every duel.
+              Z-clash charges a flat escrow fee on every duel.
               This covers on-chain resolution and platform operations.
             </div>
             <div className="fee-badge">$0.25 USD per player · deducted at stake time</div>

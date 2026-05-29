@@ -1,7 +1,7 @@
 "use client";
 
 /**
- * /app/page.tsx — DropDuel Landing (Rebranded to PrimeIQ)
+ * /app/page.tsx — DropDuel Landing (Rebranded to Z-clash)
  * Theme-aware: light/dark via next-themes + CSS variables
  * Font: Big Shoulders Display (display) + Figtree (body)
  */
@@ -173,11 +173,11 @@ export default function LandingPage() {
         <nav className="r r1 flex items-center justify-between px-6 pt-8 pb-6">
           <div className="flex items-center gap-2.5">
             <div className="w-8 h-8 relative flex items-center justify-center">
-              <Image src="/logo.png" alt="PrimeIQ Light Logo" width={32} height={32} className="logo-light" priority />
-              <Image src="/logo.png" alt="PrimeIQ Dark Logo" width={32} height={32} className="logo-dark" priority />
+              <Image src="/logo.png" alt="Z-clash Light Logo" width={32} height={32} className="logo-light" priority />
+              <Image src="/logo.png" alt="Z-clash Dark Logo" width={32} height={32} className="logo-dark" priority />
             </div>
             <span className="d font-black text-xl tracking-tight" style={{ color: "var(--dd-text)", letterSpacing: "-.01em" }}>
-              PrimeIQ
+              Z-clash
             </span>
           </div>
 

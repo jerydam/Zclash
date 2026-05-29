@@ -199,7 +199,7 @@ const SECTIONS: Section[] = [
     content: (
       <>
         <p>
-          PrimeIQ ("we," "us," or "our") operates pay.faucetdrops.io — a peer-to-peer quiz
+          Z-clash ("we," "us," or "our") operates pay.faucetdrops.io — a peer-to-peer quiz
           dueling platform where players compete using staked tokens on supported EVM blockchains.
           This Privacy Policy explains how we collect, use, and protect your information when you
           use our platform ("Service").
@@ -324,7 +324,7 @@ const SECTIONS: Section[] = [
     content: (
       <>
         <p>
-          PrimeIQ sends in-app notifications for game events such as challenge invites,
+          Z-clash sends in-app notifications for game events such as challenge invites,
           duel results, rematch requests, and rank changes. These are delivered via WebSocket
           and stored in your notification inbox.
         </p>
@@ -341,7 +341,7 @@ const SECTIONS: Section[] = [
     content: (
       <>
         <p>
-          PrimeIQ uses minimal browser storage (localStorage/sessionStorage) to maintain
+          Z-clash uses minimal browser storage (localStorage/sessionStorage) to maintain
           your wallet connection state and UI preferences (e.g. dark/light theme). We do not
           use third-party advertising cookies or tracking pixels.
         </p>
@@ -377,7 +377,7 @@ const SECTIONS: Section[] = [
     num: "10", title: "International Transfers", icon: <Globe size={14} />,
     content: (
       <p>
-        PrimeIQ is operated from Nigeria. Our infrastructure providers (Supabase, Koyeb,
+        Z-clash is operated from Nigeria. Our infrastructure providers (Supabase, Koyeb,
         Google Cloud) may process data in data centres outside Nigeria. By using the platform,
         you consent to your data being transferred to and processed in these locations. We
         ensure any such transfers are subject to appropriate safeguards.
@@ -445,7 +445,7 @@ export default function PrivacyPage() {
               <div className="hero-icon"><Shield size={18} /></div>
               <div>
                 <div className="hero-label">Your Privacy Matters</div>
-                <div className="hero-sub">PrimeIQ · pay.faucetdrops.io</div>
+                <div className="hero-sub">Z-clash · pay.faucetdrops.io</div>
               </div>
             </div>
             <div className="hero-text">
@@ -480,7 +480,7 @@ export default function PrivacyPage() {
           </div>
 
           <p className="footer-note">
-            By connecting your wallet to PrimeIQ, you acknowledge that you have read
+            By connecting your wallet to Z-clash, you acknowledge that you have read
             and understood this Privacy Policy and consent to the data practices described herein.
           </p>
 

@@ -27,12 +27,12 @@ const FAQ_SECTIONS: FAQSection[] = [
     color: "text-yellow-500 bg-yellow-500/10 border-yellow-500/20",
     items: [
       {
-        q: "What is PrimeIQ?",
-        a: "PrimeIQ is a 1v1 quiz dueling platform built by Faucetdrops on the Celo blockchain. You challenge another player on a topic of your choice, stake, and the winner takes the pool — all settled automatically by a smart contract.",
+        q: "What is Z-clash?",
+        a: "Z-clash is a 1v1 quiz dueling platform built by Faucetdrops on the Celo blockchain. You challenge another player on a topic of your choice, stake, and the winner takes the pool — all settled automatically by a smart contract.",
       },
       {
         q: "What wallet do I need?",
-        a: "PrimeIQ runs inside MiniPay (Opera Mini's built-in wallet). Your wallet connects automatically when you open the app — no setup required. Make sure you have some USDm, USDC, or USDT on Celo to stake.",
+        a: "Z-clash runs inside MiniPay (Opera Mini's built-in wallet). Your wallet connects automatically when you open the app — no setup required. Make sure you have some USDm, USDC, or USDT on Celo to stake.",
       },
       {
         q: "How do I create a challenge?",
@@ -105,7 +105,7 @@ const FAQ_SECTIONS: FAQSection[] = [
     items: [
       {
         q: "Is my stake safe?",
-        a: "Stakes are held in the PrimeIQ smart contract on Celo. The contract uses ReentrancyGuard and SafeERC20. Funds are only released to the verified winner or refunded in a tie — the platform cannot arbitrarily take funds.",
+        a: "Stakes are held in the Z-clash smart contract on Celo. The contract uses ReentrancyGuard and SafeERC20. Funds are only released to the verified winner or refunded in a tie — the platform cannot arbitrarily take funds.",
       },
       {
         q: "What if my opponent disconnects mid-game?",
@@ -117,7 +117,7 @@ const FAQ_SECTIONS: FAQSection[] = [
       },
       {
         q: "Who sets the winner on-chain?",
-        a: "A resolver wallet (operated by PrimeIQ) calls setWinner() after the game logic confirms a result. This is the only account that can resolve quizzes — it cannot move funds, only designate who can claim.",
+        a: "A resolver wallet (operated by Z-clash) calls setWinner() after the game logic confirms a result. This is the only account that can resolve quizzes — it cannot move funds, only designate who can claim.",
       },
     ],
   },
@@ -216,7 +216,7 @@ export default function SupportPage() {
           <div>
             <h2 className="text-2xl font-black text-foreground">How can we help?</h2>
             <p className="text-muted-foreground text-sm mt-1 max-w-xs mx-auto">
-              Everything you need to know about PrimeIQ — staking, gameplay, and troubleshooting.
+              Everything you need to know about Z-clash — staking, gameplay, and troubleshooting.
             </p>
           </div>
         </div>
@@ -244,7 +244,7 @@ export default function SupportPage() {
           <div className="px-5 py-4 space-y-3">
             <div className="flex items-start justify-between gap-3">
               <div className="flex-1 min-w-0">
-                <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-1">PrimeIQ Contract (Celo)</p>
+                <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-1">Z-clash Contract (Celo)</p>
                 <p className="font-mono text-xs text-foreground break-all">
                   0x9088298cd07BE0cAA1e256d3f3761313e1a1447E
                 </p>
