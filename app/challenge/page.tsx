@@ -14,7 +14,7 @@ import Loading from "../loading/page";
 import { formatZEC } from "@/lib/zcash";
 
 const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_URL ?? "http://127.0.0.1:8000";
+  process.env.NEXT_PUBLIC_API_URL ?? "https://zclash-backend.onrender.com";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
