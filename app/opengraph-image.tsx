@@ -1,22 +1,14 @@
 import { ImageResponse } from 'next/og'
 
-// Route segment config
 export const runtime = 'edge'
 
-// Image metadata
-export const alt = 'FaucetDrops - Automated onchain reward and engagement platform 💧'
-export const size = {
-  width: 1200,
-  height: 630,
-}
+export const alt = 'ZClash — 1v1 quiz duels powered by Zcash'
+export const size = { width: 1200, height: 630 }
+export const contentType = 'image/jpeg'
 
-export const contentType = '/default/jpeg'
-
-// Image generation
 export default async function Image() {
   return new ImageResponse(
     (
-      // ImageResponse JSX element
       <div
         style={{
           height: '100%',
@@ -25,75 +17,139 @@ export default async function Image() {
           flexDirection: 'column',
           alignItems: 'center',
           justifyContent: 'center',
-          backgroundColor: '#020817', // Dark slate background matching standard shadcn/ui theme
-          backgroundImage: 'radial-gradient(circle at 25px 25px, #1e293b 2%, transparent 0%), radial-gradient(circle at 75px 75px, #1e293b 2%, transparent 0%)',
-          backgroundSize: '100px 100px',
+          backgroundColor: '#07090f',
+          backgroundImage:
+            'radial-gradient(ellipse at 50% 0%, rgba(244,183,40,0.18) 0%, transparent 60%),' +
+            'radial-gradient(circle at 10% 90%, rgba(244,183,40,0.08) 0%, transparent 40%)',
         }}
       >
-        {/* Glow Effect behind text */}
+        {/* Grid pattern overlay */}
         <div
           style={{
             position: 'absolute',
-            top: '50%',
+            inset: 0,
+            backgroundImage:
+              'linear-gradient(rgba(244,183,40,0.04) 1px, transparent 1px),' +
+              'linear-gradient(90deg, rgba(244,183,40,0.04) 1px, transparent 1px)',
+            backgroundSize: '60px 60px',
+          }}
+        />
+
+        {/* Gold glow orb */}
+        <div
+          style={{
+            position: 'absolute',
+            top: '-80px',
             left: '50%',
-            transform: 'translate(-50%, -50%)',
-            width: '600px',
-            height: '600px',
-            background: 'radial-gradient(circle, rgba(56, 189, 248, 0.15) 0%, rgba(2, 8, 23, 0) 70%)',
+            transform: 'translateX(-50%)',
+            width: '700px',
+            height: '400px',
+            background: 'radial-gradient(ellipse, rgba(244,183,40,0.20) 0%, transparent 70%)',
             borderRadius: '50%',
           }}
         />
 
-        {/* Main Title */}
+        {/* ZEC coin badge */}
         <div
           style={{
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            fontSize: 80,
-            fontWeight: 800,
-            color: 'white',
-            letterSpacing: '-0.02em',
+            width: '80px',
+            height: '80px',
+            borderRadius: '50%',
+            background: 'linear-gradient(135deg, #F4B728, #d99f1a)',
+            border: '3px solid rgba(244,183,40,0.4)',
+            boxShadow: '0 0 40px rgba(244,183,40,0.4)',
+            marginBottom: '24px',
+            fontSize: '40px',
             zIndex: 10,
           }}
         >
-          <span style={{ marginRight: 20 }}>💧</span>
-          FaucetDrops
+          ⚡
         </div>
 
-        {/* Subtitle */}
+        {/* Main title */}
         <div
           style={{
-            marginTop: 20,
-            fontSize: 32,
+            display: 'flex',
+            alignItems: 'center',
+            gap: '16px',
+            zIndex: 10,
+          }}
+        >
+          <span
+            style={{
+              fontSize: '88px',
+              fontWeight: 900,
+              background: 'linear-gradient(135deg, #F4B728 0%, #ffd96a 50%, #d99f1a 100%)',
+              backgroundClip: 'text',
+              color: 'transparent',
+              letterSpacing: '-0.03em',
+              lineHeight: 1,
+            }}
+          >
+            ZClash
+          </span>
+        </div>
+
+        {/* Tagline */}
+        <div
+          style={{
+            marginTop: '20px',
+            fontSize: '30px',
             fontWeight: 500,
-            color: '#94a3b8', // Slate-400
+            color: 'rgba(250,248,240,0.75)',
+            letterSpacing: '0.01em',
             zIndex: 10,
+            textAlign: 'center',
           }}
         >
-          Automated onchain reward and engagement platform
+          1v1 Quiz Duels · Stake ZEC · Winner Takes All
         </div>
 
-        {/* URL Pill */}
+        {/* Feature pills */}
         <div
           style={{
-            marginTop: 50,
-            padding: '10px 30px',
-            backgroundColor: 'rgba(56, 189, 248, 0.1)', // Light blue tint
-            border: '1px solid rgba(56, 189, 248, 0.2)',
-            borderRadius: '50px',
-            fontSize: 20,
-            color: '#38bdf8', // Sky-400
+            display: 'flex',
+            gap: '16px',
+            marginTop: '44px',
             zIndex: 10,
           }}
         >
-          FaucetDrops.io
+          {['⚔️  Duel', '🧠  Quiz', '🏆  Earn ZEC'].map((label) => (
+            <div
+              key={label}
+              style={{
+                padding: '10px 24px',
+                backgroundColor: 'rgba(244,183,40,0.10)',
+                border: '1px solid rgba(244,183,40,0.25)',
+                borderRadius: '50px',
+                fontSize: '20px',
+                fontWeight: 600,
+                color: '#F4B728',
+              }}
+            >
+              {label}
+            </div>
+          ))}
+        </div>
+
+        {/* Bottom domain */}
+        <div
+          style={{
+            position: 'absolute',
+            bottom: '36px',
+            fontSize: '18px',
+            color: 'rgba(250,248,240,0.3)',
+            letterSpacing: '0.08em',
+            zIndex: 10,
+          }}
+        >
+          app.zclash.io
         </div>
       </div>
     ),
-    // ImageResponse options
-    {
-      ...size,
-    }
+    { ...size }
   )
 }
