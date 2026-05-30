@@ -9,7 +9,7 @@ const API_BASE_URL = "https://zclash-backend.onrender.com";
 const tabs = [
   { id: "home",    label: "Home",    icon: Home,   href: "/" },
   { id: "ranks",   label: "Ranks",   icon: Trophy, href: "/rank" },
-  { id: "profile", label: "Profile", icon: User,   href: "/dashboard" },
+  { id: "profile", label: "Profile", icon: User,   href: "/dashboard/" },
 ];
 
 export function BottomNav() {

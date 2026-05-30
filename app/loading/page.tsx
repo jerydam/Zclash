@@ -1,5 +1,5 @@
-import LoadingPage from "@/components/loading";
+import ZClashLoading from "@/components/loading"
 
 export default function Loading() {
-  return <LoadingPage/>
+  return <ZClashLoading/>
 }

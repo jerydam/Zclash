@@ -1,13 +1,12 @@
 "use client";
 
-
 import React, { useState, useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { useWallet } from "@/hooks/use-wallet";
 import { Header } from "@/components/header";
 import {
-  Plus, Trophy, Users, Loader2, Gamepad2,
-  RefreshCw, ChevronRight, Zap, Swords,
+  Plus, Trophy, Loader2, Gamepad2,
+  RefreshCw, ChevronRight, Zap,
 } from "lucide-react";
 import { toast } from "sonner";
 import Loading from "../loading/page";
@@ -16,13 +15,11 @@ import { formatZEC } from "@/lib/zcash";
 const API_BASE_URL =
   process.env.NEXT_PUBLIC_API_URL ?? "https://zclash-backend.onrender.com";
 
-// ─── Types ────────────────────────────────────────────────────────────────────
-
 interface LobbyChallenge {
   code: string;
   topic: string;
   stake_amount: number;
-  token_symbol: string;   // always "ZEC"
+  token_symbol: string;
   created_at: string;
   creator_username: string;
 }
@@ -38,8 +35,6 @@ interface HistoryChallenge {
   finished_at: string | null;
 }
 
-// ─── Helpers ──────────────────────────────────────────────────────────────────
-
 function timeAgo(iso: string) {
   const d = Math.floor((Date.now() - new Date(iso).getTime()) / 1000);
   if (d < 60) return `${d}s ago`;
@@ -48,44 +43,19 @@ function timeAgo(iso: string) {
   return `${Math.floor(d / 86400)}d ago`;
 }
 
-// ─── Styles ───────────────────────────────────────────────────────────────────
-
-const S = `
-  @import url('https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;900&family=Figtree:wght@400;500;600;700;800&display=swap');
-  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-  :root{--dd-bg:#ffffff;--dd-surface:rgba(0,0,0,0.02);--dd-text:#0f172a;--dd-text-dim:rgba(15,23,42,0.45);--dd-text-mute:rgba(15,23,42,0.25);--dd-line:rgba(15,23,42,0.08);--dd-line-soft:rgba(15,23,42,0.05);--dd-blue:#2563eb;--dd-blue2:#1d4ed8;--dd-blue-bg:rgba(37,99,235,0.10);--dd-card-border:rgba(15,23,42,0.08)}
-  .dark{--dd-bg:#020617;--dd-surface:rgba(255,255,255,0.02);--dd-text:#ffffff;--dd-text-dim:rgba(255,255,255,0.45);--dd-text-mute:rgba(255,255,255,0.25);--dd-line:rgba(255,255,255,0.07);--dd-line-soft:rgba(255,255,255,0.05);--dd-blue-bg:rgba(37,99,235,0.15);--dd-card-border:rgba(255,255,255,0.08)}
-  .dd-page{background:var(--dd-bg);color:var(--dd-text);font-family:'Figtree',sans-serif;transition:background .25s,color .25s}
-  .d{font-family:'Big Shoulders Display',sans-serif}
-  .dd-card{border:1px solid var(--dd-card-border);border-radius:16px;background:var(--dd-surface)}
-  .btn-blue{background:var(--dd-blue);color:#fff;border:none;cursor:pointer;font-family:'Figtree',sans-serif;font-weight:700;transition:background .2s,transform .15s;display:flex;align-items:center;justify-content:center;gap:8px}
-  .btn-blue:hover{background:var(--dd-blue2)}.btn-blue:active{transform:scale(.97)}
-  .btn-ghost{background:transparent;border:1.5px solid var(--dd-line);cursor:pointer;font-family:'Figtree',sans-serif;font-weight:700;color:var(--dd-text);transition:border-color .2s,background .2s,transform .15s;display:flex;align-items:center;justify-content:center;gap:8px}
-  .btn-ghost:hover{border-color:rgba(37,99,235,.5);background:rgba(37,99,235,.06)}.btn-ghost:active{transform:scale(.97)}
-  .lobby-card{border:1.5px solid var(--dd-card-border);border-radius:14px;background:var(--dd-surface);transition:border-color .2s,transform .15s;cursor:pointer}
-  .lobby-card:hover{border-color:var(--dd-blue);transform:translateY(-2px)}
-  .lobby-card:active{transform:scale(.98)}
-  .spin{animation:spin 1s linear infinite}
-  @keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
-`;
-
-// ─── Component ────────────────────────────────────────────────────────────────
-
 export default function QuizListPage() {
   const router = useRouter();
   const { address: userWalletAddress } = useWallet();
 
-  const [tab, setTab]                   = useState<"lobby" | "history">("lobby");
+  const [tab, setTab] = useState<"lobby" | "history">("lobby");
   const [lobbyChallenges, setLobbyChallenges] = useState<LobbyChallenge[]>([]);
-  const [history, setHistory]           = useState<HistoryChallenge[]>([]);
-  const [isLoading, setIsLoading]       = useState(true);
+  const [history, setHistory] = useState<HistoryChallenge[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [historyLoading, setHistoryLoading] = useState(false);
-  const [codeInput, setCodeInput]       = useState("");
-  const [navigating, setNavigating]     = useState<string | null>(null);
+  const [codeInput, setCodeInput] = useState("");
+  const [navigating, setNavigating] = useState<string | null>(null);
   const [showFullModal, setShowFullModal] = useState(false);
-
-  // ── Fetch helpers ──────────────────────────────────────────────────────────
 
   const fetchLobby = async (silent = false) => {
     if (!silent) setIsLoading(true);
@@ -93,7 +63,6 @@ export default function QuizListPage() {
     try {
       const r = await fetch(`${API_BASE_URL}/api/challenge/lobby`);
       const d = await r.json();
-      // No chain_id filter needed — backend is ZEC-only
       if (d.success) setLobbyChallenges(d.challenges as LobbyChallenge[]);
     } catch {
       toast.error("Failed to sync lobby");
@@ -112,11 +81,7 @@ export default function QuizListPage() {
       );
       const d = await r.json();
       if (d.success)
-        setHistory(
-          (d.history ?? []).filter(
-            (h: HistoryChallenge) => h.status === "finished"
-          )
-        );
+        setHistory((d.history ?? []).filter((h: HistoryChallenge) => h.status === "finished"));
     } catch {
       toast.error("Failed to load match history");
     } finally {
@@ -124,64 +89,40 @@ export default function QuizListPage() {
     }
   };
 
-  useEffect(() => {
-    fetchLobby();
-  }, []);
-
-  useEffect(() => {
-    if (tab === "history" && userWalletAddress) fetchHistory();
-  }, [tab, userWalletAddress]);
-
+  useEffect(() => { fetchLobby(); }, []);
+  useEffect(() => { if (tab === "history" && userWalletAddress) fetchHistory(); }, [tab, userWalletAddress]);
   useEffect(() => {
     if (tab !== "lobby") return;
     const t = setInterval(() => fetchLobby(true), 15000);
     return () => clearInterval(t);
   }, [tab]);
 
-  // ── Derived stats ──────────────────────────────────────────────────────────
-
   const myWallet = userWalletAddress?.toLowerCase() ?? "";
   const wins = useMemo(
-    () =>
-      history.filter(
-        (h) => h.winner_address?.toLowerCase() === myWallet
-      ),
+    () => history.filter((h) => h.winner_address?.toLowerCase() === myWallet),
     [history, myWallet]
   );
-
-  // ── Join action ────────────────────────────────────────────────────────────
 
   const handleJoinAction = async (code: string) => {
     if (code.length < 4) return;
     setNavigating(code);
-
     if (!userWalletAddress) {
       router.push(`/challenge/${code}/pre-lobby`);
       setNavigating(null);
       return;
     }
-
     try {
-      const res  = await fetch(`${API_BASE_URL}/api/challenge/${code}`);
+      const res = await fetch(`${API_BASE_URL}/api/challenge/${code}`);
       const data = await res.json();
-
       if (data.success && data.challenge) {
-        const c           = data.challenge;
-        const w           = userWalletAddress.toLowerCase();
-        const playerKeys  = Object.keys(c.players || {});
-        const isCreator   = c.creator?.toLowerCase() === w;
-        const isPlayer    = playerKeys.some((p: string) => p.toLowerCase() === w);
-        const isFull      = playerKeys.length >= 2;
-
-        if (isCreator || isPlayer) {
-          router.push(`/challenge/${code}`);
-          return;
-        }
-        if (isFull) {
-          setShowFullModal(true);
-          setNavigating(null);
-          return;
-        }
+        const c = data.challenge;
+        const w = userWalletAddress.toLowerCase();
+        const playerKeys = Object.keys(c.players || {});
+        const isCreator = c.creator?.toLowerCase() === w;
+        const isPlayer = playerKeys.some((p: string) => p.toLowerCase() === w);
+        const isFull = playerKeys.length >= 2;
+        if (isCreator || isPlayer) { router.push(`/challenge/${code}`); return; }
+        if (isFull) { setShowFullModal(true); setNavigating(null); return; }
         if (c.status === "active" || c.status === "finished") {
           toast.error("This challenge is no longer open.");
           setNavigating(null);
@@ -196,291 +137,234 @@ export default function QuizListPage() {
     }
   };
 
-  // ── Render ─────────────────────────────────────────────────────────────────
-
   return (
-    <>
-      <style>{S}</style>
-      <div
-        className="dd-page"
-        style={{ maxWidth: 480, margin: "0 auto", minHeight: "100vh", paddingBottom: 80 }}
-      >
-        <Header pageTitle="Duel Arena" />
+    <div className="bg-background text-foreground min-h-screen" style={{ maxWidth: 480, margin: "0 auto", paddingBottom: 80 }}>
+      <Header pageTitle="Duel Arena" />
 
-        <div style={{ padding: "16px 20px", display: "flex", flexDirection: "column", gap: 16 }}>
+      <div className="flex flex-col gap-4 p-5">
 
-          {/* Hero + Quick Join */}
-          <div style={{ background: "var(--dd-blue)", borderRadius: 16, padding: 20 }}>
-            <h1 className="d" style={{ fontSize: 36, fontWeight: 900, color: "#fff", lineHeight: 1, marginBottom: 4 }}>
-              STAKE <span style={{ opacity: 0.7 }}>&</span> EARN
-            </h1>
-            <p style={{ fontSize: 12, color: "rgba(255,255,255,0.7)", marginBottom: 16 }}>
-              Zcash-powered 1v1 quizzes. Winner takes the pool.
-            </p>
-            <div style={{ display: "flex", gap: 8 }}>
-              <input
-                value={codeInput}
-                onChange={(e) => setCodeInput(e.target.value.toUpperCase())}
-                onKeyDown={(e) => e.key === "Enter" && handleJoinAction(codeInput)}
-                placeholder="ROOM CODE"
-                maxLength={8}
-                style={{
-                  flex: 1, height: 48, borderRadius: 10,
-                  border: "1.5px solid rgba(255,255,255,0.25)",
-                  background: "rgba(255,255,255,0.12)", color: "#fff",
-                  padding: "0 14px", fontSize: 14, fontWeight: 700,
-                  fontFamily: "monospace", outline: "none",
-                }}
-              />
-              <button
-                onClick={() => handleJoinAction(codeInput)}
-                disabled={!codeInput || navigating !== null}
-                style={{
-                  height: 48, padding: "0 20px", borderRadius: 10,
-                  background: "#fff", color: "var(--dd-blue)", border: "none",
-                  fontWeight: 900, fontSize: 14, cursor: "pointer",
-                  display: "flex", alignItems: "center", gap: 6, flexShrink: 0,
-                  opacity: !codeInput ? 0.6 : 1, transition: "opacity .2s",
-                }}
-              >
-                {navigating === codeInput
-                  ? <Loader2 size={16} className="spin" />
-                  : <><Zap size={14} />DUEL</>}
-              </button>
-            </div>
-          </div>
-
-          {/* Create button */}
-          <button
-            className="btn-blue"
-            onClick={() => router.push("/challenge/create-challenge")}
-            style={{ width: "100%", height: 48, borderRadius: 12, fontSize: 14 }}
-          >
-            <Plus size={16} /> Create Challenge
-          </button>
-
-          {/* Tab + Refresh row */}
-          <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
-            <div style={{
-              flex: 1, display: "flex", padding: 4, borderRadius: 12,
-              background: "var(--dd-surface)", border: "1px solid var(--dd-line)",
-            }}>
-              {(["lobby", "history"] as const).map((t) => (
-                <button
-                  key={t}
-                  onClick={() => setTab(t)}
-                  style={{
-                    flex: 1, padding: "9px 8px", borderRadius: 9, border: "none",
-                    cursor: "pointer",
-                    background: tab === t ? "var(--dd-blue)" : "transparent",
-                    color: tab === t ? "#fff" : "var(--dd-text-dim)",
-                    fontWeight: 900, fontSize: 12,
-                    fontFamily: "'Figtree',sans-serif",
-                    letterSpacing: "0.05em", transition: "all .2s",
-                    textTransform: "uppercase",
-                  }}
-                >
-                  {t === "lobby" ? "PUBLIC" : "MY WINS"}
-                </button>
-              ))}
-            </div>
-            <button
-              onClick={() => (tab === "lobby" ? fetchLobby(true) : fetchHistory())}
-              disabled={isRefreshing || historyLoading}
+        {/* Hero + Quick Join */}
+        <div className="zcash-glow rounded-2xl p-5" style={{ background: "hsl(var(--primary))" }}>
+          <h1 className="font-black text-4xl leading-none mb-1" style={{ fontFamily: "'Big Shoulders Display', sans-serif", color: "hsl(var(--primary-foreground))" }}>
+            STAKE <span className="opacity-70">&</span> EARN
+          </h1>
+          <p className="text-xs mb-4" style={{ color: "hsla(var(--primary-foreground) / 0.7)" }}>
+            Zcash-powered 1v1 quizzes. Winner takes the pool.
+          </p>
+          <div className="flex gap-2">
+            <input
+              value={codeInput}
+              onChange={(e) => setCodeInput(e.target.value.toUpperCase())}
+              onKeyDown={(e) => e.key === "Enter" && handleJoinAction(codeInput)}
+              placeholder="ROOM CODE"
+              maxLength={8}
+              className="flex-1 h-12 rounded-xl px-4 text-sm font-bold font-mono outline-none"
               style={{
-                width: 40, height: 40, borderRadius: 20,
-                border: "1.5px solid var(--dd-line)", background: "var(--dd-surface)",
-                display: "flex", alignItems: "center", justifyContent: "center",
-                cursor: "pointer", flexShrink: 0,
+                border: "1.5px solid hsla(var(--primary-foreground) / 0.25)",
+                background: "hsla(var(--primary-foreground) / 0.12)",
+                color: "hsl(var(--primary-foreground))",
+              }}
+            />
+            <button
+              onClick={() => handleJoinAction(codeInput)}
+              disabled={!codeInput || navigating !== null}
+              className="h-12 px-5 rounded-xl font-black text-sm flex items-center gap-1.5 flex-shrink-0 transition-opacity"
+              style={{
+                background: "hsl(var(--primary-foreground))",
+                color: "hsl(var(--primary))",
+                opacity: !codeInput ? 0.6 : 1,
               }}
             >
-              <RefreshCw
-                size={15}
-                style={{ color: "var(--dd-blue)" }}
-                className={isRefreshing || historyLoading ? "spin" : ""}
-              />
+              {navigating === codeInput
+                ? <Loader2 size={16} className="animate-spin" />
+                : <><Zap size={14} />DUEL</>}
             </button>
           </div>
+        </div>
 
-          {/* ── LOBBY TAB ──────────────────────────────────────────────────── */}
-          {tab === "lobby" && (
-            isLoading
-              ? <div style={{ display: "flex", justifyContent: "center", padding: "48px 0" }}><Loading /></div>
-              : lobbyChallenges.length === 0
-              ? (
-                <div style={{
-                  display: "flex", flexDirection: "column", alignItems: "center",
-                  padding: "48px 20px", gap: 12,
-                  border: "2px dashed var(--dd-line)", borderRadius: 16, textAlign: "center",
-                }}>
-                  <Gamepad2 size={40} style={{ color: "var(--dd-text-mute)" }} />
-                  <p className="d" style={{ fontSize: 18, fontWeight: 900, color: "var(--dd-text-dim)" }}>No active duels</p>
-                  <p style={{ fontSize: 13, color: "var(--dd-text-mute)" }}>Be first to create a public ZEC challenge.</p>
+        {/* Create button */}
+        <button
+          onClick={() => router.push("/challenge/create-challenge")}
+          className="dd-btn w-full h-12 rounded-xl text-sm flex items-center justify-center gap-2"
+        >
+          <Plus size={16} /> Create Challenge
+        </button>
+
+        {/* Tab + Refresh row */}
+        <div className="flex gap-2 items-center">
+          <div className="flex-1 flex p-1 rounded-xl border border-border bg-muted">
+            {(["lobby", "history"] as const).map((t) => (
+              <button
+                key={t}
+                onClick={() => setTab(t)}
+                className="flex-1 py-2.5 rounded-lg text-xs font-black uppercase tracking-wider transition-all"
+                style={{
+                  background: tab === t ? "hsl(var(--primary))" : "transparent",
+                  color: tab === t ? "hsl(var(--primary-foreground))" : "hsl(var(--muted-foreground))",
+                  border: "none",
+                  cursor: "pointer",
+                }}
+              >
+                {t === "lobby" ? "PUBLIC" : "MY WINS"}
+              </button>
+            ))}
+          </div>
+          <button
+            onClick={() => (tab === "lobby" ? fetchLobby(true) : fetchHistory())}
+            disabled={isRefreshing || historyLoading}
+            className="w-10 h-10 rounded-full border border-border bg-muted flex items-center justify-center flex-shrink-0 cursor-pointer"
+          >
+            <RefreshCw
+              size={15}
+              className={`text-primary ${isRefreshing || historyLoading ? "animate-spin" : ""}`}
+            />
+          </button>
+        </div>
+
+        {/* LOBBY TAB */}
+        {tab === "lobby" && (
+          isLoading
+            ? <div className="flex justify-center py-12"><Loading /></div>
+            : lobbyChallenges.length === 0
+            ? (
+              <div className="flex flex-col items-center py-12 gap-3 border-2 border-dashed border-border rounded-2xl text-center">
+                <Gamepad2 size={40} className="text-muted-foreground" />
+                <p className="text-lg font-black text-muted-foreground" style={{ fontFamily: "'Big Shoulders Display', sans-serif" }}>No active duels</p>
+                <p className="text-sm text-muted-foreground">Be first to create a public ZEC challenge.</p>
+                <button
+                  className="dd-btn px-6 py-2.5 rounded-xl text-sm mt-1"
+                  onClick={() => router.push("/challenge/create-challenge")}
+                >
+                  Start Duel
+                </button>
+              </div>
+            )
+            : (
+              <div className="flex flex-col gap-2.5">
+                {lobbyChallenges.map((c) => (
                   <button
-                    className="btn-blue"
-                    onClick={() => router.push("/challenge/create-challenge")}
-                    style={{ padding: "11px 24px", borderRadius: 10, fontSize: 13, marginTop: 4 }}
+                    key={c.code}
+                    onClick={() => handleJoinAction(c.code)}
+                    className="text-left w-full p-4 rounded-2xl border border-border bg-card hover:border-primary hover:-translate-y-0.5 transition-all cursor-pointer zcash-glow-sm"
                   >
-                    Start Duel
+                    <div className="flex items-start justify-between gap-2.5 mb-3">
+                      <div className="flex-1 min-w-0">
+                        <h3 className="text-base font-black truncate text-foreground" style={{ fontFamily: "'Big Shoulders Display', sans-serif" }}>
+                          {c.topic}
+                        </h3>
+                        <p className="text-xs text-muted-foreground mt-0.5">@{c.creator_username}</p>
+                      </div>
+                      <span className="px-2.5 py-1 rounded-md text-xs font-black uppercase flex-shrink-0 bg-primary text-primary-foreground">
+                        Join Pool
+                      </span>
+                    </div>
+                    <div className="flex items-center border-t border-b border-border py-2.5 mb-2.5">
+                      <div className="flex-1 text-center">
+                        <p className="text-xs text-muted-foreground font-bold uppercase tracking-widest mb-0.5">Entry</p>
+                        <p className="text-base font-black text-foreground" style={{ fontFamily: "'Big Shoulders Display', sans-serif" }}>
+                          {formatZEC(c.stake_amount)} ZEC
+                        </p>
+                      </div>
+                      <div className="w-px bg-border self-stretch" />
+                      <div className="flex-1 text-center">
+                        <p className="text-xs text-primary font-bold uppercase tracking-widest mb-0.5">Prize Pool</p>
+                        <p className="text-base font-black text-primary" style={{ fontFamily: "'Big Shoulders Display', sans-serif" }}>
+                          🏆 {formatZEC(c.stake_amount * 2)} ZEC
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs text-muted-foreground font-mono">#{c.code}</span>
+                      <div className="flex items-center gap-1 text-primary text-xs font-black">
+                        {navigating === c.code
+                          ? <Loader2 size={13} className="animate-spin" />
+                          : <>CHALLENGE<ChevronRight size={12} /></>}
+                      </div>
+                    </div>
                   </button>
-                </div>
-              )
-              : (
-                <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-                  {lobbyChallenges.map((c) => (
-                    <button
-                      key={c.code}
-                      className="lobby-card"
-                      onClick={() => handleJoinAction(c.code)}
-                      style={{ padding: 16, textAlign: "left", width: "100%" }}
-                    >
-                      <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 10, marginBottom: 12 }}>
-                        <div style={{ flex: 1, minWidth: 0 }}>
-                          <h3 className="d" style={{ fontSize: 16, fontWeight: 900, color: "var(--dd-text)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
-                            {c.topic}
-                          </h3>
-                          <p style={{ fontSize: 11, color: "var(--dd-text-mute)", marginTop: 2 }}>
-                            @{c.creator_username}
-                          </p>
-                        </div>
-                        <span style={{ padding: "4px 10px", borderRadius: 6, background: "var(--dd-blue)", color: "#fff", fontSize: 10, fontWeight: 900, textTransform: "uppercase", flexShrink: 0 }}>
-                          Join Pool
-                        </span>
-                      </div>
-                      <div style={{
-                        display: "flex", alignItems: "center",
-                        borderTop: "1px solid var(--dd-line)", borderBottom: "1px solid var(--dd-line)",
-                        padding: "10px 0", marginBottom: 10, gap: 0,
-                      }}>
-                        <div style={{ flex: 1, textAlign: "center" }}>
-                          <p style={{ fontSize: 10, color: "var(--dd-text-mute)", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 2 }}>Entry</p>
-                          <p className="d" style={{ fontSize: 15, fontWeight: 900, color: "var(--dd-text)" }}>
-                            {formatZEC(c.stake_amount)} ZEC
-                          </p>
-                        </div>
-                        <div style={{ width: 1, background: "var(--dd-line)", alignSelf: "stretch" }} />
-                        <div style={{ flex: 1, textAlign: "center" }}>
-                          <p style={{ fontSize: 10, color: "var(--dd-blue)", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 2 }}>Prize Pool</p>
-                          <p className="d" style={{ fontSize: 15, fontWeight: 900, color: "var(--dd-blue)" }}>
-                            🏆 {formatZEC(c.stake_amount * 2)} ZEC
-                          </p>
-                        </div>
-                      </div>
-                      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-                        <span style={{ fontSize: 11, color: "var(--dd-text-mute)", fontFamily: "monospace" }}>#{c.code}</span>
-                        <div style={{ display: "flex", alignItems: "center", gap: 4, color: "var(--dd-blue)", fontSize: 11, fontWeight: 900 }}>
-                          {navigating === c.code
-                            ? <Loader2 size={13} className="spin" />
-                            : <>CHALLENGE<ChevronRight size={12} /></>}
-                        </div>
-                      </div>
-                    </button>
-                  ))}
-                </div>
-              )
-          )}
+                ))}
+              </div>
+            )
+        )}
 
-          {/* ── MY WINS TAB ────────────────────────────────────────────────── */}
-          {tab === "history" && (
-            !userWalletAddress
-              ? (
-                <div style={{ display: "flex", flexDirection: "column", alignItems: "center", padding: "48px 20px", gap: 12, border: "1.5px solid var(--dd-line)", borderRadius: 16, textAlign: "center" }}>
-                  <Trophy size={40} style={{ color: "var(--dd-text-mute)" }} />
-                  <p style={{ fontSize: 14, fontWeight: 700, color: "var(--dd-text-dim)" }}>Connect your wallet to see your wins.</p>
-                </div>
-              )
-              : historyLoading
-              ? <div style={{ display: "flex", justifyContent: "center", padding: "48px 0" }}><Loading /></div>
-              : (
-                <>
-                  {history.length > 0 && (
-                    <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 8 }}>
-                      {[
-                        { label: "Played",   val: history.length,                                                 color: "var(--dd-text)" },
-                        { label: "Won",      val: wins.length,                                                    color: "#1d4ed8" },
-                        { label: "Win Rate", val: `${history.length > 0 ? Math.round((wins.length / history.length) * 100) : 0}%`, color: "var(--dd-blue)" },
-                      ].map((s) => (
-                        <div key={s.label} className="dd-card" style={{ padding: "14px 8px", textAlign: "center" }}>
-                          <p className="d" style={{ fontSize: 22, fontWeight: 900, color: s.color }}>{s.val}</p>
-                          <p style={{ fontSize: 9, fontWeight: 700, color: "var(--dd-text-mute)", textTransform: "uppercase", letterSpacing: "0.1em", marginTop: 3 }}>{s.label}</p>
-                        </div>
+        {/* MY WINS TAB */}
+        {tab === "history" && (
+          !userWalletAddress
+            ? (
+              <div className="flex flex-col items-center py-12 gap-3 border border-border rounded-2xl text-center">
+                <Trophy size={40} className="text-muted-foreground" />
+                <p className="text-sm font-bold text-muted-foreground">Connect your wallet to see your wins.</p>
+              </div>
+            )
+            : historyLoading
+            ? <div className="flex justify-center py-12"><Loading /></div>
+            : (
+              <>
+                {history.length > 0 && (
+                  <div className="grid grid-cols-3 gap-2">
+                    {[
+                      { label: "Played", val: history.length, className: "text-foreground" },
+                      { label: "Won", val: wins.length, className: "text-primary" },
+                      { label: "Win Rate", val: `${history.length > 0 ? Math.round((wins.length / history.length) * 100) : 0}%`, className: "text-primary" },
+                    ].map((s) => (
+                      <div key={s.label} className="border border-border rounded-2xl bg-card p-3.5 text-center">
+                        <p className={`text-2xl font-black ${s.className}`} style={{ fontFamily: "'Big Shoulders Display', sans-serif" }}>{s.val}</p>
+                        <p className="text-xs font-bold text-muted-foreground uppercase tracking-widest mt-1">{s.label}</p>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {wins.length === 0
+                  ? (
+                    <div className="flex flex-col items-center py-10 gap-2.5 border-2 border-dashed border-border rounded-2xl text-center">
+                      <Trophy size={36} className="text-muted-foreground" />
+                      <p className="text-base font-black text-muted-foreground" style={{ fontFamily: "'Big Shoulders Display', sans-serif" }}>
+                        {history.length === 0 ? "No matches played yet." : "No wins yet — keep playing!"}
+                      </p>
+                      {history.length === 0 && (
+                        <button className="dd-btn px-5 py-2.5 rounded-xl text-xs mt-1" onClick={() => setTab("lobby")}>
+                          Find a Challenge
+                        </button>
+                      )}
+                    </div>
+                  )
+                  : (
+                    <div className="flex flex-col gap-2">
+                      {wins.map((item) => (
+                        <button
+                          key={item.code}
+                          onClick={() => router.push(`/challenge/${item.code}`)}
+                          className="flex items-center gap-3 p-3.5 rounded-2xl border zcash-border bg-primary/5 cursor-pointer text-left w-full hover:bg-primary/10 transition-colors"
+                        >
+                          <div className="w-9 h-9 rounded-xl flex-shrink-0 bg-primary/10 border zcash-border flex items-center justify-center">
+                            <Trophy size={15} className="text-primary" />
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <p className="text-sm font-bold text-foreground truncate">{item.topic}</p>
+                            <p className="text-xs text-muted-foreground font-mono mt-0.5">
+                              #{item.code}{item.finished_at && ` · ${timeAgo(item.finished_at)}`}
+                            </p>
+                          </div>
+                          <div className="flex flex-col items-end gap-1 flex-shrink-0">
+                            <span className="text-xs font-black px-2 py-0.5 rounded-full bg-primary/10 zcash-border text-primary">WON</span>
+                            <span className="text-xs font-bold text-muted-foreground">{formatZEC(item.stake_amount)} ZEC</span>
+                            <span className="text-xs font-black text-primary">+{formatZEC(item.stake_amount * 2)} ZEC</span>
+                          </div>
+                          <ChevronRight size={13} className="text-muted-foreground flex-shrink-0" />
+                        </button>
                       ))}
                     </div>
                   )}
-
-                  {wins.length === 0
-                    ? (
-                      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", padding: "40px 20px", gap: 10, border: "2px dashed var(--dd-line)", borderRadius: 16, textAlign: "center" }}>
-                        <Trophy size={36} style={{ color: "var(--dd-text-mute)" }} />
-                        <p className="d" style={{ fontSize: 15, fontWeight: 800, color: "var(--dd-text-dim)" }}>
-                          {history.length === 0 ? "No matches played yet." : "No wins yet — keep playing!"}
-                        </p>
-                        {history.length === 0 && (
-                          <button className="btn-blue" onClick={() => setTab("lobby")} style={{ padding: "10px 20px", borderRadius: 10, fontSize: 12, marginTop: 4 }}>
-                            Find a Challenge
-                          </button>
-                        )}
-                      </div>
-                    )
-                    : (
-                      <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-                        {wins.map((item) => (
-                          <button
-                            key={item.code}
-                            onClick={() => router.push(`/challenge/${item.code}`)}
-                            style={{
-                              display: "flex", alignItems: "center", gap: 12, padding: "14px",
-                              borderRadius: 14, border: "1.5px solid rgba(37,99,235,0.3)",
-                              background: "rgba(37,99,235,0.04)", cursor: "pointer",
-                              textAlign: "left", width: "100%",
-                            }}
-                          >
-                            <div style={{ width: 36, height: 36, borderRadius: 10, flexShrink: 0, background: "rgba(37,99,235,0.08)", border: "1.5px solid rgba(37,99,235,0.3)", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                              <Trophy size={15} style={{ color: "var(--dd-blue)" }} />
-                            </div>
-                            <div style={{ flex: 1, minWidth: 0 }}>
-                              <p style={{ fontSize: 13, fontWeight: 700, color: "var(--dd-text)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", fontFamily: "'Figtree',sans-serif" }}>
-                                {item.topic}
-                              </p>
-                              <p style={{ fontSize: 10, color: "var(--dd-text-mute)", fontFamily: "monospace", marginTop: 2 }}>
-                                #{item.code}{item.finished_at && ` · ${timeAgo(item.finished_at)}`}
-                              </p>
-                            </div>
-                            <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 3, flexShrink: 0 }}>
-                              <span style={{ fontSize: 10, fontWeight: 900, padding: "2px 7px", borderRadius: 20, background: "rgba(37,99,235,0.08)", border: "1px solid rgba(37,99,235,0.3)", color: "#1d4ed8" }}>WON</span>
-                              <span style={{ fontSize: 10, fontWeight: 700, color: "var(--dd-text-dim)" }}>{formatZEC(item.stake_amount)} ZEC</span>
-                              <span style={{ fontSize: 10, fontWeight: 900, color: "#1d4ed8" }}>+{formatZEC(item.stake_amount * 2)} ZEC</span>
-                            </div>
-                            <ChevronRight size={13} style={{ color: "var(--dd-text-mute)", flexShrink: 0 }} />
-                          </button>
-                        ))}
-                      </div>
-                    )}
-                </>
-              )
-          )}
-        </div>
+              </>
+            )
+        )}
       </div>
 
       {/* Floating Support Button */}
       <button
         onClick={() => router.push("/support")}
-        style={{
-          position: "fixed", bottom: 100, right: 20, width: 44, height: 44,
-          borderRadius: "50%", background: "var(--dd-blue)", color: "#fff",
-          border: "none", cursor: "pointer", display: "flex",
-          alignItems: "center", justifyContent: "center",
-          boxShadow: "0 4px 16px rgba(37,99,235,0.4)", zIndex: 999,
-          transition: "transform .2s, box-shadow .2s",
-        }}
-        onMouseEnter={(e) => {
-          (e.currentTarget as HTMLButtonElement).style.transform = "translateY(-3px)";
-          (e.currentTarget as HTMLButtonElement).style.boxShadow = "0 8px 24px rgba(37,99,235,0.5)";
-        }}
-        onMouseLeave={(e) => {
-          (e.currentTarget as HTMLButtonElement).style.transform = "translateY(0)";
-          (e.currentTarget as HTMLButtonElement).style.boxShadow = "0 4px 16px rgba(37,99,235,0.4)";
-        }}
+        className="fixed bottom-24 right-5 w-11 h-11 rounded-full bg-primary text-primary-foreground border-none cursor-pointer flex items-center justify-center zcash-glow z-50 hover:-translate-y-1 transition-transform"
       >
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
           <circle cx="12" cy="12" r="10" />
@@ -490,25 +374,23 @@ export default function QuizListPage() {
       </button>
 
       {showFullModal && (
-        <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.5)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 9999, padding: "0 24px" }}>
-          <div style={{ background: "var(--dd-bg)", borderRadius: 20, padding: 28, maxWidth: 340, width: "100%", border: "1.5px solid var(--dd-card-border)", textAlign: "center" }}>
-            <div style={{ fontSize: 48, marginBottom: 12 }}>🔒</div>
-            <h2 className="d" style={{ fontSize: 22, fontWeight: 900, color: "var(--dd-text)", marginBottom: 8 }}>Challenge Full</h2>
-            <p style={{ fontSize: 13, color: "var(--dd-text-dim)", marginBottom: 24, lineHeight: 1.5 }}>
+        <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-[9999] px-6">
+          <div className="bg-card border border-border rounded-2xl p-7 max-w-sm w-full text-center">
+            <div className="text-5xl mb-3">🔒</div>
+            <h2 className="text-xl font-black text-foreground mb-2" style={{ fontFamily: "'Big Shoulders Display', sans-serif" }}>Challenge Full</h2>
+            <p className="text-sm text-muted-foreground mb-6 leading-relaxed">
               This duel already has two players. Create your own challenge to start a new game.
             </p>
-            <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+            <div className="flex flex-col gap-2.5">
               <button
-                className="btn-blue"
+                className="dd-btn h-12 rounded-xl text-sm"
                 onClick={() => { setShowFullModal(false); router.push("/challenge/create-challenge"); }}
-                style={{ height: 46, borderRadius: 12, fontSize: 14 }}
               >
                 Create New Challenge
               </button>
               <button
-                className="btn-ghost"
+                className="dd-btn-ghost h-10 rounded-xl text-sm"
                 onClick={() => setShowFullModal(false)}
-                style={{ height: 40, borderRadius: 12, fontSize: 13 }}
               >
                 Go Back
               </button>
@@ -516,6 +398,6 @@ export default function QuizListPage() {
           </div>
         </div>
       )}
-    </>
+    </div>
   );
 }

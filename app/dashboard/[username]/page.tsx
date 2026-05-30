@@ -135,7 +135,7 @@ function ChallengeRow({
         <span className={cn(
           "inline-flex items-center gap-1 px-2 py-0.5 rounded-full border text-[10px] font-black",
           isWinner
-            ? "text-blue-600 dark:text-blue-400 bg-blue-500/10 border-blue-400/30"
+            ? "text-blue-600 dark:text-primary bg-blue-500/10 border-blue-400/30"
             : "text-muted-foreground bg-muted/30 border-border",
         )}>
           {isWinner ? "Won" : "Lost"}

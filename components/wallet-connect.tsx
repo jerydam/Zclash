@@ -166,7 +166,7 @@ export function WalletConnectButton({ className }: WalletConnectButtonProps) {
         size="sm"
         variant="default"
         className={cn(
-          "text-xs font-bold uppercase tracking-widest px-6 shadow-md hover:scale-105 transition-all bg-blue-600 hover:bg-blue-500 text-white",
+          "text-xs font-bold uppercase tracking-widest px-6 shadow-md hover:scale-105 transition-all bg-primary text-primary-foreground hover:opacity-90",
           className
         )}
       >

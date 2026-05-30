@@ -2,88 +2,150 @@
 @tailwind components;
 @tailwind utilities;
 
-body {
-  font-family: Arial, Helvetica, sans-serif;
-}
-
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
-  }
-}
-
 @layer base {
-  :root {
-    --background: 0 0% 100%;
-    --foreground: 0 0% 3.9%;
-    --card: 0 0% 100%;
-    --card-foreground: 0 0% 3.9%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 3.9%;
-    --primary: 0 0% 9%;
-    --primary-foreground: 0 0% 98%;
-    --secondary: 0 0% 96.1%;
-    --secondary-foreground: 0 0% 9%;
-    --muted: 0 0% 96.1%;
-    --muted-foreground: 0 0% 45.1%;
-    --accent: 0 0% 96.1%;
-    --accent-foreground: 0 0% 9%;
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 0 0% 89.8%;
-    --input: 0 0% 89.8%;
-    --ring: 0 0% 3.9%;
-    --chart-1: 12 76% 61%;
-    --chart-2: 173 58% 39%;
-    --chart-3: 197 37% 24%;
-    --chart-4: 43 74% 66%;
-    --chart-5: 27 87% 67%;
-    --radius: 0.5rem;
-    --sidebar-background: 0 0% 98%;
-    --sidebar-foreground: 240 5.3% 26.1%;
-    --sidebar-primary: 240 5.9% 10%;
-    --sidebar-primary-foreground: 0 0% 98%;
-    --sidebar-accent: 240 4.8% 95.9%;
-    --sidebar-accent-foreground: 240 5.9% 10%;
-    --sidebar-border: 220 13% 91%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+  .mobile-safe-top {
+    padding-top: env(safe-area-inset-top, 4.5rem);
   }
+
+  /* ══════════════════════════════════════
+     LIGHT THEME  (default / :root)
+     Zcash: gold #F4B728 on white/light grey
+     ══════════════════════════════════════ */
+  :root {
+    --background: 45 20% 97%;
+    --foreground: 220 30% 8%;
+    --bottom-nav-height: 70px;
+
+    --card: 45 20% 99%;
+    --card-foreground: 220 30% 8%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 220 30% 8%;
+
+    /* Zcash Gold as primary */
+    --primary: 42 90% 56%;
+    --primary-foreground: 220 30% 8%;
+
+    --secondary: 42 40% 90%;
+    --secondary-foreground: 220 30% 15%;
+
+    --muted: 42 20% 93%;
+    --muted-foreground: 220 15% 45%;
+
+    --accent: 42 50% 88%;
+    --accent-foreground: 220 30% 15%;
+
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 42 20% 86%;
+    --input: 42 20% 90%;
+    --ring: 42 90% 56%;
+    --radius: 0.75rem;
+
+    /* ── Semantic surface tokens ── */
+    --surface-base:   253 251 245;
+    --surface-card:   255 253 248;
+    --surface-card-2: 250 246 235;
+    --surface-header: 255 253 248;
+    --surface-header-opacity: 0.97;
+    --text-primary:   15 18 30;
+    --text-secondary: 90 90 110;
+    --text-muted:     150 145 140;
+    --border-subtle:  230 220 195;
+
+    /* ── DD design tokens (light) ── */
+    --dd-bg:         #fdfbf5;
+    --dd-bg-card:    #fffdf8;
+    --dd-blue:       #F4B728;
+    --dd-blue2:      #d99f1a;
+    --dd-text:       #0f1222;
+    --dd-text-muted: rgba(15, 18, 34, 0.4);
+    --dd-dim:        rgba(15, 18, 34, 0.45);
+    --dd-line:       rgba(15, 18, 34, 0.08);
+    --dd-card:       rgba(15, 18, 34, 0.03);
+    --dd-white:      #0f1222;
+  }
+
+  /* ══════════════════════════════════════
+     DARK THEME  (.dark)
+     Zcash: gold #F4B728 on deep navy/black
+     ══════════════════════════════════════ */
   .dark {
-    --background: 0 0% 3.9%;
-    --foreground: 0 0% 98%;
-    --card: 0 0% 3.9%;
-    --card-foreground: 0 0% 98%;
-    --popover: 0 0% 3.9%;
-    --popover-foreground: 0 0% 98%;
-    --primary: 0 0% 98%;
-    --primary-foreground: 0 0% 9%;
-    --secondary: 0 0% 14.9%;
-    --secondary-foreground: 0 0% 98%;
-    --muted: 0 0% 14.9%;
-    --muted-foreground: 0 0% 63.9%;
-    --accent: 0 0% 14.9%;
-    --accent-foreground: 0 0% 98%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 0 0% 14.9%;
-    --input: 0 0% 14.9%;
-    --ring: 0 0% 83.1%;
-    --chart-1: 220 70% 50%;
-    --chart-2: 160 60% 45%;
-    --chart-3: 30 80% 55%;
-    --chart-4: 280 65% 60%;
-    --chart-5: 340 75% 55%;
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --background: 0 0% 4%;
+    --foreground: 45 30% 95%;
+
+    --card: 0 0% 6%;
+    --card-foreground: 45 30% 95%;
+
+    --popover: 225 35% 7%;
+    --popover-foreground: 45 30% 95%;
+
+    /* Zcash Gold */
+    --primary: 42 90% 56%;
+    --primary-foreground: 225 35% 5%;
+
+    --secondary: 225 25% 14%;
+    --secondary-foreground: 45 30% 90%;
+
+    --muted: 0 0% 10%;
+    --muted-foreground: 220 15% 55%;
+
+    --accent: 225 25% 16%;
+    --accent-foreground: 45 30% 90%;
+
+    --destructive: 0 63% 40%;
+    --destructive-foreground: 45 30% 98%;
+
+    --border: 0 0% 14%;
+    --input: 225 25% 13%;
+    --ring: 42 90% 56%;
+
+    /* ── Semantic surface tokens (dark) ── */
+    --surface-base:   7 10 20;
+    --surface-card:   11 15 28;
+    --surface-card-2: 15 20 36;
+    --surface-header: 11 15 28;
+    --surface-header-opacity: 0.95;
+    --text-primary:   250 248 240;
+    --text-secondary: 160 155 140;
+    --text-muted:     100 100 110;
+    --border-subtle:  30 35 55;
+
+    /* ── DD design tokens (dark) ── */
+    --dd-bg:         #07090f;
+    --dd-bg-card:    #0a0e1c;
+    --dd-blue:       #F4B728;
+    --dd-blue2:      #d99f1a;
+    --dd-text:       #faf8f0;
+    --dd-text-muted: rgba(250, 248, 240, 0.35);
+    --dd-dim:        rgba(250, 248, 240, 0.45);
+    --dd-line:       rgba(244, 183, 40, 0.10);
+    --dd-card:       rgba(244, 183, 40, 0.04);
+    --dd-white:      #faf8f0;
   }
 }
 
+
+.dd-btn-ghost {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  height: 56px; padding: 0 24px; width: 100%;
+  background: transparent;
+  color: hsl(var(--foreground));
+  font-family: 'Figtree', sans-serif;
+  font-weight: 700; font-size: 14px;
+  border: 1.5px solid hsl(var(--border));
+  border-radius: 12px; cursor: pointer;
+  transition: border-color 0.2s, background 0.2s, transform 0.15s;
+}
+.dd-btn-ghost:hover {
+  background: rgba(244, 183, 40, 0.08);
+  border-color: rgba(244, 183, 40, 0.5);
+}
+.dd-btn-ghost:active { transform: scale(0.97); }
+/* ══════════════════════════════════════
+   BASE BODY
+   ══════════════════════════════════════ */
 @layer base {
   * {
     @apply border-border;
@@ -91,4 +153,103 @@ body {
   body {
     @apply bg-background text-foreground;
   }
+}
+
+/* ══════════════════════════════════════
+   DD BUTTON SYSTEM  (Zcash gold)
+   ══════════════════════════════════════ */
+.dd-btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  height: 56px; padding: 0 24px; width: 100%;
+  background: var(--dd-blue);
+  color: #0f1222;
+  font-family: 'Figtree', sans-serif;
+  font-weight: 700; font-size: 14px; letter-spacing: 0.04em;
+  border: none; border-radius: 12px; cursor: pointer;
+  transition: background 0.2s, transform 0.15s;
+}
+.dd-btn:hover  { background: var(--dd-blue2); }
+.dd-btn:active { transform: scale(0.97); }
+.dd-btn:disabled { opacity: 0.45; cursor: not-allowed; transform: none; }
+
+.dd-btn-ghost {
+  background: transparent;
+  border: 1.5px solid var(--dd-line);
+  color: var(--dd-text);
+}
+.dd-btn-ghost:hover {
+  background: rgba(244, 183, 40, 0.08);
+  border-color: rgba(244, 183, 40, 0.5);
+}
+
+.dd-btn-sm { height: 40px; font-size: 12px; border-radius: 8px; }
+
+.dd-btn-danger {
+  background: transparent;
+  border: 1.5px solid rgba(239, 68, 68, 0.35);
+  color: #f87171;
+}
+.dd-btn-danger:hover { background: rgba(239, 68, 68, 0.08); }
+
+/* ══════════════════════════════════════
+   SEMANTIC SURFACE UTILITY CLASSES
+   ══════════════════════════════════════ */
+.bg-surface-base    { background-color: rgb(var(--surface-base)); }
+.bg-surface-card    { background-color: rgb(var(--surface-card)); }
+.bg-surface-card-2  { background-color: rgb(var(--surface-card-2)); }
+.bg-surface-header  {
+  background-color: rgba(var(--surface-header), var(--surface-header-opacity));
+  backdrop-filter: blur(12px);
+}
+.border-surface         { border-color: rgb(var(--border-subtle)); }
+.text-surface-primary   { color: rgb(var(--text-primary)); }
+.text-surface-secondary { color: rgb(var(--text-secondary)); }
+.text-surface-muted     { color: rgb(var(--text-muted)); }
+
+/* ══════════════════════════════════════
+   ZCASH GLOW EFFECTS
+   ══════════════════════════════════════ */
+.zcash-glow {
+  box-shadow: 0 0 24px rgba(244, 183, 40, 0.15),
+              0 0 48px rgba(244, 183, 40, 0.06);
+}
+.zcash-glow-sm {
+  box-shadow: 0 0 12px rgba(244, 183, 40, 0.12);
+}
+.zcash-border {
+  border-color: rgba(244, 183, 40, 0.25);
+}
+.zcash-text {
+  color: #F4B728;
+}
+
+/* ══════════════════════════════════════
+   QUIZ PAGE OVERRIDES
+   ══════════════════════════════════════ */
+.quiz-surface {
+  background-color: rgb(var(--surface-base));
+  border-color: rgb(var(--border-subtle));
+}
+.quiz-card {
+  background-color: rgb(var(--surface-card));
+  border: 1px solid rgb(var(--border-subtle));
+}
+.quiz-header {
+  background-color: rgba(var(--surface-header), var(--surface-header-opacity));
+  border-bottom: 1px solid rgb(var(--border-subtle));
+  backdrop-filter: blur(12px);
+}
+
+/* ══════════════════════════════════════
+   MARQUEE ANIMATIONS
+   ══════════════════════════════════════ */
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+.animate-marquee { animation: marquee 18s linear infinite; }
+
+@keyframes marqueeScroll {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
 }

@@ -1,147 +1,126 @@
-# 💧 FaucetDrops - Onchain Engagement Platform
+# ⚡ ZClash — 1v1 Quiz Duels Powered by Zcash
 
-An all-in-one **onchain engagement platform** designed to help crypto and blockchain communities **create, manage, and reward** user participation through token faucets and gamified quest campaigns.
-
-Whether you're running airdrops, hackathons, loyalty programs, or community challenges, FaucetDrops makes it simple to distribute rewards, track engagement, and build meaningful onchain interactions — all without the hassle.
+**ZClash** is a peer-to-peer quiz dueling platform where players stake ZEC, answer fast, and winner takes the pool. No house edge. No middleman. Just skill, speed, and Zcash.
 
 ---
 
-## 🌟 Why This Platform Matters
+## ⚡ Why ZClash?
 
-Managing community engagement onchain is complex. FaucetDrops solves this by letting you:
+Traditional crypto games rely on smart contracts on EVM chains. ZClash is different:
 
-* ✅ **Create Token Faucets** — Distribute ETH or tokens to specific audiences
-* ✅ **Design Gamified Quests** — Build multi-stage campaigns with tasks and rewards
-* ✅ **Track Onchain Activity** — Monitor user participation and engagement metrics
-* ✅ **Prevent Fraud** — Cross-chain verification prevents duplicate rewards
-* ✅ **Manage Multiple Communities** — Each organization gets its own dashboard
-* ✅ **Flexible Distribution Models** — Equal splits, tiered rewards, or custom logic
-* ✅ **Real-Time Analytics** — See engagement data as it happens
-
----
-
-## 🧩 Core Components
-
-### 1. **Faucets**
-Your primary tool for token distribution.
-
-- **Open Drop** — Anyone with a drop code can claim
-- **Whitelist Drop** — Only approved wallets can claim
-- **Custom Drop** — Full control over distribution logic
-
-Each faucet lets you:
-- Set claim amounts and time windows
-- Choose ETH or any ERC-20 token
-- Track claims across multiple chains
-- Update whitelists in real-time
-
-### 2. **Quests**
-Gamified campaigns that drive onchain engagement.
-
-- **Multi-Stage System** — Beginner → Intermediate → Advance → Legend → Ultimate
-- **Task Types** — Social follows, content creation, onchain transactions, NFT holding
-- **Automatic & Manual Verification** — Choose how tasks are verified
-- **Leaderboards** — Real-time rankings of top contributors
-- **Reward Tiers** — Equal or custom tiered reward distributions
-
-### 3. **User Profiles & Dashboards**
-Personalized spaces for creators and participants.
-
-- **Creator Dashboard** — Manage all faucets and quests in one place
-- **Participant Profile** — Track earned points, completed quests, rank progression
-- **Social Integration** — Link Twitter, Telegram, Farcaster, Discord
-- **Quest Activity Feed** — See which quests are active in your network
-
-### 4. **Analytics & Insights**
-Data-driven decision making.
-
-- **Engagement Metrics** — Track participation rates, completion times, dropout points
-- **Distribution Reports** — See exactly where tokens went and to whom
-- **Performance Charts** — Visualize campaign success and ROI
-- **User Segmentation** — Identify top participants and inactive members
+* ✅ **Stake ZEC** — Use real Zcash (ZEC) to back your knowledge
+* ✅ **1v1 Quiz Duels** — Challenge anyone on any topic
+* ✅ **AI-Generated Questions** — Fresh, unique questions every match
+* ✅ **Winner Takes All** — Full pool goes to the highest scorer
+* ✅ **Private by Default** — Built on Zcash's privacy-first philosophy
+* ✅ **No Smart Contract Risk** — Escrow managed server-side, no ABI exploits
+* ✅ **Real-Time Gameplay** — WebSocket-powered live duels
 
 ---
 
-## 💬 Use Cases
+## 🧩 Core Features
 
-| Use Case | Description |
-|----------|-------------|
-| **Token Airdrops** | Distribute tokens to early adopters or community members |
-| **Onboarding Campaigns** | Reward new users for completing onboarding tasks |
-| **Hackathons & Bounties** | Pay developers and participants automatically |
-| **Loyalty Programs** | Run monthly reward cycles for active community members |
-| **Content Campaigns** | Incentivize users to create content (tweets, videos, posts) |
-| **Testnet Incentives** | Compensate testers for finding bugs and providing feedback |
-| **Social Engagement** | Boost follows, likes, and community growth across platforms |
-| **NFT Holder Rewards** | Airdrop tokens or NFTs to specific holders |
-| **Trading Competitions** | Reward top traders with tiered prizes |
-| **DAO Governance** | Distribute voting tokens and incentivize participation |
+### ⚔️ Duel System
+The heart of ZClash — competitive 1v1 quiz matches.
+
+- **Public Lobby** — Browse and join open challenges from any player
+- **Private Invite** — Challenge a specific wallet address directly
+- **Stake Negotiation** — Propose and counter-offer stake amounts before the game starts
+- **Escrow Address** — Each duel gets a unique Zcash t-address to hold both players' stakes
+- **Auto-Settlement** — Winner receives the full pool automatically at game end
+- **Tie Refund** — Both players get their stakes back if scores are equal
+
+### 🧠 Quiz Engine
+AI-powered questions tailored to every topic imaginable.
+
+- **3 Rounds** — Easy → Medium → Hard progression
+- **Speed Scoring** — Faster correct answers earn more points (up to 1000 pts/question)
+- **Any Topic** — Crypto, history, science, sports, pop culture — you name it
+- **AI Providers** — Kimi K2 (primary) → Gemini → Groq (fallbacks)
+
+### 🏆 Rankings & Tiers
+A competitive ladder to keep players hungry.
+
+| Tier | Wins Required | Badge |
+|------|--------------|-------|
+| Droplet  | 0–100   | 💧 |
+| Drizzle  | 101–200 | 🌧️ |
+| Downpour | 201–300 | ⛈️ |
+| Torrent  | 301–400 | 🌊 |
+| Flood    | 401+    | 🏆 |
+
+- **Live Leaderboard** — See who's online and challenge them directly
+- **Rank Delta** — Track position changes day over day
+- **Win Rate Bar** — Visual win percentage for every player
+
+### 👤 Player Profiles
+Your on-chain identity on ZClash.
+
+- **Zcash t-address** as your primary identifier
+- **Custom Username & Avatar** — Generate or upload
+- **Match History** — Full record of wins, losses, topics, and earnings
+- **Stats** — Total duels, wins, losses, ZEC earned
 
 ---
 
-## 🎮 Quest Features
+## 🎮 How a Duel Works
 
-### Task Categories
-- **🤖 Social** — Follow, like, share, join communities
-- **👥 Referral** — Invite friends and earn rewards
-- **📝 Content** — Create and share posts, videos, blogs
-- **💱 Swap** — Execute trades on DEXs
-- **📊 Trading** — Stake, lend, provide liquidity
-- **🏦 Holding** — Hold specific tokens or NFTs
-- **⚙️ General** — Custom tasks
-
-### Verification Methods
-- **🔗 Manual Link** — Users submit proof links (tweets, posts)
-- **📸 Manual Upload** — Users upload screenshots or files
-- **🤖 Auto Social** — System verifies social follows automatically
-- **💳 Auto Transaction** — Verify onchain transactions
-- **🏷️ Auto Holding** — Check token/NFT balance requirements
-- **⏭️ No Verification** — Trust-based tasks
-
-### Stage Progression
-Users progress through 5 stages by earning points:
-1. **Beginner** — 5-10 tasks, basic activities
-2. **Intermediate** — 3-8 tasks, social + referral challenges
-3. **Advance** — 2-6 tasks, onchain transactions
-4. **Legend** — 2-5 tasks, complex interactions
-5. **Ultimate** — 1-3 tasks, exclusive rewards
+```
+1. Creator sets topic + stake amount
+   ↓
+2. Fresh escrow t-address generated for the duel
+   ↓
+3. Challenger joins and sees the escrow address
+   ↓
+4. Both players send ZEC to the escrow address
+   ↓
+5. Stakes verified on-chain via zcashd / zebrad
+   ↓
+6. Game starts — 3 rounds, AI questions, live scoring
+   ↓
+7. Game ends — winner auto-receives full pool
+   (tie → both get refunded)
+```
 
 ---
 
-## 🏗️ Platform Architecture
+## 🏗️ Architecture
 
 ```
 ┌─────────────────────────────────────────────┐
-│     FaucetDrops Onchain Engagement Platform │
+│              ZClash Platform                │
 ├─────────────────────────────────────────────┤
 │                                             │
 │  ┌──────────────────────────────────────┐   │
-│  │    Faucet Smart Contracts            │   │
-│  │  • DropcodeFactory (Open Drops)      │   │
-│  │  • DroplistFactory (Whitelist)       │   │
-│  │  • CustomFactory (Advanced Logic)    │   │
+│  │    Zcash Engine                      │   │
+│  │  • Escrow address generation         │   │
+│  │  • Balance verification (RPC)        │   │
+│  │  • Winner settlement                 │   │
+│  │  • Emergency refunds                 │   │
 │  └──────────────────────────────────────┘   │
 │                                             │
 │  ┌──────────────────────────────────────┐   │
-│  │    Quest Management System           │   │
-│  │  • Task Creation & Management        │   │
-│  │  • Verification Engine               │   │
-│  │  • Leaderboard Calculation           │   │
-│  │  • Reward Distribution               │   │
+│  │    Quiz Engine                       │   │
+│  │  • AI question generation            │   │
+│  │  • Real-time game loop (WebSocket)   │   │
+│  │  • Speed-based scoring               │   │
+│  │  • Round management                  │   │
 │  └──────────────────────────────────────┘   │
 │                                             │
 │  ┌──────────────────────────────────────┐   │
-│  │    User & Community Management       │   │
-│  │  • Profile Management                │   │
-│  │  • Permission & Role Control         │   │
-│  │  • Social Integration                │   │
-│  └──────────────────────────────────────┘   │ 
+│  │    Challenge System                  │   │
+│  │  • Public lobby                      │   │
+│  │  • Private invites                   │   │
+│  │  • Stake negotiation                 │   │
+│  │  • Rematch flow                      │   │
+│  └──────────────────────────────────────┘   │
 │                                             │
 │  ┌──────────────────────────────────────┐   │
-│  │    Analytics & Reporting             │   │
-│  │  • Engagement Metrics                │   │
-│  │  • Distribution Tracking             │   │
-│  │  • Performance Charts                │   │
+│  │    Player & Rankings                 │   │
+│  │  • Profiles & avatars                │   │
+│  │  • Tier progression                  │   │
+│  │  • Daily rank snapshots              │   │
+│  │  • Presence tracking (online/offline)│   │
 │  └──────────────────────────────────────┘   │
 │                                             │
 └─────────────────────────────────────────────┘
@@ -149,103 +128,126 @@ Users progress through 5 stages by earning points:
 
 ---
 
-## 🌐 Supported Networks
+## 🛠️ Tech Stack
 
-| Network | Status | Features |
-|---------|--------|----------|
-| **Celo** | ✅ Live | Native CELO, stablecoins (USDm, cEUR, cNGN) |
-| **Lisk** | ✅ Live | ETH, LSK, USDT, USDC |
-| **Arbitrum** | ✅ Live | ETH, USDC, USDT, ARB |
-| **Base** | ✅ Live | ETH, USDC, USDT, DEGEN |
-
-More networks coming soon! 🚀
-
----
-
-## 🔒 Security & Trust
-
-* **Verified Smart Contracts** — Factory patterns prevent common exploits
-* **Cross-Chain Tracking** — Users can't claim twice across networks
-* **Time-Locked Distributions** — Claim windows are strictly enforced
-* **Admin Controls** — Creator-only fund management and whitelist updates
-* **Reentrancy Protection** — Built-in guards against reentrancy attacks
-* **Balance Verification** — Ensures sufficient funds before claims
-* **Transparent Reporting** — All transactions are verifiable onchain
+| Layer | Technology |
+|-------|-----------|
+| **Frontend** | Next.js 14, Tailwind CSS, TypeScript |
+| **Backend** | FastAPI, Python, asyncpg |
+| **Database** | Supabase (PostgreSQL) |
+| **Real-Time** | WebSockets (FastAPI native) |
+| **AI** | Kimi K2 via OpenRouter → Gemini → Groq |
+| **Blockchain** | Zcash (t-addresses, zcashd / zebrad RPC) |
+| **Deployment** | Render (backend), Vercel (frontend) |
 
 ---
 
-## 📊 Analytics Dashboard
+## 🔒 Security
 
-Track the success of your campaigns:
-
-- **📈 Engagement Trends** — See participation over time
-- **👥 User Insights** — Identify top contributors and at-risk users
-- **💰 Spending Analysis** — Monitor token distribution and ROI
-- **🎯 Task Performance** — Which tasks drive the most engagement?
-- **🏆 Leaderboard Rankings** — Real-time competitive rankings
-- **📥 Export Reports** — Download data for external analysis
+* **No Private Key Custody** — Players send ZEC directly to escrow addresses
+* **Transparent Escrow** — Every escrow address is visible to both players before staking
+* **Emergency Refunds** — If a game expires without starting, stakes are returned
+* **Forfeit Logic** — Disconnected players lose after a 60-second grace period
+* **No EVM Risk** — No Solidity, no ABI exploits, no reentrancy attacks
 
 ---
 
 ## 🚀 Getting Started
 
-### For Community Leaders
-1. **Connect Wallet** — Sign in with your Web3 wallet
-2. **Create Faucet or Quest** — Choose your engagement model
-3. **Configure Parameters** — Set tokens, amounts, timing, tasks
-4. **Fund Your Campaign** — Deposit tokens or ETH
-5. **Launch & Monitor** — Watch users engage and earn rewards
+### For Players
+1. **Get a Zcash Wallet** — Install [Zashi](https://electriccoin.co/zashi/) (mobile) or [YWallet](https://ywallet.app)
+2. **Connect** — Paste your t-address (starts with `t1...`) into ZClash
+3. **Set Username** — Claim your identity on the leaderboard
+4. **Find a Duel** — Browse the public lobby or challenge a friend
+5. **Stake & Play** — Send ZEC to the escrow, answer fast, win more
 
-### For Participants
-1. **Discover Campaigns** — Browse active faucets and quests
-2. **Complete Tasks** — Follow instructions, submit proofs
-3. **Earn Rewards** — Collect tokens and climb leaderboards
-4. **Progress Stages** — Unlock exclusive quest stages
-5. **Claim Rewards** — Withdraw earned tokens to your wallet
+### For Developers
+
+```bash
+# Clone the repo
+git clone https://github.com/your-org/zclash
+cd zclash
+
+# Backend
+cd backend
+cp .env.example .env   # fill in your keys
+pip install -r requirements.txt
+uvicorn main:app --reload
+
+# Frontend
+cd frontend
+cp .env.example .env.local
+npm install
+npm run dev
+```
+
+**Required environment variables:**
+```env
+SUPABASE_URL=
+SUPABASE_SERVICE_KEY=
+DATABASE_URL=
+ZCASH_RPC_URL=
+ZCASH_RPC_USER=
+ZCASH_RPC_PASSWORD=
+ZCASH_FEE_RECIPIENT=
+KIMI_API_KEY=
+GEMINI_API_KEY=
+GROQ_API_KEY=
+```
 
 ---
 
-## 🛠️ Developer Features
+## 📊 Scoring System
 
-* **Factory + Instance Pattern** — Scalable, secure smart contract architecture
-* **ERC-20 & Native Token Support** — Works with any token standard
-* **Batch Operations** — Update whitelists in a single transaction
-* **Custom Distribution Logic** — Build complex reward mechanisms
-* **API Integration** — Fastapi backend for quest verification
-* **Event Logging** — Track all onchain actions with events
+Each correct answer scores between **500–1000 points** depending on speed:
+
+```
+points = 500 (base) + 500 × (time_remaining / time_limit)
+```
+
+| Round | Time Limit | Max Points |
+|-------|-----------|-----------|
+| Easy   | 7s  | 1000 |
+| Medium | 10s | 1000 |
+| Hard   | 13s | 1000 |
+
+Total questions: 15 (5 per round) → Max score: **15,000 points**
 
 ---
 
-## 🤝 Contributing
+## 🗺️ Roadmap
 
-Love what we're building? Here's how you can help:
-
-* 🐛 **Report Bugs** — Found an issue? Open a GitHub issue
-* 💡 **Suggest Features** — Have ideas? We'd love to hear them
-* 🔧 **Contribute Code** — PRs welcome for improvements
-* 📝 **Improve Docs** — Help us write better documentation
-* 🌍 **Community Building** — Spread the word and build with us
+- [x] 1v1 staked duels with ZEC escrow
+- [x] AI question generation (Kimi, Gemini, Groq)
+- [x] Real-time WebSocket gameplay
+- [x] Public lobby + private invites
+- [x] Rankings, tiers, and leaderboard
+- [x] Stake negotiation flow
+- [ ] Shielded ZEC support (z-addresses)
+- [ ] Tournament mode (bracket-style)
+- [ ] Mobile app (React Native)
+- [ ] Zebrad migration (zcashd deprecation)
+- [ ] Spectator mode
 
 ---
 
 ## 📞 Support & Community
 
-* **Twitter/X** — Follow updates [@FaucetDrops](https://x.com/FaucetDrops)
-* **Telegram** — Chat with the team [link](https://t.me/FaucetDropschat)
-* **Email** — Contact us: drops.faucet@gmail.com
-* **Docs** — Full technical docs [link](FaucetDrops.io/docs)
+* **Twitter/X** — [@ZClash](https://x.com/ZClash)
+* **Telegram** — [t.me/ZClashChat](https://t.me/ZClashChat)
+* **Email** — drops.faucet@gmail.com
 
 ---
 
-## 🙏 Acknowledgments
+## 🙏 Built With
 
-Built by Priveedores-de-soluciones team, powered by:
-- Smart contract frameworks
-- Web3 libraries
-- The amazing blockchain community
+ZClash is built by the same team behind FaucetDrops, powered by:
+- [Zcash](https://z.cash) — Privacy-preserving digital currency
+- [Electric Coin Company](https://electriccoin.co) — Zcash core development
+- [Supabase](https://supabase.com) — Open source Firebase alternative
+- The Zcash community ⚡
 
 ---
 
-**Ready to transform community engagement onchain?**  
-[Get Started](https://FaucetDrops.io) | [View Docs](https://FaucetDrops.io/docs) | [Join Community](https://t.me/FaucetDropschat)
-
+**Ready to stake your knowledge?**  
+[Play Now](https://app.zclash.io) · [Leaderboard](https://app.zclash.io/ranks) · [Join Community](https://t.me/ZClashChat)

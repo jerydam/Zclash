@@ -145,7 +145,7 @@
   // ── Option appearance ──
   const OPTION_STYLES: Record<string, { bg: string; shape: string; selectedRing: string }> = {
     A: { bg: "bg-red-500 hover:bg-red-600", shape: "▲", selectedRing: "ring-red-400 dark:ring-red-500" },
-    B: { bg: "bg-blue-500 hover:bg-blue-600", shape: "◆", selectedRing: "ring-blue-400 dark:ring-blue-500" },
+    B: { bg: "bg-blue-500 hover:bg-primary", shape: "◆", selectedRing: "ring-primary400 dark:ring-primary" },
     C: { bg: "bg-yellow-500 hover:bg-yellow-600", shape: "●", selectedRing: "ring-yellow-400 dark:ring-yellow-500" },
     D: { bg: "bg-green-500 hover:bg-green-600", shape: "■", selectedRing: "ring-green-400 dark:ring-green-500" },
   };
@@ -655,7 +655,7 @@
         return (
           <div className="fixed inset-0 bg-surface-base flex items-center justify-center">
             <div className="text-center space-y-3">
-              <Loader2 className="h-10 w-10 animate-spin text-[#072474] dark:text-blue-400 mx-auto" />
+              <Loader2 className="h-10 w-10 animate-spin text-[#072474] dark:text-primary mx-auto" />
               <p className="text-surface-secondary text-sm">Loading results...</p>
             </div>
           </div>
@@ -699,7 +699,7 @@
                   <X className="h-4 w-4" />
                 </button>
                 <div className="flex flex-col items-center gap-3 pt-2">
-                  <Avatar className="h-20 w-20 border-4 border-blue-500/30 shadow-xl">
+                  <Avatar className="h-20 w-20 border-4 border-primary/30 shadow-xl">
                     <AvatarImage src={viewingProfile.avatarUrl ?? undefined} />
                     <AvatarFallback className="bg-blue-900/50 text-blue-200 font-black text-2xl">
                       {viewingProfile.username?.slice(0, 2).toUpperCase()}
@@ -731,7 +731,7 @@
                     router.push(`/dashboard/${viewingProfile.username}`);
                     setViewingProfile(null);
                   }}
-                  className="w-full h-11 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-sm transition-all active:scale-95"
+                  className="w-full h-11 rounded-xl bg-primary hover:bg-blue-500 text-white font-bold text-sm transition-all active:scale-95"
                 >
                   View Full Profile
                 </button>
@@ -806,7 +806,7 @@
                     myEntry.rank === 1 ? "bg-yellow-400 text-yellow-900" :
                     myEntry.rank === 2 ? "bg-slate-300 text-slate-800" :
                     myEntry.rank === 3 ? "bg-amber-600 text-white" :
-                    "bg-blue-100 dark:bg-[#072474]/40 text-[#072474] dark:text-blue-400"
+                    "bg-blue-100 dark:bg-[#072474]/40 text-[#072474] dark:text-primary"
                   )}>
                     {myEntry.rank <= 3 ? ["🥇", "🥈", "🥉"][myEntry.rank - 1] : `#${myEntry.rank}`}
                   </div>
@@ -980,7 +980,7 @@
                   myEntry.rank === 1 ? "bg-yellow-400 text-yellow-900" :
                   myEntry.rank === 2 ? "bg-slate-300 text-slate-800" :
                   myEntry.rank === 3 ? "bg-amber-600 text-white" :
-                  "bg-blue-100 dark:bg-[#072474]/40 text-[#072474] dark:text-blue-400"
+                  "bg-blue-100 dark:bg-[#072474]/40 text-[#072474] dark:text-primary"
                 )}>
                   {myEntry.rank <= 3 ? ["🥇", "🥈", "🥉"][myEntry.rank - 1] : `#${myEntry.rank}`}
                 </div>
@@ -2361,7 +2361,7 @@
                   {/* Players header */}
                   <div className="flex items-center justify-between">
                     <h2 className="text-surface-primary font-black text-lg flex items-center gap-2">
-                      <Users className="h-5 w-5 text-blue-400" /> Players
+                      <Users className="h-5 w-5 text-primary" /> Players
                       <span className="text-surface-muted font-normal text-base">({players.length})</span>
                     </h2>
                     {totalCount > 0 && (
@@ -2598,7 +2598,7 @@
                 <div className="bg-surface-card border border-surface rounded-2xl overflow-hidden">
                   <div className="px-5 py-3 border-b border-surface flex items-center justify-between">
                     <span className="text-surface-primary font-bold text-sm flex items-center gap-2">
-                      <Users className="h-4 w-4 text-blue-400" /> Players ({players.length})
+                      <Users className="h-4 w-4 text-primary" /> Players ({players.length})
                     </span>
                     {totalCount > 0 && (
                       <span className={cn(
@@ -2781,7 +2781,7 @@
       {/* Code pill */}
       <div className="space-y-1.5">
         <p className="text-surface-secondary text-xs font-bold uppercase tracking-widest">Quiz Code</p>
-        <div className="text-4xl font-black tracking-widest text-[#072474] dark:text-blue-400 bg-[#072474]/5 dark:bg-[#072474]/20 py-3 rounded-xl border border-[#072474]/20">
+        <div className="text-4xl font-black tracking-widest text-[#072474] dark:text-primary bg-[#072474]/5 dark:bg-[#072474]/20 py-3 rounded-xl border border-[#072474]/20">
           {code}
         </div>
       </div>
@@ -2827,7 +2827,7 @@
         <div className="fixed inset-0 bg-surface-base flex items-center justify-center select-none z-50">
           <div className="text-center space-y-4">
             <p className="text-surface-secondary text-xl uppercase tracking-widest font-black">Get ready!</p>
-            <div key={countdownVal} className="text-[10rem] md:text-[15rem] font-black text-[#072474] dark:text-blue-400 leading-none drop-shadow-sm" style={{ animation: "zoomFade 0.9s ease-out forwards" }}>
+            <div key={countdownVal} className="text-[10rem] md:text-[15rem] font-black text-[#072474] dark:text-primary leading-none drop-shadow-sm" style={{ animation: "zoomFade 0.9s ease-out forwards" }}>
               {countdownVal}
             </div>
           </div>

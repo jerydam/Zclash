@@ -76,8 +76,8 @@ interface FinalScore { username: string; points: number }
 
 const OPTION_STYLES: Record<string, { bg: string; shape: string; ring: string }> = {
   A: { bg: "bg-red-500 hover:bg-red-600",     shape: "▲", ring: "ring-red-400"  },
-  B: { bg: "bg-blue-500 hover:bg-blue-600",   shape: "◆", ring: "ring-blue-400" },
-  C: { bg: "bg-blue-500 hover:bg-blue-600",   shape: "●", ring: "ring-blue-400" },
+  B: { bg: "bg-blue-500 hover:bg-primary",   shape: "◆", ring: "ring-primary400" },
+  C: { bg: "bg-blue-500 hover:bg-primary",   shape: "●", ring: "ring-primary400" },
   D: { bg: "bg-green-500 hover:bg-green-600", shape: "■", ring: "ring-green-400" },
 };
 
@@ -1285,7 +1285,7 @@ export default function ChallengePage() {
           <div className="bg-card border border-border rounded-2xl overflow-hidden">
             <div className="px-4 py-3 border-b border-border flex items-center justify-between">
               <h2 className="font-bold text-foreground text-sm flex items-center gap-2">
-                <Users className="h-4 w-4 text-blue-400" /> Players
+                <Users className="h-4 w-4 text-primary" /> Players
               </h2>
               {allReady && (
                 <span className="text-xs font-bold text-emerald-500 flex items-center gap-1">
@@ -1307,7 +1307,7 @@ export default function ChallengePage() {
                     const isHost = p.walletAddress.toLowerCase() === challenge?.creator?.toLowerCase();
                     const statusLabel = (() => {
                       if (p.ready)       return { text: "Ready ✓",       cls: "text-emerald-500" };
-                      if (p.txVerified)  return { text: "Stake verified", cls: "text-blue-400"   };
+                      if (p.txVerified)  return { text: "Stake verified", cls: "text-primary"   };
                       return               { text: "Awaiting stake…",    cls: "text-muted-foreground" };
                     })();
                     return (
@@ -1414,14 +1414,14 @@ export default function ChallengePage() {
                     <p className="text-xs font-black text-blue-800 dark:text-blue-200 uppercase tracking-wide">Zcash Escrow</p>
                     <div className="space-y-1.5">
                       <div className="flex items-center justify-between gap-2">
-                        <span className="text-xs text-blue-600 dark:text-blue-400">Your stake</span>
+                        <span className="text-xs text-blue-600 dark:text-primary">Your stake</span>
                         <span className="text-xs font-bold text-blue-800 dark:text-blue-200 font-mono">
                           {displayStake ? formatZEC(parseFloat(String(displayStake))) : "…"} ZEC
                         </span>
                       </div>
                       <div className="h-px bg-blue-200 dark:bg-blue-800/60" />
                       <div className="flex items-center justify-between gap-2">
-                        <span className="text-xs text-blue-600 dark:text-blue-400">Winner takes</span>
+                        <span className="text-xs text-blue-600 dark:text-primary">Winner takes</span>
                         <span className="text-xs font-bold text-blue-800 dark:text-blue-200 font-mono">{totalPool} ZEC</span>
                       </div>
                     </div>

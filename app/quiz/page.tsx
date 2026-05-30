@@ -40,7 +40,7 @@ interface QuizCard {
 const STATUS_CONFIG = {
   waiting: {
     label: "Waiting",
-    color: "bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-200 dark:border-blue-500/20",
+    color: "bg-blue-500/10 text-blue-600 dark:text-primary border-blue-200 dark:border-primary/20",
     dot: "bg-blue-500 dark:bg-blue-400",
     icon: Clock,
   },
@@ -78,7 +78,7 @@ function QuizCardItem({
       onClick={onClick}
       className={cn(
         "group relative w-full text-left rounded-2xl overflow-hidden transition-all duration-200",
-        "bg-white dark:bg-slate-900 border hover:border-blue-400 dark:hover:border-blue-500/40 hover:-translate-y-0.5 shadow-sm hover:shadow-md",
+        "bg-white dark:bg-slate-900 border hover:border-blue-400 dark:hover:border-primary/40 hover:-translate-y-0.5 shadow-sm hover:shadow-md",
         isLive
           ? "border-green-300 dark:border-green-500/20"
           : "border-slate-200 dark:border-white/[0.07]"
@@ -110,7 +110,7 @@ function QuizCardItem({
 
         <div className="absolute top-3 right-3 flex items-center gap-2">
           {quiz.isAiGenerated && (
-            <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-bold bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-200 dark:border-blue-500/20 backdrop-blur">
+            <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-bold bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-primary border border-blue-200 dark:border-primary/20 backdrop-blur">
               <Sparkles className="h-3 w-3" /> AI
             </span>
           )}
@@ -138,7 +138,7 @@ function QuizCardItem({
       {/* Card body */}
       <div className="p-4 space-y-3">
         <div>
-          <h3 className="font-bold text-slate-900 dark:text-white text-sm leading-tight group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors line-clamp-2">
+          <h3 className="font-bold text-slate-900 dark:text-white text-sm leading-tight group-hover:text-blue-600 dark:group-hover:text-primary transition-colors line-clamp-2">
             {quiz.title}
           </h3>
           {quiz.description && (
@@ -177,7 +177,7 @@ function QuizCardItem({
               ? "text-green-600 dark:text-green-400"
               : quiz.status === "finished"
               ? "text-slate-300 dark:text-white/20"
-              : "text-blue-600 dark:text-blue-400 group-hover:text-blue-500 dark:group-hover:text-blue-300"
+              : "text-blue-600 dark:text-primary group-hover:text-blue-500 dark:group-hover:text-blue-300"
           )}>
             {isFull ? "Full" : quiz.status === "finished" ? "View Results" : isLive ? "Join Now" : "Enter Lobby"}
             <ChevronRight className="h-3.5 w-3.5" />
@@ -297,10 +297,10 @@ export default function QuizListPage() {
           <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
             <div className="space-y-3 flex-1 min-w-0">
               <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-lg bg-blue-50 dark:bg-blue-500/10 border border-blue-200 dark:border-blue-500/20 flex items-center justify-center shrink-0">
-                  <Gamepad2 className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+                <div className="w-8 h-8 rounded-lg bg-blue-50 dark:bg-blue-500/10 border border-blue-200 dark:border-primary/20 flex items-center justify-center shrink-0">
+                  <Gamepad2 className="h-4 w-4 text-blue-600 dark:text-primary" />
                 </div>
-                <span className="text-blue-600 dark:text-blue-400 font-bold text-xs uppercase tracking-widest">FaucetDrops Quiz</span>
+                <span className="text-blue-600 dark:text-primary font-bold text-xs uppercase tracking-widest">FaucetDrops Quiz</span>
               </div>
               <h1 className="text-3xl sm:text-4xl font-black text-slate-900 dark:text-white leading-none">
                 Quiz Hub
@@ -316,7 +316,7 @@ export default function QuizListPage() {
                   </span>
                 )}
                 {waitingCount > 0 && (
-                  <span className="flex items-center gap-2 text-blue-600 dark:text-blue-400 text-sm font-bold">
+                  <span className="flex items-center gap-2 text-blue-600 dark:text-primary text-sm font-bold">
                     <span className="w-2 h-2 rounded-full bg-blue-500" />
                     {waitingCount} Starting Soon
                   </span>
@@ -339,10 +339,10 @@ export default function QuizListPage() {
                   onKeyDown={e => e.key === "Enter" && handleJumpToCode()}
                   placeholder="ABC123"
                   maxLength={8}
-                  className="font-mono font-black text-base tracking-widest bg-slate-50 dark:bg-white/5 border-slate-200 dark:border-white/10 text-slate-900 dark:text-white h-11 placeholder:text-slate-300 dark:placeholder:text-white/20 focus-visible:border-blue-500"
+                  className="font-mono font-black text-base tracking-widest bg-slate-50 dark:bg-white/5 border-slate-200 dark:border-white/10 text-slate-900 dark:text-white h-11 placeholder:text-slate-300 dark:placeholder:text-white/20 focus-visible:border-primary"
                 />
                 <Button
-                  className="h-11 px-4 font-bold bg-blue-600 hover:bg-blue-500 text-white border-0 shrink-0"
+                  className="h-11 px-4 font-bold bg-primary hover:bg-blue-500 text-white border-0 shrink-0"
                   onClick={handleJumpToCode}
                   disabled={isJumping || codeInput.length < 4}
                 >
@@ -353,7 +353,7 @@ export default function QuizListPage() {
               {/* ADD THIS ↓ */}
               <Button
                 onClick={() => router.push("/quiz/create-quiz")}
-                className="w-full h-11 bg-blue-600 hover:bg-blue-500 text-white font-bold border-0 mt-1"
+                className="w-full h-11 bg-primary hover:bg-blue-500 text-white font-bold border-0 mt-1"
               >
                 <Plus className="mr-2 h-4 w-4" /> Create Quiz
               </Button>
@@ -369,7 +369,7 @@ export default function QuizListPage() {
               value={searchQuery}
               onChange={e => setSearchQuery(e.target.value)}
               placeholder="Search by title, code, or creator..."
-              className="pl-10 bg-white dark:bg-slate-900 border-slate-200 dark:border-white/[0.07] text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-600 focus-visible:border-blue-500 h-11"
+              className="pl-10 bg-white dark:bg-slate-900 border-slate-200 dark:border-white/[0.07] text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-600 focus-visible:border-primary h-11"
             />
           </div>
 
@@ -381,7 +381,7 @@ export default function QuizListPage() {
                 className={cn(
                   "inline-flex items-center gap-1.5 px-3 py-2 rounded-full text-xs font-bold transition-all border",
                   statusFilter === tab.key
-                    ? "bg-blue-600 text-white border-blue-600"
+                    ? "bg-primary text-white border-blue-600"
                     : "bg-white dark:bg-slate-900 text-slate-500 dark:text-slate-400 border-slate-200 dark:border-white/[0.07] hover:text-slate-900 dark:hover:text-white hover:border-slate-300 dark:hover:border-white/20"
                 )}
               >
@@ -424,7 +424,7 @@ export default function QuizListPage() {
             {userWalletAddress && (
               <Button
                 onClick={() => router.push("/quiz/create-quiz")}
-                className="bg-blue-600 hover:bg-blue-500 text-white font-bold border-0"
+                className="bg-primary hover:bg-blue-500 text-white font-bold border-0"
               >
                 <Plus className="mr-2 h-4 w-4" /> Create Quiz
               </Button>

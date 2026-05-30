@@ -3,12 +3,13 @@
 import type React from "react"
 import { useEffect } from "react"
 import { Inter } from "next/font/google"
-import "./globals.css"
+import  "../styles/globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
 import { Toaster } from "sonner"
 import { WalletProvider } from "@/components/zcash-wallet-provider"
 import { BottomNav } from "@/components/bottom-nav"
 import { PresenceProvider } from "@/components/presence-provider"
+import css from "styled-jsx/css"
 
 const inter = Inter({ subsets: ["latin"] })
 

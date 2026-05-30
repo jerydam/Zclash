@@ -78,7 +78,7 @@ const FAQ_SECTIONS: FAQSection[] = [
   {
     icon: <Trophy className="h-4 w-4" />,
     title: "Gameplay",
-    color: "text-blue-500 bg-blue-500/10 border-blue-500/20",
+    color: "text-blue-500 bg-blue-500/10 border-primary/20",
     items: [
       {
         q: "How are questions generated?",

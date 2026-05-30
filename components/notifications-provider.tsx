@@ -112,10 +112,10 @@ function ChallengePopupOverlay({ popup, onAccept, onDecline }: {
                 <img
                   src={avatarUrl}
                   alt={creatorName}
-                  className="h-14 w-14 rounded-full object-cover border-2 border-blue-500/30 shadow-[0_0_20px_rgba(59,130,246,0.2)]"
+                  className="h-14 w-14 rounded-full object-cover border-2 border-primary/30 shadow-[0_0_20px_rgba(59,130,246,0.2)]"
                 />
               ) : (
-                <div className="h-14 w-14 rounded-full bg-blue-500/20 flex items-center justify-center text-blue-400 font-bold border-2 border-blue-500/30 text-lg shadow-[0_0_20px_rgba(59,130,246,0.2)]">
+                <div className="h-14 w-14 rounded-full bg-blue-500/20 flex items-center justify-center text-primary font-bold border-2 border-primary/30 text-lg shadow-[0_0_20px_rgba(59,130,246,0.2)]">
                   {creatorName.slice(0, 2).toUpperCase()}
                 </div>
               )}
@@ -132,7 +132,7 @@ function ChallengePopupOverlay({ popup, onAccept, onDecline }: {
               You've Been Called Out!
             </h3>
             <p className="text-slate-300 text-sm leading-relaxed px-2">
-              <span className="text-blue-400 font-bold">{creatorName}</span>{" "}
+              <span className="text-primary font-bold">{creatorName}</span>{" "}
               is challenging your Knowledge on {" "}
               <span className="text-white font-bold">"{topic}"</span>
             </p>
@@ -140,9 +140,9 @@ function ChallengePopupOverlay({ popup, onAccept, onDecline }: {
 
           {/* Stake badge — blue not amber */}
           {n.data?.stake && (
-            <div className="flex items-center justify-center gap-2 bg-blue-500/10 rounded-xl py-2 px-4 border border-blue-500/20 mb-4 w-fit mx-auto">
-              <Zap size={13} className="text-blue-400 fill-blue-400" />
-              <span className="text-[11px] font-black text-blue-400 uppercase tracking-widest">
+            <div className="flex items-center justify-center gap-2 bg-blue-500/10 rounded-xl py-2 px-4 border border-primary/20 mb-4 w-fit mx-auto">
+              <Zap size={13} className="text-primary fill-blue-400" />
+              <span className="text-[11px] font-black text-primary uppercase tracking-widest">
                 Stake: {n.data.stake} {n.data.token}
               </span>
             </div>
@@ -173,7 +173,7 @@ function ChallengePopupOverlay({ popup, onAccept, onDecline }: {
               <p
                 className={cn(
                   "text-[11px] font-black tabular-nums",
-                  isUrgent ? "text-red-500" : "text-blue-400",
+                  isUrgent ? "text-red-500" : "text-primary",
                 )}
               >
                 {secondsLeft}s
@@ -185,7 +185,7 @@ function ChallengePopupOverlay({ popup, onAccept, onDecline }: {
           <div className="flex flex-col gap-2.5">
             <button
               onClick={onAccept}
-              className="w-full py-4 rounded-2xl bg-blue-600 text-white font-black text-base hover:bg-blue-500 shadow-lg shadow-blue-600/20 transition-all active:scale-[0.98] flex items-center justify-center gap-2"
+              className="w-full py-4 rounded-2xl bg-primary text-white font-black text-base hover:bg-blue-500 shadow-lg shadow-blue-600/20 transition-all active:scale-[0.98] flex items-center justify-center gap-2"
             >
               <Zap className="h-4 w-4 fill-white" /> Accept Challenge
             </button>
@@ -499,7 +499,7 @@ const navigateToChallenge = useCallback(async (code: string, type: string) => {
             <div className="overflow-y-auto max-h-[60vh] sm:max-h-96">
               {loading ? (
                 <div className="flex items-center justify-center py-12">
-                   <div className="h-5 w-5 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" />
+                   <div className="h-5 w-5 border-2 border-primary border-t-transparent rounded-full animate-spin" />
                 </div>
               ) : notifications.length === 0 ? (
                 <div className="py-12 px-6 text-center">

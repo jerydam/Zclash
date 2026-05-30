@@ -712,7 +712,7 @@ useEffect(() => {
 
           <div className="flex items-center gap-2">
             <Badge variant="outline" className="font-mono font-black">{code}</Badge>
-            <Badge className="bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-200 dark:border-blue-500/30 text-[10px] font-bold">
+            <Badge className="bg-blue-500/10 text-blue-600 dark:text-primary border-blue-200 dark:border-primary/30 text-[10px] font-bold">
               PRE-LOBBY
             </Badge>
           </div>
@@ -832,7 +832,7 @@ useEffect(() => {
 
             {/* Creator counter panel */}
             {counterTarget && (
-              <div className="bg-card border-2 border-blue-500/40 rounded-3xl overflow-hidden">
+              <div className="bg-card border-2 border-primary/40 rounded-3xl overflow-hidden">
                 <div className="px-5 pt-4 pb-2 border-b border-border">
                   <div className="flex items-center justify-between">
                     <h3 className="font-black text-foreground text-sm flex items-center gap-2">
@@ -867,7 +867,7 @@ useEffect(() => {
                         className={cn(
                           "flex-1 min-w-[70px] py-2 rounded-xl border-2 text-xs font-black transition-all",
                           myOffer === v
-                            ? "border-blue-500 bg-blue-500/10 text-blue-500"
+                            ? "border-primary bg-blue-500/10 text-blue-500"
                             : "border-border text-muted-foreground hover:border-blue-400/40",
                         )}
                       >
