@@ -9,130 +9,120 @@
 
   /* ══════════════════════════════════════
      LIGHT THEME  (default / :root)
+     Zcash: gold #F4B728 on white/light grey
      ══════════════════════════════════════ */
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222 47% 8%;
+    --background: 45 20% 97%;
+    --foreground: 220 30% 8%;
     --bottom-nav-height: 70px;
 
-    --card: 0 0% 98%;
-    --card-foreground: 222 47% 8%;
+    --card: 45 20% 99%;
+    --card-foreground: 220 30% 8%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 222 47% 8%;
+    --popover-foreground: 220 30% 8%;
 
-    --primary: 217 91% 50%;
-    --primary-foreground: 0 0% 100%;
+    /* Zcash Gold as primary */
+    --primary: 42 90% 56%;
+    --primary-foreground: 220 30% 8%;
 
-    --secondary: 217 33% 92%;
-    --secondary-foreground: 222 47% 15%;
+    --secondary: 42 40% 90%;
+    --secondary-foreground: 220 30% 15%;
 
-    --muted: 217 33% 94%;
-    --muted-foreground: 215 20% 45%;
+    --muted: 42 20% 93%;
+    --muted-foreground: 220 15% 45%;
 
-    --accent: 217 33% 90%;
-    --accent-foreground: 222 47% 15%;
+    --accent: 42 50% 88%;
+    --accent-foreground: 220 30% 15%;
 
     --destructive: 0 72% 51%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 217 33% 88%;
-    --input: 217 33% 90%;
-    --ring: 217 91% 50%;
+    --border: 42 20% 86%;
+    --input: 42 20% 90%;
+    --ring: 42 90% 56%;
     --radius: 0.75rem;
 
     /* ── Semantic surface tokens ── */
-    --surface-base:   255 255 255;
-    --surface-card:   248 250 252;
-    --surface-card-2: 241 245 249;
-    --surface-header: 248 250 252;
+    --surface-base:   253 251 245;
+    --surface-card:   255 253 248;
+    --surface-card-2: 250 246 235;
+    --surface-header: 255 253 248;
     --surface-header-opacity: 0.97;
-    --text-primary:   15 23 42;
-    --text-secondary: 100 116 139;
-    --text-muted:     148 163 184;
-    --border-subtle:  226 232 240;
+    --text-primary:   15 18 30;
+    --text-secondary: 90 90 110;
+    --text-muted:     150 145 140;
+    --border-subtle:  230 220 195;
 
     /* ── DD design tokens (light) ── */
-    --dd-bg:         #ffffff;
-    --dd-bg-card:    #f8fafc;
-    --dd-blue:       #2563eb;
-    --dd-blue2:      #1d4ed8;
-    --dd-text:       #0f172a;
-    --dd-text-muted: rgba(15, 23, 42, 0.4);
-    --dd-dim:        rgba(15, 23, 42, 0.45);
-    --dd-line:       rgba(15, 23, 42, 0.08);
-    --dd-card:       rgba(15, 23, 42, 0.03);
-    --dd-white:      #0f172a;
-
-    /* ── Privy modal ── */
-    --privy-color-background: #ffffff !important;
-    --privy-color-background-2: #f4f6fb !important;
-    --privy-color-foreground: #0f172a !important;
-    --privy-color-foreground-2: #334155 !important;
-    --privy-border-radius: 1rem !important;
+    --dd-bg:         #fdfbf5;
+    --dd-bg-card:    #fffdf8;
+    --dd-blue:       #F4B728;
+    --dd-blue2:      #d99f1a;
+    --dd-text:       #0f1222;
+    --dd-text-muted: rgba(15, 18, 34, 0.4);
+    --dd-dim:        rgba(15, 18, 34, 0.45);
+    --dd-line:       rgba(15, 18, 34, 0.08);
+    --dd-card:       rgba(15, 18, 34, 0.03);
+    --dd-white:      #0f1222;
   }
 
   /* ══════════════════════════════════════
      DARK THEME  (.dark)
+     Zcash: gold #F4B728 on deep navy/black
      ══════════════════════════════════════ */
   .dark {
-    --background: 222 47% 4%;
-    --foreground: 210 40% 96%;
+    --background: 225 35% 5%;
+    --foreground: 45 30% 95%;
 
-    --card: 222 47% 6%;
-    --card-foreground: 210 40% 96%;
+    --card: 225 35% 7%;
+    --card-foreground: 45 30% 95%;
 
-    --popover: 222 47% 6%;
-    --popover-foreground: 210 40% 96%;
+    --popover: 225 35% 7%;
+    --popover-foreground: 45 30% 95%;
 
-    --primary: 217 91% 60%;
-    --primary-foreground: 222 47% 4%;
+    /* Zcash Gold */
+    --primary: 42 90% 56%;
+    --primary-foreground: 225 35% 5%;
 
-    --secondary: 217 33% 12%;
-    --secondary-foreground: 210 40% 96%;
+    --secondary: 225 25% 14%;
+    --secondary-foreground: 45 30% 90%;
 
-    --muted: 217 33% 10%;
-    --muted-foreground: 215 20% 55%;
+    --muted: 225 25% 11%;
+    --muted-foreground: 220 15% 55%;
 
-    --accent: 217 33% 14%;
-    --accent-foreground: 210 40% 96%;
+    --accent: 225 25% 16%;
+    --accent-foreground: 45 30% 90%;
 
-    --destructive: 0 63% 31%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive: 0 63% 40%;
+    --destructive-foreground: 45 30% 98%;
 
-    --border: 217 33% 14%;
-    --input: 217 33% 12%;
-    --ring: 217 91% 60%;
+    --border: 225 25% 15%;
+    --input: 225 25% 13%;
+    --ring: 42 90% 56%;
 
     /* ── Semantic surface tokens (dark) ── */
-    --surface-base:   8 13 25;
-    --surface-card:   13 21 38;
-    --surface-card-2: 17 24 39;
-    --surface-header: 13 21 38;
+    --surface-base:   7 10 20;
+    --surface-card:   11 15 28;
+    --surface-card-2: 15 20 36;
+    --surface-header: 11 15 28;
     --surface-header-opacity: 0.95;
-    --text-primary:   248 250 252;
-    --text-secondary: 148 163 184;
-    --text-muted:     100 116 139;
-    --border-subtle:  30 41 59;
+    --text-primary:   250 248 240;
+    --text-secondary: 160 155 140;
+    --text-muted:     100 100 110;
+    --border-subtle:  30 35 55;
 
     /* ── DD design tokens (dark) ── */
-    --dd-bg:         #020617;
-    --dd-bg-card:    #080d19;
-    --dd-blue:       #2563eb;
-    --dd-blue2:      #1d4ed8;
-    --dd-text:       #ffffff;
-    --dd-text-muted: rgba(255, 255, 255, 0.35);
-    --dd-dim:        rgba(255, 255, 255, 0.45);
-    --dd-line:       rgba(255, 255, 255, 0.07);
-    --dd-card:       rgba(255, 255, 255, 0.03);
-    --dd-white:      #ffffff;
-
-    /* ── Privy modal ── */
-    --privy-color-background: #080d19 !important;
-    --privy-color-background-2: #0f1629 !important;
-    --privy-color-foreground: #f8fafc !important;
-    --privy-color-foreground-2: #94a3b8 !important;
-    --privy-border-radius: 1rem !important;
+    --dd-bg:         #07090f;
+    --dd-bg-card:    #0a0e1c;
+    --dd-blue:       #F4B728;
+    --dd-blue2:      #d99f1a;
+    --dd-text:       #faf8f0;
+    --dd-text-muted: rgba(250, 248, 240, 0.35);
+    --dd-dim:        rgba(250, 248, 240, 0.45);
+    --dd-line:       rgba(244, 183, 40, 0.10);
+    --dd-card:       rgba(244, 183, 40, 0.04);
+    --dd-white:      #faf8f0;
   }
 }
 
@@ -149,13 +139,13 @@
 }
 
 /* ══════════════════════════════════════
-   DD BUTTON SYSTEM
+   DD BUTTON SYSTEM  (Zcash gold)
    ══════════════════════════════════════ */
 .dd-btn {
   display: inline-flex; align-items: center; justify-content: center; gap: 8px;
   height: 56px; padding: 0 24px; width: 100%;
   background: var(--dd-blue);
-  color: #ffffff;
+  color: #0f1222;
   font-family: 'Figtree', sans-serif;
   font-weight: 700; font-size: 14px; letter-spacing: 0.04em;
   border: none; border-radius: 12px; cursor: pointer;
@@ -171,8 +161,8 @@
   color: var(--dd-text);
 }
 .dd-btn-ghost:hover {
-  background: rgba(37, 99, 235, 0.08);
-  border-color: rgba(37, 99, 235, 0.5);
+  background: rgba(244, 183, 40, 0.08);
+  border-color: rgba(244, 183, 40, 0.5);
 }
 
 .dd-btn-sm { height: 40px; font-size: 12px; border-radius: 8px; }
@@ -198,6 +188,23 @@
 .text-surface-primary   { color: rgb(var(--text-primary)); }
 .text-surface-secondary { color: rgb(var(--text-secondary)); }
 .text-surface-muted     { color: rgb(var(--text-muted)); }
+
+/* ══════════════════════════════════════
+   ZCASH GLOW EFFECTS
+   ══════════════════════════════════════ */
+.zcash-glow {
+  box-shadow: 0 0 24px rgba(244, 183, 40, 0.15),
+              0 0 48px rgba(244, 183, 40, 0.06);
+}
+.zcash-glow-sm {
+  box-shadow: 0 0 12px rgba(244, 183, 40, 0.12);
+}
+.zcash-border {
+  border-color: rgba(244, 183, 40, 0.25);
+}
+.zcash-text {
+  color: #F4B728;
+}
 
 /* ══════════════════════════════════════
    QUIZ PAGE OVERRIDES
