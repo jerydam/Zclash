@@ -14,7 +14,7 @@ interface ZecPriceData {
 
 export function useZecPrice(): ZecPriceData {
   const [data, setData] = useState<ZecPriceData>({
-    zecUsd: 30,
+    zecUsd: 600,
     minimums: { duelStakeZec: 0.033, duelPlatformFeeZec: 0.0083, tournamentPoolUsd: 5 },
     loading: true,
   });

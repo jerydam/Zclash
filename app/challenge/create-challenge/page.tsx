@@ -29,15 +29,11 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
-import { formatZEC, isValidTAddress } from "@/lib/zcash";
 import { useZecPrice } from "@/hooks/use-zec-price";
-import { id } from "ethers/hash";
 
 const API_BASE_URL =
   process.env.NEXT_PUBLIC_API_URL ?? "https://zclash-backend.onrender.com";
 
-const { zecUsd, minimums, loading: priceLoading } = useZecPrice();
-const MIN_STAKE = minimums.duelStakeZec; // dynamic: $1 USD in ZEC
 
 
 // ─── Wizard steps ─────────────────────────────────────────────────────────────
@@ -184,6 +180,9 @@ function SuccessScreen({
 // ─── Main component ───────────────────────────────────────────────────────────
 
 export default function CreateChallengePage() {
+  const { zecUsd, minimums, loading: priceLoading } = useZecPrice(); // ✅ already here
+  const MIN_STAKE = minimums.duelStakeZec;
+  const price = useZecPrice();
   const router       = useRouter();
   const { address: userWalletAddress } = useWallet();
   const searchParams = useSearchParams();

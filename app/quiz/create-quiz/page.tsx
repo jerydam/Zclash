@@ -26,8 +26,6 @@ import { useZecPrice } from "@/hooks/use-zec-price";
 const API_BASE_URL = "https://zclash-backend.onrender.com";
 const MAX_FILE_SIZE_MB = 5;
 const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/png", "image/gif", "image/webp", "image/svg+xml"];
-const { zecUsd, minimums, loading: priceLoading } = useZecPrice();
-const MIN_POOL_ZEC = minimums.tournamentPoolUsd / zecUsd; // $5 in ZEC
 
 // ── Types ─────────────────────────────────────────────────────
 interface QuizOption { id: "A" | "B" | "C" | "D"; text: string }
@@ -339,6 +337,8 @@ function FloatyEmojis() {
 export default function CreateQuizPage() {
   const router = useRouter();
   const { address: userWalletAddress } = useWallet();
+  const { zecUsd, minimums, loading: priceLoading } = useZecPrice();
+  const MIN_POOL_ZEC = minimums.tournamentPoolUsd / zecUsd; // $5 in ZEC
 
   // Wizard
   const [wizardStep, setWizardStep] = useState(0);
