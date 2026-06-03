@@ -49,7 +49,6 @@ export default function QuizListPage() {
   const { address: userWalletAddress } = useWallet();
 
   const [tab, setTab] = useState<"lobby" | "history">("lobby");
-  const [lobbyChallenges, setLobbyChallenges] = useState<LobbyChallenge[]>([]);
   const [history, setHistory] = useState<HistoryChallenge[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isRefreshing, setIsRefreshing] = useState(false);
@@ -62,9 +61,10 @@ export default function QuizListPage() {
     if (!silent) setIsLoading(true);
     else setIsRefreshing(true);
     try {
-      const r = await fetch(`${API_BASE_URL}/api/challenge/lobby`);
+      const r = await fetch(`${API_BASE_URL}/api/duel/lobby`);
       const d = await r.json();
-      if (d.success) setLobbyChallenges(d.challenges as LobbyChallenge[]);
+      if (d.success) setLobbyChallenges((d.duels ?? d.challenges ?? []) as LobbyChallenge[]);
+
     } catch {
       toast.error("Failed to sync lobby");
     } finally {
@@ -72,13 +72,13 @@ export default function QuizListPage() {
       setIsRefreshing(false);
     }
   };
-
+  const [lobbyChallenges, setLobbyChallenges] = useState<LobbyChallenge[]>([]);
   const fetchHistory = async () => {
     if (!userWalletAddress) return;
     setHistoryLoading(true);
     try {
       const r = await fetch(
-        `${API_BASE_URL}/api/challenge/${userWalletAddress.toLowerCase()}/history?limit=50`
+        `${API_BASE_URL}/api/duel/${userWalletAddress.toLowerCase()}/history?limit=50`
       );
       const d = await r.json();
       if (d.success)
@@ -113,7 +113,7 @@ export default function QuizListPage() {
       return;
     }
     try {
-      const res = await fetch(`${API_BASE_URL}/api/challenge/${code}`);
+      const res = await fetch(`${API_BASE_URL}/api/duel/${code}`);
       const data = await res.json();
       if (data.success && data.challenge) {
         const c = data.challenge;

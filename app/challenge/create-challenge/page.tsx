@@ -32,7 +32,7 @@ import { cn } from "@/lib/utils";
 import { formatZEC, isValidTAddress } from "@/lib/zcash";
 
 const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_URL ?? "http://127.0.0.1:8000";
+  process.env.NEXT_PUBLIC_API_URL ?? "https://zclash-backend.onrender.com";
 
 const MIN_STAKE = 0.0001; // ZEC minimum (≈ $0.01)
 
@@ -270,7 +270,7 @@ export default function CreateChallengePage() {
         ).catch(() => {});
       }
 
-      const res = await fetch(`${API_BASE_URL}/api/challenge/create`, {
+      const res = await fetch(`${API_BASE_URL}/api/duel/create`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

@@ -33,7 +33,7 @@ import Loading from "@/app/loading";
 import { cn } from "@/lib/utils";
 
 const BACKEND_URL =
-  process.env.NEXT_PUBLIC_API_URL ?? "http://127.0.0.1:8000";
+  process.env.NEXT_PUBLIC_API_URL ?? "https://zclash-backend.onrender.com";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -230,7 +230,7 @@ export default function DashboardPage() {
   const fetchHistory = useCallback(async (wallet: string) => {
     setHistoryLoading(true);
     try {
-      const res  = await fetch(`${BACKEND_URL}/api/challenge/${wallet}/history?limit=50`);
+      const res  = await fetch(`${BACKEND_URL}/api/duel/${wallet}/history?limit=50`);
       const data = await res.json();
       if (data.success) setRawHistory(data.history ?? []);
     } catch {} finally {

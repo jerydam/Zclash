@@ -23,7 +23,7 @@ import {
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://127.0.0.1:8000";
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? "https://zclash-backend.onrender.com";
 const MIN_STAKE = 0.5
 function getWsBase() {
   if (typeof window === "undefined") return "wss://127.0.0.1:8000";
@@ -370,7 +370,7 @@ export default function PreLobbyPage() {
   // ── Load challenge ───────────────────────────────────────────────────────
   useEffect(() => {
     if (!code) return;
-    fetch(`${API_BASE_URL}/api/challenge/${code}`)
+    fetch(`${API_BASE_URL}/api/duel/${code}`)
       .then(r => r.json())
       .then(d => {
         if (!d.success) { toast.error("Challenge not found"); router.push("/challenge"); return; }
@@ -422,7 +422,7 @@ useEffect(() => {
 useEffect(() => {
   if (!code || !myWallet) return;
 
-  const ws = new WebSocket(`${getWsBase()}/ws/challenge/${code}`);
+  const ws = new WebSocket(`${getWsBase()}/ws/duel/${code}`);
   wsRef.current = ws;
 
   ws.onmessage = (ev) => {

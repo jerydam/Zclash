@@ -7,7 +7,7 @@ import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { createPortal } from "react-dom";
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://127.0.0.1:8000";
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? "https://zclash-backend.onrender.com";
 
 function getWsNotifyUrl() {
   if (typeof window === "undefined") return "wss://127.0.0.1:8000/ws/notify";
@@ -58,7 +58,7 @@ function ChallengePopupOverlay({ popup, onAccept, onDecline }: {
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
   useEffect(() => {
     if (!code) return;
-    fetch(`${API_BASE_URL}/api/challenge/${code}`)
+    fetch(`${API_BASE_URL}/api/duel/${code}`)
       .then(r => r.json())
       .then(d => {
         if (d.success && d.challenge?.creator) {
@@ -365,7 +365,7 @@ const navigateToChallenge = useCallback(async (code: string, type: string) => {
 
   // For challenge invites and public challenges, check current state first
   try {
-    const res  = await fetch(`${API_BASE_URL}/api/challenge/${code}`);
+    const res  = await fetch(`${API_BASE_URL}/api/duel/${code}`);
     const data = await res.json();
 
     if (data.success && data.challenge) {

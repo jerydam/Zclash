@@ -5,7 +5,7 @@
  */
 
 const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_URL ?? "http://127.0.0.1:8000";
+  process.env.NEXT_PUBLIC_API_URL ?? "https://zclash-backend.onrender.com";
 
 // ─── Global window augmentation (single declaration) ─────────────────────────
 
@@ -202,7 +202,7 @@ export function zcashAddressHint(wallet: DetectedWallet): string {
 
 /** Fetch the escrow address + ZEC balance for a challenge. */
 export async function getEscrowInfo(code: string): Promise<EscrowInfo> {
-  const res = await fetch(`${API_BASE_URL}/api/challenge/${code}/escrow`);
+  const res = await fetch(`${API_BASE_URL}/api/duel/${code}/escrow`);
   if (!res.ok) throw new Error(`HTTP ${res.status}`);
   const data = await res.json();
   if (!data.success) throw new Error(data.detail ?? "Failed to fetch escrow info");
@@ -222,7 +222,7 @@ export async function syncStake(
   code: string,
   walletAddress: string,
 ): Promise<SyncResult> {
-  const res = await fetch(`${API_BASE_URL}/api/challenge/${code}/sync-stake`, {
+  const res = await fetch(`${API_BASE_URL}/api/duel/${code}/sync-stake`, {
     method:  "POST",
     headers: { "Content-Type": "application/json" },
     body:    JSON.stringify({ walletAddress }),
@@ -248,7 +248,7 @@ export async function notifyStakeSent(
   playerWallet: string,
   txid: string,
 ): Promise<void> {
-  await fetch(`${API_BASE_URL}/api/challenge/${code}/on-chain-confirmed`, {
+  await fetch(`${API_BASE_URL}/api/duel/${code}/on-chain-confirmed`, {
     method:  "POST",
     headers: { "Content-Type": "application/json" },
     body:    JSON.stringify({ playerWallet, txid }),

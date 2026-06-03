@@ -36,7 +36,7 @@ import ZClashLoading from "@/components/loading";
 // ─── Config ───────────────────────────────────────────────────────────────────
 
 const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_URL ?? "http://127.0.0.1:8000";
+  process.env.NEXT_PUBLIC_API_URL ?? "https://zclash-backend.onrender.com";
 
 function getWsBaseUrl(): string {
   if (typeof window === "undefined") return "wss://127.0.0.1:8000";
@@ -328,7 +328,7 @@ export async function sendRematchInvite(params: {
   const { code, userWalletAddress, setRematchPending, setRematchCountdown, rematchTimerRef, rematchTimeoutRef } = params;
   if (!userWalletAddress) return;
   try {
-    const res = await fetch(`${API_BASE_URL}/api/challenge/${code}/rematch-invite`, {
+    const res = await fetch(`${API_BASE_URL}/api/duel/${code}/rematch-invite`, {
       method: "POST", headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ requesterWallet: userWalletAddress }),
     });
@@ -365,7 +365,7 @@ export async function handleRematchCreate(params: {
   try {
     // On Zcash backend, /rematch creates a new challenge + escrow address.
     // No on-chain creation transaction needed.
-    const res = await fetch(`${API_BASE_URL}/api/challenge/${code}/rematch`, {
+    const res = await fetch(`${API_BASE_URL}/api/duel/${code}/rematch`, {
       method: "POST", headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ requesterWallet: userWalletAddress }),
     });
@@ -500,7 +500,7 @@ export default function ChallengePage() {
   // ── Load challenge ───────────────────────────────────────────────────────────
   useEffect(() => {
     if (!code) return;
-    fetch(`${API_BASE_URL}/api/challenge/${code}`)
+    fetch(`${API_BASE_URL}/api/duel/${code}`)
       .then((r) => r.json())
       .then((d) => {
         if (!d.success) { toast.error("Challenge not found"); router.push("/challenge"); return; }
@@ -580,7 +580,7 @@ export default function ChallengePage() {
     const isCreatorWallet = challenge.creator?.toLowerCase() === userWalletAddress.toLowerCase();
     if (isCreatorWallet) return;
     joinCalledRef.current = true;
-    fetch(`${API_BASE_URL}/api/challenge/${code}/join`, {
+    fetch(`${API_BASE_URL}/api/duel/${code}/join`, {
       method: "POST", headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ walletAddress: userWalletAddress, username, txHash: "pre-lobby-agreed" }),
     })
@@ -625,7 +625,7 @@ export default function ChallengePage() {
     if (!code || !userWalletAddress) return;
     if (wsRef.current && wsRef.current.readyState <= WebSocket.OPEN) return;
 
-    const ws = new WebSocket(`${getWsBaseUrl()}/ws/challenge/${code}`);
+    const ws = new WebSocket(`${getWsBaseUrl()}/ws/duel/${code}`);
     wsRef.current = ws;
 
     ws.onopen = () => {
@@ -834,7 +834,7 @@ export default function ChallengePage() {
           await notifyStakeSent(code, userWalletAddress, txid);
           // Join if not already in
           if (!hasJoined) {
-            await fetch(`${API_BASE_URL}/api/challenge/${code}/join`, {
+            await fetch(`${API_BASE_URL}/api/duel/${code}/join`, {
               method: "POST", headers: { "Content-Type": "application/json" },
               body: JSON.stringify({ walletAddress: userWalletAddress, username, txHash: txid }),
             });
@@ -867,7 +867,7 @@ export default function ChallengePage() {
     }
 
     if (!hasJoined) {
-      await fetch(`${API_BASE_URL}/api/challenge/${code}/join`, {
+      await fetch(`${API_BASE_URL}/api/duel/${code}/join`, {
         method: "POST", headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ walletAddress: userWalletAddress, username, txHash: "manual-pending" }),
       });
@@ -879,7 +879,7 @@ export default function ChallengePage() {
 
   /**
    * handleSyncStake — "I've sent it" button handler.
-   * Calls syncStake() which hits /api/challenge/{code}/sync-stake
+   * Calls syncStake() which hits /api/duel/{code}/sync-stake
    * → zcashd getreceivedbyaddress().  Backend broadcasts stake_verified via WS.
    */
   const handleSyncStake = useCallback(async (providedTxid: string) => {
@@ -931,7 +931,7 @@ export default function ChallengePage() {
     if (!code || isRefreshing) return;
     setIsRefreshing(true);
     try {
-      const r = await fetch(`${API_BASE_URL}/api/challenge/${code}`);
+      const r = await fetch(`${API_BASE_URL}/api/duel/${code}`);
       const d = await r.json();
       if (!d.success) { toast.error("Could not refresh lobby"); return; }
       setChallenge(d.challenge);

@@ -6,7 +6,7 @@ import { Loader2, Swords, Check, X } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://127.0.0.1:8000";
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? "https://zclash-backend.onrender.com";
 const POPUP_TTL    = 60;
 
 function fmt(n: number) {
@@ -67,7 +67,7 @@ export function RematchPopup({ invite, myWallet, onDismiss, countdown }: Props) 
     setBusy(true);
     try {
       const res = await fetch(
-        `${API_BASE_URL}/api/challenge/${invite.originalCode}/rematch-accept-invite`,
+        `${API_BASE_URL}/api/duel/${invite.originalCode}/rematch-accept-invite`,
         {
           method:  "POST",
           headers: { "Content-Type": "application/json" },
@@ -102,7 +102,7 @@ export function RematchPopup({ invite, myWallet, onDismiss, countdown }: Props) 
     setDeclining(true);
     try {
       await fetch(
-        `${API_BASE_URL}/api/challenge/${invite.originalCode}/rematch-decline`,
+        `${API_BASE_URL}/api/duel/${invite.originalCode}/rematch-decline`,
         {
           method:  "POST",
           headers: { "Content-Type": "application/json" },
