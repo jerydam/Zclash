@@ -21,10 +21,13 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
+import { useZecPrice } from "@/hooks/use-zec-price";
 
 const API_BASE_URL = "https://zclash-backend.onrender.com";
 const MAX_FILE_SIZE_MB = 5;
 const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/png", "image/gif", "image/webp", "image/svg+xml"];
+const { zecUsd, minimums, loading: priceLoading } = useZecPrice();
+const MIN_POOL_ZEC = minimums.tournamentPoolUsd / zecUsd; // $5 in ZEC
 
 // ── Types ─────────────────────────────────────────────────────
 interface QuizOption { id: "A" | "B" | "C" | "D"; text: string }
@@ -882,18 +885,54 @@ export default function CreateQuizPage() {
       </div>
 
       {/* Pool amount */}
+          
       <div className="space-y-2">
-        <Label className="text-xs font-black text-muted-foreground uppercase tracking-wider">Pool Amount (ZEC)</Label>
+        <Label className="text-xs font-black text-muted-foreground uppercase tracking-wider">
+          Pool Amount — min $5.00 USD
+        </Label>
+        {!priceLoading && (
+          <p className="text-xs text-muted-foreground">
+            1 ZEC ≈ ${zecUsd.toFixed(2)} · min pool ≈ {MIN_POOL_ZEC.toFixed(4)} ZEC
+          </p>
+        )}
         <div className="relative">
           <Input
-            type="number" min="0" step="0.0001" value={reward.poolAmount}
+            type="number" min={MIN_POOL_ZEC} step="0.0001"
+            value={reward.poolAmount}
             onChange={e => setR({ poolAmount: e.target.value })}
-            placeholder="0.0000"
+            placeholder={MIN_POOL_ZEC.toFixed(4)}
             className="h-12 text-lg font-mono rounded-xl pr-16 border-2"
           />
-          <div className="absolute right-3 top-1/2 -translate-y-1/2">
-            <span className="text-sm font-black text-muted-foreground">ZEC</span>
+          <span className="absolute right-3 top-1/2 -translate-y-1/2 text-sm font-black text-muted-foreground">ZEC</span>
+        </div>
+        {reward.poolAmount && (
+          <div className="text-xs text-muted-foreground space-y-0.5">
+            <p>≈ <span className="font-bold text-foreground">
+              ${(parseFloat(reward.poolAmount) * zecUsd).toFixed(2)} USD
+            </span></p>
+            {parseFloat(reward.poolAmount) < MIN_POOL_ZEC && (
+              <p className="text-destructive font-bold">Below $5.00 minimum</p>
+            )}
+            <p className="text-amber-600 dark:text-amber-400">
+              + 5% platform fee = {(parseFloat(reward.poolAmount) * 1.05).toFixed(6)} ZEC total to send
+            </p>
           </div>
+        )}
+        {/* USD quick picks */}
+        <div className="flex gap-1.5 flex-wrap">
+          {[5, 10, 25, 50].map(usd => {
+            const zec = (usd / zecUsd).toFixed(6);
+            return (
+              <button key={usd} onClick={() => setR({ poolAmount: zec })}
+                className={cn("px-3 py-1.5 rounded-xl text-xs font-bold border-2 transition-all flex flex-col items-center",
+                  reward.poolAmount === zec
+                    ? "border-primary bg-primary/10 text-primary"
+                    : "border-border bg-card text-muted-foreground hover:border-primary/40")}>
+                <span className="font-black">${usd}</span>
+                <span className="text-[9px] opacity-60">{parseFloat(zec).toFixed(4)} ZEC</span>
+              </button>
+            );
+          })}
         </div>
       </div>
 

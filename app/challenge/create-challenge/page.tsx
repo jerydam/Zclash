@@ -30,11 +30,15 @@ import {
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { formatZEC, isValidTAddress } from "@/lib/zcash";
+import { useZecPrice } from "@/hooks/use-zec-price";
+import { id } from "ethers/hash";
 
 const API_BASE_URL =
   process.env.NEXT_PUBLIC_API_URL ?? "https://zclash-backend.onrender.com";
 
-const MIN_STAKE = 0.0001; // ZEC minimum (≈ $0.01)
+const { zecUsd, minimums, loading: priceLoading } = useZecPrice();
+const MIN_STAKE = minimums.duelStakeZec; // dynamic: $1 USD in ZEC
+
 
 // ─── Wizard steps ─────────────────────────────────────────────────────────────
 
@@ -422,61 +426,109 @@ export default function CreateChallengePage() {
     </div>
   );
 
-  const renderStepStake = () => (
+  const renderStepStake = () => {
+  const stakeUsd = stakeAmount ? (parseFloat(stakeAmount) * zecUsd).toFixed(2) : "0.00";
+  const feeZec   = minimums.duelPlatformFeeZec;
+  const feeUsd   = (feeZec * zecUsd).toFixed(2);
+  const totalZec = stakeAmount ? (parseFloat(stakeAmount) + feeZec).toFixed(8) : "—";
+
+  // Quick picks: $1, $2, $5, $10 converted to ZEC
+  const quickPicksUsd = [1, 2, 5, 10];
+  const quickPicks = quickPicksUsd.map(usd => ({
+    usd,
+    zec: (usd / zecUsd).toFixed(6),
+  }));
+
+  return (
     <div className="space-y-5 animate-in fade-in slide-in-from-right-4 duration-300">
       <div className="text-center space-y-2 pb-2">
         <div className="text-5xl">💰</div>
         <h2 className="text-xl font-black text-foreground">Set the stake</h2>
-        <p className="text-sm text-muted-foreground">Both players must send this amount in ZEC. Winner takes the pool.</p>
+        <p className="text-sm text-muted-foreground">
+          Minimum $1.00 USD · Platform fee $0.25 USD
+        </p>
       </div>
 
-      {/* ZEC-only badge */}
-      <div className="flex items-center gap-2 px-3 py-2 rounded-xl bg-muted/50 border border-border">
-        <div className="w-2 h-2 rounded-full bg-emerald-500" />
-        <span className="text-xs text-muted-foreground font-medium">Zcash (ZEC) · trustless escrow</span>
-      </div>
+      {priceLoading ? (
+        <div className="flex justify-center py-4">
+          <Loader2 className="h-5 w-5 animate-spin text-primary" />
+        </div>
+      ) : (
+        <div className="flex items-center gap-2 px-3 py-2 rounded-xl bg-muted/50 border border-border text-xs text-muted-foreground">
+          <div className="w-2 h-2 rounded-full bg-emerald-500" />
+          1 ZEC ≈ ${zecUsd.toFixed(2)} USD · min stake ≈ {MIN_STAKE.toFixed(6)} ZEC
+        </div>
+      )}
 
       <div className="space-y-2">
         <Label className="text-xs font-black text-muted-foreground uppercase tracking-wider">
-          Amount per player <span className="text-destructive">(min {MIN_STAKE} ZEC)</span>
+          Amount per player
         </Label>
         <div className="relative">
           <input
             type="number"
             value={stakeAmount}
             onChange={(e) => setStakeAmount(e.target.value)}
-            placeholder="0.0000"
-            step="0.0001"
-            className="h-12 w-full text-lg font-mono rounded-xl pr-16 border-2 border-border bg-background px-4 outline-none focus:border-primary/60 transition-colors"
+            placeholder={MIN_STAKE.toFixed(6)}
+            step={MIN_STAKE.toFixed(6)}
+            className="h-12 w-full text-lg font-mono rounded-xl pr-16 border-2 border-border bg-background px-4 outline-none focus:border-primary/60"
           />
           <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-black text-muted-foreground">ZEC</span>
-          {stakeAmount && parseFloat(stakeAmount) < MIN_STAKE && parseFloat(stakeAmount) > 0 && (
-            <p className="text-xs text-destructive font-bold mt-1">
-              Minimum stake is {MIN_STAKE} ZEC
-            </p>
-          )}
         </div>
+        {stakeAmount && (
+          <p className="text-xs text-muted-foreground">
+            ≈ <span className="font-bold text-foreground">${stakeUsd} USD</span>
+            {parseFloat(stakeAmount) < MIN_STAKE && (
+              <span className="text-destructive ml-2">— below $1.00 minimum</span>
+            )}
+          </p>
+        )}
       </div>
 
-      {/* Quick-pick amounts */}
+      {/* USD-anchored quick picks */}
       <div className="grid grid-cols-4 gap-2">
-        {[0.01, 0.05, 0.1, 0.5].map((v) => (
+        {quickPicks.map(({ usd, zec }) => (
           <button
-            key={v}
-            onClick={() => setStakeAmount(String(v))}
+            key={usd}
+            onClick={() => setStakeAmount(zec)}
             className={cn(
-              "py-2 rounded-xl border-2 text-xs font-bold transition-all",
-              stakeAmount === String(v)
+              "py-2 rounded-xl border-2 text-xs font-bold transition-all flex flex-col items-center gap-0.5",
+              stakeAmount === zec
                 ? "border-primary bg-primary/10 text-primary"
                 : "border-border bg-card text-muted-foreground hover:border-primary/40"
             )}
           >
-            {v} ZEC
+            <span className="font-black">${usd}</span>
+            <span className="text-[9px] opacity-60">{parseFloat(zec).toFixed(4)} ZEC</span>
           </button>
         ))}
       </div>
+
+      {/* Fee breakdown */}
+      {stakeAmount && parseFloat(stakeAmount) >= MIN_STAKE && (
+        <div className="rounded-xl border border-border bg-muted/30 px-3 py-2.5 space-y-1.5 text-xs">
+          <div className="flex justify-between">
+            <span className="text-muted-foreground">Your stake</span>
+            <span className="font-bold">{parseFloat(stakeAmount).toFixed(6)} ZEC</span>
+          </div>
+          <div className="flex justify-between">
+            <span className="text-muted-foreground">Platform fee ($0.25)</span>
+            <span className="font-bold">{feeZec.toFixed(6)} ZEC</span>
+          </div>
+          <div className="h-px bg-border" />
+          <div className="flex justify-between font-black">
+            <span>Total to send</span>
+            <span>{totalZec} ZEC</span>
+          </div>
+          <div className="flex justify-between text-emerald-600">
+            <span>Winner receives</span>
+            <span>{(parseFloat(stakeAmount) * 2).toFixed(6)} ZEC</span>
+          </div>
+        </div>
+      )}
     </div>
   );
+};
 
   const renderStepLaunch = () => (
     <div className="space-y-5 animate-in fade-in slide-in-from-right-4 duration-300 max-w-xl mx-auto">
