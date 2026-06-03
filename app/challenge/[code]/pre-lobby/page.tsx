@@ -23,7 +23,7 @@ import {
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? "https://zclash-backend.onrender.com";
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://127.0.0.1:8000";
 const MIN_STAKE = 0.5
 function getWsBase() {
   if (typeof window === "undefined") return "wss://127.0.0.1:8000";
@@ -515,7 +515,7 @@ useEffect(() => {
     if (!myWallet || submitting || amCreator) return;
     setSubmitting(true);
     try {
-      const res = await fetch(`${API_BASE_URL}/api/challenge/${code}/offer`, {
+      const res = await fetch(`${API_BASE_URL}/api/duel/${code}/offer`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ walletAddress: myWallet, username, amount }),
@@ -543,7 +543,7 @@ useEffect(() => {
     if (!myWallet || submitting) return;
     setSubmitting(true);
     try {
-      const res = await fetch(`${API_BASE_URL}/api/challenge/${code}/counter`, {
+      const res = await fetch(`${API_BASE_URL}/api/duel/${code}/counter`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -568,7 +568,7 @@ useEffect(() => {
     if (offer.wallet.toLowerCase() === myWallet) { toast.error("You can't accept your own offer."); return; }
     setAccepting(true);
     try {
-      const res = await fetch(`${API_BASE_URL}/api/challenge/${code}/pre-lobby-accept`, {
+      const res = await fetch(`${API_BASE_URL}/api/duel/${code}/pre-lobby-accept`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

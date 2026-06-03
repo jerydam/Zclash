@@ -1,6 +1,6 @@
 "use client";
 /**
- * /app/quiz/page.tsx  –  FaucetDrops Quiz Hub
+ * /app/quiz/page.tsx  –  Z-clash Quiz Hub
  * System theme — works with light/dark toggle
  */
 import React, { useState, useEffect, useMemo } from "react";
@@ -18,7 +18,7 @@ import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import Loading from "../loading/page";
 
-const API_BASE_URL = "https://zclash-backend.onrender.com";
+const API_BASE_URL = "http://127.0.0.1:8000";
 
 interface QuizCard {
   code: string;
@@ -300,13 +300,13 @@ export default function QuizListPage() {
                 <div className="w-8 h-8 rounded-lg bg-blue-50 dark:bg-blue-500/10 border border-blue-200 dark:border-primary/20 flex items-center justify-center shrink-0">
                   <Gamepad2 className="h-4 w-4 text-blue-600 dark:text-primary" />
                 </div>
-                <span className="text-blue-600 dark:text-primary font-bold text-xs uppercase tracking-widest">FaucetDrops Quiz</span>
+                <span className="text-blue-600 dark:text-primary font-bold text-xs uppercase tracking-widest">Z-clash Quiz</span>
               </div>
               <h1 className="text-3xl sm:text-4xl font-black text-slate-900 dark:text-white leading-none">
-                Quiz Hub
+                Tournament
               </h1>
               <p className="text-slate-500 dark:text-slate-400 text-sm max-w-lg">
-                Join a live quiz, browse upcoming games, or create your own — with real token rewards for winners.
+                Join a live Tournament, browse upcoming Tournament, or create your own — with real zcash rewards for winners.
               </p>
               <div className="flex flex-wrap items-center gap-4 pt-1">
                 {liveCount > 0 && (

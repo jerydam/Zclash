@@ -31,11 +31,12 @@ import {
   buildZcashURI,
   formatZEC,
 } from "@/lib/zcash";
+import ZClashLoading from "@/components/loading";
 
 // ─── Config ───────────────────────────────────────────────────────────────────
 
 const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_URL ?? "https://zclash-backend.onrender.com";
+  process.env.NEXT_PUBLIC_API_URL ?? "http://127.0.0.1:8000";
 
 function getWsBaseUrl(): string {
   if (typeof window === "undefined") return "wss://127.0.0.1:8000";
@@ -123,17 +124,18 @@ function EscrowPanel({
   stakeAmount,
   token,
   challengeCode,
-  onSent,
+  onVerify,
   isSyncing,
 }: {
   escrowAddress: string;
   stakeAmount:   number;
   token:         string;
   challengeCode: string;
-  onSent:        () => void;
+  onVerify:      (txid: string) => void;
   isSyncing:     boolean;
 }) {
   const [copied, setCopied] = useState(false);
+  const [txid, setTxid] = useState("");
   const zcashURI = buildZcashURI(escrowAddress, stakeAmount, `QuizHub:${challengeCode}`);
 
   const copy = () => {
@@ -156,11 +158,10 @@ function EscrowPanel({
             Send your stake
           </p>
           <p className="text-xs text-amber-600 dark:text-amber-400 mt-0.5">
-            Send exactly <strong>{formatZEC(stakeAmount)} {token}</strong> to this address, then tap "I've sent it".
+            Send exactly <strong>{formatZEC(stakeAmount)} {token}</strong> to your dedicated escrow address below, then input your Transaction ID to verify.
           </p>
         </div>
 
-        {/* Address row */}
         <div className="flex items-center gap-2 bg-amber-100 dark:bg-amber-900/40 rounded-xl px-3 py-2">
           <code className="text-[11px] font-mono text-amber-900 dark:text-amber-100 break-all flex-1 leading-relaxed">
             {escrowAddress}
@@ -176,7 +177,6 @@ function EscrowPanel({
           </button>
         </div>
 
-        {/* Open in Zcash wallet */}
         <a
           href={zcashURI}
           className="text-[11px] text-amber-700 dark:text-amber-400 underline underline-offset-2 hover:opacity-70 transition-opacity"
@@ -184,19 +184,30 @@ function EscrowPanel({
           Open in Zcash wallet
         </a>
 
-        {/* "I've sent it" button */}
+        {/* TxID Tracking Input */}
+        <div className="space-y-1 pt-1">
+          <label className="text-[10px] font-bold uppercase tracking-wider text-amber-800 dark:text-amber-300">Transaction ID (TxID)</label>
+          <input 
+            type="text"
+            value={txid}
+            onChange={(e) => setTxid(e.target.value)}
+            placeholder="Paste your payment transaction ID..."
+            className="w-full h-10 rounded-xl px-3 text-xs bg-background border border-amber-300 dark:border-amber-700 outline-none text-foreground focus:border-amber-500"
+          />
+        </div>
+
         <button
-          onClick={onSent}
-          disabled={isSyncing}
+          onClick={() => onVerify(txid.trim())}
+          disabled={isSyncing || !txid.trim()}
           className="w-full py-3 rounded-xl bg-amber-600 hover:bg-amber-500 disabled:opacity-50 text-white font-black text-sm transition-all active:scale-[0.99] flex items-center justify-center gap-2"
         >
           {isSyncing
-            ? <><Loader2 className="h-4 w-4 animate-spin" /> Checking on-chain…</>
-            : <>I've sent it — verify my stake</>}
+            ? <><Loader2 className="h-4 w-4 animate-spin" /> Verifying On-Chain…</>
+            : <>Verify Stake Placement</>}
         </button>
 
         <p className="text-[10px] text-amber-500 dark:text-amber-500 leading-relaxed">
-          The backend checks zcashd for incoming ZEC. Requires at least 1 confirmation (~75 seconds).
+          The engine validates your individual contribution parameters against zcashd live states. Requires 1 block confirmation.
         </p>
       </div>
     </div>
@@ -545,13 +556,19 @@ export default function ChallengePage() {
       .catch(() => toast.error("Failed to load challenge"));
   }, [code, userWalletAddress, router]);
 
-  // Fetch escrow address separately if not in challenge object
+  // Fetch individual assigned escrow addresses from state allocations
   useEffect(() => {
-    if (escrowAddress || !code || phase === "loading" || phase === "game_over") return;
-    getEscrowInfo(code)
-      .then((info) => setEscrowAddress(info.escrowAddress))
+    if (escrowAddress || !code || phase === "loading" || phase === "game_over" || !userWalletAddress) return;
+    
+    fetch(`${API_BASE_URL}/api/duel/${code}/escrow?walletAddress=${userWalletAddress}`)
+      .then((r) => r.json())
+      .then((info) => {
+        if (info.success && info.yourEscrow) {
+          setEscrowAddress(info.yourEscrow);
+        }
+      })
       .catch(() => {});
-  }, [code, escrowAddress, phase]);
+  }, [code, escrowAddress, phase, userWalletAddress]);
 
   useEffect(() => {
     if (cameFromPreLobby && agreedStake && userWalletAddress && !hasJoined) setHasJoined(true);
@@ -865,33 +882,32 @@ export default function ChallengePage() {
    * Calls syncStake() which hits /api/challenge/{code}/sync-stake
    * → zcashd getreceivedbyaddress().  Backend broadcasts stake_verified via WS.
    */
-  const handleSyncStake = useCallback(async () => {
-    if (!userWalletAddress || !challenge) return;
+  const handleSyncStake = useCallback(async (providedTxid: string) => {
+    if (!userWalletAddress || !challenge || !providedTxid) return;
     setIsSyncing(true);
     try {
-      const result = await syncStake(code, userWalletAddress);
-      if (!result.verified && !result.alreadyVerified) {
-        const balance = result.escrowBalance ?? 0;
-        const needed  = result.expectedAmount ?? (displayStake ? parseFloat(String(displayStake)) : 0);
-        toast.error(
-          balance > 0
-            ? `Only ${formatZEC(balance)} ZEC received — need ${formatZEC(needed)} ZEC. Check your transaction or wait for confirmation.`
-            : "No ZEC received yet at the escrow address. Send the funds first, then try again."
-        );
+      const res = await fetch(`${API_BASE_URL}/api/duel/${code}/verify-stake`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          walletAddress: userWalletAddress,
+          txid: providedTxid
+        })
+      });
+      
+      const result = await res.json();
+      
+      if (!res.ok || !result.verified) {
+        toast.error(result.reason || "Stake entry mismatch. Verify block presence or transaction payload structure.");
         setIsSyncing(false);
-        return;
       }
-      if (result.alreadyVerified) {
-        toast.success("Stake already verified! Click 'I'm Ready' to continue.");
-        setIsSyncing(false);
-        setShowEscrowPanel(false);
-      }
-      // If freshly verified, WS stake_verified event will fire and clear isSyncing
+      // If result.verified is true, the WS listener will handle state progression,
+      // sync indicators, and clear loading variables organically.
     } catch (err: any) {
-      toast.error(err?.message ?? "Could not verify stake.");
+      toast.error("Network verification loop failed.");
       setIsSyncing(false);
     }
-  }, [userWalletAddress, challenge, code, displayStake]);
+  }, [userWalletAddress, challenge, code]);
 
   const handleSelectAnswer = useCallback((optId: string) => {
     if (!currentQ || timeLeft <= 0 || phase === "reveal") return;
@@ -977,14 +993,14 @@ export default function ChallengePage() {
   // RENDER — early returns AFTER all hooks
   // ─────────────────────────────────────────────────────────────────────────────
 
-  if (phase === "loading") {
-    return (
-      <div className="flex flex-col min-h-screen bg-background">
-        <Header pageTitle="Challenge" />
-        <Loading />
-      </div>
-    );
-  }
+  // AFTER — replace that entire block
+if (phase === "loading") return <ZClashLoading context="challenge_lobby" playerA={myWallet} />
+
+// When stake button is clicked (inside the lobby JSX, replace the Loader2 spinner on the Stake button)
+// The isSyncing / stakeVerifying states already exist — wrap the whole lobby in:
+if (isStaking)        return <ZClashLoading context="stake_sending" playerA={myWallet} />
+if (stakeVerifying)   return <ZClashLoading context="stake_verifying" playerA={myWallet} />
+if (isSyncing)        return <ZClashLoading context="stake_verifying" staticMessage="Checking on-chain…" playerA={myWallet} />
 
   if (phase === "game_over") {
     const sortedPlayers = Object.entries(finalScores).sort(([, a], [, b]) => b.points - a.points);
@@ -1379,7 +1395,7 @@ export default function ChallengePage() {
                   stakeAmount={displayStake ? parseFloat(String(displayStake)) : (challenge?.stake ?? 0)}
                   token="ZEC"
                   challengeCode={code}
-                  onSent={handleSyncStake}
+                  onVerify={handleSyncStake} // Passes tracking ID string straight up to engine
                   isSyncing={isSyncing}
                 />
               )}

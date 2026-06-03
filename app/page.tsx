@@ -23,20 +23,20 @@ export default function LandingPage() {
         style={{ maxWidth: 480, margin: "0 auto", fontFamily: "'Figtree', sans-serif" }}
       >
         <nav className="flex items-center justify-between px-6 pt-8 pb-6">
-  <div className="flex items-center gap-2.5">
-    <div className="w-24 h-24 relative flex items-center justify-center">
-      <Image
-        src="/logo.png"
-        alt="ZClash Logo"
-        width={96}
-        height={96}
-        priority
-        className="object-contain"
-      />
-    </div>
-  </div>
-  <ThemeToggle />
-</nav>
+          <div className="flex items-center gap-2.5">
+            <div className="w-24 h-24 relative flex items-center justify-center">
+              <Image
+                src="/logo.png"
+                alt="ZClash Logo"
+                width={96}
+                height={96}
+                priority
+                className="object-contain"
+              />
+            </div>
+          </div>
+          <ThemeToggle />
+        </nav>
 
         {/* Hero */}
         <section className="px-6 pb-10 flex-1 flex flex-col justify-center">
@@ -66,11 +66,11 @@ export default function LandingPage() {
               Start a Duel
             </button>
             <button
-              onClick={() => router.push("/ranks")}
+              onClick={() => router.push("/quiz")}
               className="dd-btn-ghost w-full h-14 rounded-xl font-bold text-sm tracking-wide flex items-center justify-center gap-2"
             >
-              <Trophy className="h-4 w-4" />
-              View Rankings
+              <Zap className="h-4 w-4" />
+              Join a Tournament
             </button>
           </div>
         </section>
@@ -78,7 +78,7 @@ export default function LandingPage() {
         {/* Mode cards */}
         <section className="px-6 pt-8 pb-10 space-y-4">
           <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground mb-1">
-            Choose your Duel
+            Choose your Battleground
           </p>
 
           {/* 1v1 Duel */}
@@ -109,15 +109,15 @@ export default function LandingPage() {
             </div>
           </div>
 
-          {/* Rankings */}
+          {/* Tournaments */}
           <div
             className="relative p-6 rounded-2xl border border-border bg-card hover:border-primary hover:-translate-y-1 transition-all cursor-pointer group zcash-glow-sm"
-            onClick={() => router.push("/ranks")}
+            onClick={() => router.push("/quiz")}
           >
             <div className="absolute top-0 left-0 right-0 h-0.5 bg-primary scale-x-0 group-hover:scale-x-100 transition-transform origin-left rounded-t-2xl" />
             <div className="flex items-start justify-between mb-4">
               <div className="w-10 h-10 flex items-center justify-center rounded-xl bg-primary/10 border zcash-border">
-                <Trophy className="h-5 w-5 text-primary" />
+                <Zap className="h-5 w-5 text-primary" />
               </div>
               <ArrowUpRight className="h-4 w-4 text-muted-foreground" />
             </div>
@@ -125,13 +125,13 @@ export default function LandingPage() {
               className="font-black text-2xl uppercase tracking-tight mb-2 text-foreground"
               style={{ fontFamily: "'Big Shoulders Display', sans-serif" }}
             >
-              Global Rankings
+              Live Tournaments
             </h3>
             <p className="font-medium leading-relaxed text-muted-foreground" style={{ fontSize: 14 }}>
-              Compete with players worldwide. Climb the leaderboard. Earn ZEC and glory.
-            </p>
+              Join multi-player matches hosted by creators. Top positions split a shielded ZEC prize pool automatically.
+          </p>
             <div className="flex items-center gap-3 mt-4 flex-wrap">
-              {["Leaderboard", "Tier System", "Live Presence"].map(tag => (
+              {["Multiplayer Pool", "Shielded Payouts", "Live Leaderboard"].map(tag => (
                 <span key={tag} className="text-xs font-bold text-primary uppercase tracking-wider">{tag}</span>
               ))}
             </div>

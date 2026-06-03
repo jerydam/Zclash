@@ -32,14 +32,14 @@ import { cn } from "@/lib/utils";
 import { WalletConnectButton } from "@/components/wallet-connect";
 import Loading from "@/app/loading";
 
-const API_BASE_URL = "https://zclash-backend.onrender.com";
+const API_BASE_URL = "http://127.0.0.1:8000";
 const ZEC_EXPLORER = "https://zcashblockexplorer.com/transactions";
 
 function getWsBaseUrl(): string {
-  if (typeof window === "undefined") return "wss://identical-vivi-faucetdrops-41e9c56b.koyeb.app";
+  if (typeof window === "undefined") return "wss://zclash-backend.onrender.com";
   return window.location.hostname === "127.0.0.1" || window.location.hostname === "localhost"
     ? "ws://127.0.0.1:8000"
-    : "wss://identical-vivi-faucetdrops-41e9c56b.koyeb.app";
+    : "wss://zclash-backend.onrender.com";
 }
 
 // ── Types ──────────────────────────────────────────────────────
@@ -157,13 +157,14 @@ function ZecFundPanel({
   const [isFunded, setIsFunded] = useState(quizReward?.isFunded ?? false);
   const [isMarking, setIsMarking] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [txHash, setTxHash] = useState(""); // Track manual transaction ID
   const [polledBalance, setPolledBalance] = useState<number | null>(null);
   const pollRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const address = quizReward?.fromAddress ?? "";
   const poolAmount = quizReward?.poolAmount ?? 0;
 
-  // Auto-poll: check reward.isFunded on the quiz endpoint
+  // Auto-poll metadata check
   useEffect(() => {
     if (isFunded) return;
 
@@ -177,20 +178,12 @@ function ZecFundPanel({
           if (pollRef.current) clearInterval(pollRef.current);
           toast.success("ZEC reward pool funded! Quiz can now start.");
         }
-        // Also try escrow balance endpoint if address known
+        
         if (address) {
           const er = await fetch(`${API_BASE_URL}/api/duel/${code}/escrow`).catch(() => null);
           if (er) {
             const ed = await er.json().catch(() => null);
             if (ed?.balanceZEC !== undefined) setPolledBalance(parseFloat(ed.balanceZEC));
-            if (ed?.balanceZEC >= poolAmount) {
-              // auto-mark funded
-              await fetch(`${API_BASE_URL}/api/quiz/${code}/mark-funded`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ txHash: "auto-detected", fromAddress: address }),
-              }).catch(() => {});
-            }
           }
         }
       } catch {}
@@ -199,7 +192,7 @@ function ZecFundPanel({
     check();
     pollRef.current = setInterval(check, 8000);
     return () => { if (pollRef.current) clearInterval(pollRef.current); };
-  }, [code, isFunded, address, poolAmount, onFunded]);
+  }, [code, isFunded, address, onFunded]);
 
   const handleCopy = () => {
     if (!address) return;
@@ -210,23 +203,28 @@ function ZecFundPanel({
   };
 
   const handleMarkFunded = async () => {
+    if (!txHash.trim()) {
+      toast.error("Please enter your transaction hash to verify funding");
+      return;
+    }
+    
     setIsMarking(true);
     try {
       const r = await fetch(`${API_BASE_URL}/api/quiz/${code}/mark-funded`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ txHash: "manual", fromAddress: address }),
+        body: JSON.stringify({ txHash: txHash.trim(), fromAddress: address }),
       });
       const d = await r.json();
-      if (d.success) {
+      if (r.ok && d.success) {
         setIsFunded(true);
         onFunded();
-        toast.success("Marked as funded!");
+        toast.success("Transaction verified! Pool successfully funded.");
       } else {
-        toast.error(d.detail || "Failed to mark as funded");
+        toast.error(d.detail || "Failed to verify transaction on-chain");
       }
     } catch {
-      toast.error("Network error");
+      toast.error("Network verification error");
     } finally { setIsMarking(false); }
   };
 
@@ -246,26 +244,23 @@ function ZecFundPanel({
 
   return (
     <div className="space-y-3">
-      {/* Warning */}
-      <div className="flex items-start gap-3 bg-amber-500/8 border border-amber-500/20 rounded-xl px-4 py-3">
+      <div className="flex items-start gap-3 bg-amber-500/8 border border-amber-200 rounded-xl px-4 py-3">
         <AlertCircle className="h-5 w-5 text-amber-400 shrink-0 mt-0.5" />
         <div>
           <p className="text-amber-400 font-bold text-sm">Fund the ZEC reward pool</p>
           <p className="text-amber-500/70 text-xs mt-0.5">
-            Send exactly <span className="font-black text-amber-300">{poolAmount} ZEC</span> to the address below. Quiz starts automatically once detected.
+            Send exactly <span className="font-black text-amber-300">{poolAmount} ZEC</span> to the address below. Paste the Transaction Hash to verify.
           </p>
         </div>
       </div>
 
       {address ? (
         <div className="bg-surface-card border border-surface rounded-2xl p-4 space-y-3">
-          {/* QR */}
           <div className="flex justify-center">
             <div className="bg-white p-3 rounded-xl">
               <QRCodeSVG value={`zcash:${address}?amount=${poolAmount}`} size={140} level="M" includeMargin />
             </div>
           </div>
-          {/* Address */}
           <div className="space-y-1">
             <p className="text-surface-muted text-xs text-center">Send {poolAmount} ZEC to:</p>
             <div className="flex items-center gap-2 bg-white/5 border border-surface rounded-xl px-3 py-2">
@@ -278,37 +273,38 @@ function ZecFundPanel({
               </button>
             </div>
           </div>
-          {/* Balance indicator */}
           {polledBalance !== null && (
             <div className="flex items-center justify-between text-xs px-1">
-              <span className="text-surface-muted">Escrow balance:</span>
+              <span className="text-surface-muted">Current address balance:</span>
               <span className={cn("font-bold", polledBalance >= poolAmount ? "text-green-400" : "text-amber-400")}>
                 {polledBalance.toFixed(4)} / {poolAmount} ZEC
               </span>
             </div>
           )}
-          {/* Auto-detect indicator */}
-          <div className="flex items-center justify-center gap-2 text-surface-muted text-xs">
-            <Loader2 className="h-3 w-3 animate-spin" />
-            <span>Checking every 8 seconds…</span>
-          </div>
         </div>
       ) : (
-        <div className="text-center py-4 text-surface-muted text-sm">
-          Loading deposit address…
-        </div>
+        <div className="text-center py-4 text-surface-muted text-sm">Loading deposit address…</div>
       )}
 
-      {/* Manual fallback */}
-      <div className="border-t border-surface pt-3">
-        <p className="text-surface-muted text-xs text-center mb-2">Already sent the ZEC?</p>
+      {/* Manual verification form input */}
+      <div className="border-t border-surface pt-3 space-y-2">
+        <div className="space-y-1">
+          <label className="text-[11px] font-bold text-surface-secondary uppercase tracking-wider">Transaction Hash / ID</label>
+          <input 
+            type="text"
+            value={txHash}
+            onChange={(e) => setTxHash(e.target.value)}
+            placeholder="Paste your ZEC transaction ID here..."
+            className="w-full h-11 bg-white/5 border border-surface rounded-xl px-3 text-sm text-surface-primary outline-none focus:border-primary transition-all"
+          />
+        </div>
         <Button
           variant="outline"
           className="w-full h-11 border-surface text-surface-secondary hover:text-surface-primary"
           onClick={handleMarkFunded}
-          disabled={isMarking}
+          disabled={isMarking || !txHash.trim()}
         >
-          {isMarking ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" />Marking…</> : "Mark as Funded Manually"}
+          {isMarking ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" />Verifying On-Chain…</> : "Verify & Mark as Funded"}
         </Button>
       </div>
     </div>

@@ -30,11 +30,11 @@ interface FooterProps {
 
 export const Footer: React.FC<FooterProps> = ({ className = "" }) => {
   const socialLinks = [
-    { name: "X (Twitter)",  href: "https://x.com/FaucetDrops",             icon: XIcon,        hoverColor: "#38bdf8" },
-    { name: "YouTube",      href: "https://www.youtube.com/@Faucet_Drops",  icon: Youtube,      hoverColor: "#f87171" },
-    { name: "Telegram",     href: "https://t.me/FaucetDropschat",           icon: TelegramIcon, hoverColor: "#60a5fa" },
-    { name: "Discord",      href: "https://discord.gg/jSAXVw2brJ",          icon: DiscordIcon,  hoverColor: "#818cf8" },
-    { name: "Email",        href: "mailto:drops.faucet@gmail.com",          icon: Mail,         hoverColor: "#34d399" },
+    { name: "X (Twitter)",  href: "https://x.com/#",             icon: XIcon,        hoverColor: "#38bdf8" },
+    { name: "YouTube",      href: "https://www.youtube.com/#",  icon: Youtube,      hoverColor: "#f87171" },
+    { name: "Telegram",     href: "https://t.me/#",           icon: TelegramIcon, hoverColor: "#60a5fa" },
+    { name: "Discord",      href: "https://discord.gg/#",          icon: DiscordIcon,  hoverColor: "#818cf8" },
+    { name: "Email",        href: "mailto:z.clash@#.com",          icon: Mail,         hoverColor: "#34d399" },
   ]
 
   return (
@@ -56,19 +56,15 @@ export const Footer: React.FC<FooterProps> = ({ className = "" }) => {
           {/* Brand */}
           <div className="flex flex-col md:flex-row items-center gap-3 md:gap-4 text-center md:text-left">
             <div className="flex items-center gap-2.5">
-              <Image
-                src="/favicon.png"
-                alt="FaucetDrops Logo"
-                width={36}
-                height={36}
-                className="w-8 h-8 lg:w-9 lg:h-9 rounded-md object-contain flex-shrink-0"
-              />
-              <span
-                className="font-bold text-sm tracking-wide md:hidden"
-                style={{ color: "#F4B728", fontFamily: "'Figtree', sans-serif" }}
-              >
-                Built by FaucetDrops
-              </span>
+                          <Image
+                            src="/logo.png"
+                            alt="ZClash Logo"
+                            width={96}
+                            height={96}
+                            priority
+                            className="object-contain"
+                          />
+              
             </div>
 
             {/* divider */}
@@ -81,7 +77,7 @@ export const Footer: React.FC<FooterProps> = ({ className = "" }) => {
               className="text-xs sm:text-sm"
               style={{ color: "rgba(250,248,240,0.38)" }}
             >
-              Automated onchain reward and engagement platform
+              Stake & Duel with Zcash
             </span>
           </div>
 
@@ -139,20 +135,7 @@ export const Footer: React.FC<FooterProps> = ({ className = "" }) => {
           </div>
         </div>
 
-        {/* bottom gold rule */}
-        <div
-          className="mt-5 pt-4 flex items-center justify-center gap-2"
-          style={{ borderTop: "1px solid rgba(244,183,40,0.08)" }}
-        >
-          <span style={{ color: "#F4B728", fontSize: 12, opacity: 0.4 }}>⚡</span>
-          <span
-            className="text-xs tracking-widest uppercase"
-            style={{ color: "rgba(244,183,40,0.3)", fontFamily: "'Figtree', sans-serif", letterSpacing: "0.2em" }}
-          >
-            Stake · Duel · Conquer
-          </span>
-          <span style={{ color: "#F4B728", fontSize: 12, opacity: 0.4 }}>⚡</span>
-        </div>
+      
       </div>
     </footer>
   )

@@ -11,6 +11,7 @@ import {
 import { toast } from "sonner";
 import Loading from "../loading/page";
 import { formatZEC } from "@/lib/zcash";
+import ZClashLoading from "@/components/loading";
 
 const API_BASE_URL =
   process.env.NEXT_PUBLIC_API_URL ?? "https://zclash-backend.onrender.com";
@@ -224,7 +225,7 @@ export default function QuizListPage() {
         {/* LOBBY TAB */}
         {tab === "lobby" && (
           isLoading
-            ? <div className="flex justify-center py-12"><Loading /></div>
+            ?  <ZClashLoading context="tournament_list" hideVsBadge />
             : lobbyChallenges.length === 0
             ? (
               <div className="flex flex-col items-center py-12 gap-3 border-2 border-dashed border-border rounded-2xl text-center">
