@@ -80,6 +80,13 @@ export function buildZcashURI(address: string, amount: number, memo?: string): s
   return uri;
 }
 
+// ─── Device helpers ───────────────────────────────────────────────────────────
+
+/** True on mobile browsers — used to decide whether a `zcash:` deep link can plausibly open an installed wallet app. */
+export function isMobileDevice(): boolean {
+  return typeof window !== "undefined" && /Mobi|Android/i.test(navigator.userAgent);
+}
+
 // ─── Wallet detection ─────────────────────────────────────────────────────────
 
 /**
@@ -253,4 +260,62 @@ export async function notifyStakeSent(
     headers: { "Content-Type": "application/json" },
     body:    JSON.stringify({ playerWallet, txid }),
   }).catch(() => {});
+}
+
+// ─── Wallet ownership verification ─────────────────────────────────────────────
+// Proves control of a t-address by requiring a spend from it: the backend hands
+// out a one-time deposit address, the user sends any small amount from their
+// own wallet, and the backend checks that address appears in the tx's inputs.
+
+export interface WalletVerificationInfo {
+  alreadyVerified?: boolean;
+  verifyAddress?:   string;
+  minAmount?:       number;
+  expiresAt?:       string;
+}
+
+export interface WalletVerificationResult {
+  verified: boolean;
+  reason?:  string;
+  amount?:  number;
+}
+
+/** Start (or resume) a pending wallet-ownership check for this address. */
+export async function startWalletVerification(
+  walletAddress: string,
+): Promise<WalletVerificationInfo> {
+  const res = await fetch(`${API_BASE_URL}/api/verify/wallet/start`, {
+    method:  "POST",
+    headers: { "Content-Type": "application/json" },
+    body:    JSON.stringify({ wallet_address: walletAddress }),
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err.detail ?? `HTTP ${res.status}`);
+  }
+  const data = await res.json();
+  return {
+    alreadyVerified: data.alreadyVerified,
+    verifyAddress:   data.verifyAddress,
+    minAmount:       data.minAmount,
+    expiresAt:       data.expiresAt,
+  };
+}
+
+/** Submit the txid that proves the wallet sent ZEC from the claimed address. */
+export async function confirmWalletVerification(
+  walletAddress: string,
+  txid: string,
+): Promise<WalletVerificationResult> {
+  const res = await fetch(`${API_BASE_URL}/api/verify/wallet/confirm`, {
+    method:  "POST",
+    headers: { "Content-Type": "application/json" },
+    body:    JSON.stringify({ wallet_address: walletAddress, txid }),
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err.detail ?? `HTTP ${res.status}`);
+  }
+  const data = await res.json();
+  return { verified: data.verified ?? false, reason: data.reason, amount: data.amount };
 }

@@ -14,7 +14,7 @@ import {
   useCallback, useRef, type ReactNode,
 } from "react"
 import {
-  detectWallet, getInjectedAddress, isValidTAddress,
+  detectWallet, getInjectedAddress, isValidTAddress, isMobileDevice,
   zcashAddressHint, type DetectedWallet,
 } from "@/lib/zcash"
 import { toast } from "sonner"
@@ -60,7 +60,7 @@ function ConnectModal({
   onConfirm: (address: string) => void
   onClose:   () => void
 }) {
-  const isMobile = typeof window !== "undefined" && /Mobi|Android/i.test(navigator.userAgent)
+  const isMobile = isMobileDevice()
 
   const defaultTab: ModalTab =
     detected.type === "brave" || detected.type === "metamask_snap" || !isMobile
@@ -148,7 +148,7 @@ function ConnectModal({
               {/* mobile deep link */}
               {isMobile && (
                 <a
-                  href="zcash://"
+                  href="zcash:"
                   className="flex items-center gap-3 p-3.5 rounded-xl border border-border bg-muted/40 hover:bg-muted/70 transition-colors no-underline"
                 >
                   <div className="w-9 h-9 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
@@ -316,6 +316,12 @@ export function ZcashWalletProvider({ children }: { children: ReactNode }) {
         const addr = await getInjectedAddress()
         if (addr) { saveAddress(addr); return }
       } catch {}
+    }
+    // On mobile with no injected wallet, try to hand off to the installed
+    // wallet app immediately — the modal still opens right behind it as the
+    // reliable fallback, since a bare deep link can't hand the address back.
+    if (isMobileDevice() && detected.type === "none") {
+      window.location.href = "zcash:"
     }
     setShowModal(true)
   }, [detected, saveAddress])

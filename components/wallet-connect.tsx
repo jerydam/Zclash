@@ -31,7 +31,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
-  LayoutDashboard, LogOut, Copy, ChevronDown, Wallet,
+  LayoutDashboard, LogOut, Copy, ChevronDown, Wallet, ShieldCheck,
 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { toast } from "sonner";
@@ -49,6 +49,7 @@ export function WalletConnectButton({ className }: WalletConnectButtonProps) {
 
   const [dbUsername, setDbUsername]   = useState<string | null>(null);
   const [dbAvatarUrl, setDbAvatarUrl] = useState<string | null>(null);
+  const [dbVerified, setDbVerified]   = useState(false);
   const [loading, setLoading]         = useState(false);
   const hasSyncedRef = useRef(false);
 
@@ -57,6 +58,7 @@ export function WalletConnectButton({ className }: WalletConnectButtonProps) {
     if (!isConnected || !address) {
       setDbUsername(null);
       setDbAvatarUrl(null);
+      setDbVerified(false);
       hasSyncedRef.current = false;
       return;
     }
@@ -76,6 +78,7 @@ export function WalletConnectButton({ className }: WalletConnectButtonProps) {
       if (isMounted) {
         setDbUsername(profile.username)
         setDbAvatarUrl(profile.avatar_url || "")
+        setDbVerified(Boolean(profile.wallet_verified))
       }
       return
     }
@@ -210,7 +213,12 @@ export function WalletConnectButton({ className }: WalletConnectButtonProps) {
       >
         <DropdownMenuLabel className="font-normal">
           <div className="flex flex-col space-y-1">
-            <p className="text-sm font-bold leading-none truncate">{displayName}</p>
+            <p className="text-sm font-bold leading-none truncate flex items-center gap-1.5">
+              {displayName}
+              {dbVerified && (
+                <ShieldCheck className="h-3.5 w-3.5 text-emerald-500 shrink-0" aria-label="Wallet verified" />
+              )}
+            </p>
             {address && (
               <p className="text-[10px] leading-none text-muted-foreground font-mono">
                 {shortAddress}

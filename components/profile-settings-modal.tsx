@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback, useRef } from "react"
 import { useWallet } from "@/components/zcash-wallet-provider"
+import { VerifyWalletModal } from "@/components/verify-wallet-modal"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
@@ -9,7 +10,7 @@ import { Input } from "@/components/ui/input"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import {
   Loader2, Save, Upload, Check,
-  RefreshCw, CheckCircle2, AlertCircle,
+  RefreshCw, CheckCircle2, AlertCircle, ShieldCheck, ShieldAlert,
 } from "lucide-react"
 import { toast } from "sonner"
 
@@ -49,6 +50,8 @@ export function ProfileSettingsModal({
   const [usernameOk, setUsernameOk]       = useState(false)
   const [seedPage, setSeedPage]           = useState(0)
   const [avatarMode, setAvatarMode]       = useState<"generate" | "upload">("generate")
+  const [isVerified, setIsVerified]       = useState(false)
+  const [showVerifyModal, setShowVerifyModal] = useState(false)
   const hasLoaded = useRef(false)
 
   // ── Fetch existing profile ──────────────────────────────────────────
@@ -61,6 +64,7 @@ export function ProfileSettingsModal({
       const p    = data.profile
       setUsername(p?.username   || "")
       setAvatarUrl(p?.avatar_url || "")
+      setIsVerified(Boolean(p?.wallet_verified))
     } catch {
       // leave fields blank on error
     } finally {
@@ -147,6 +151,10 @@ export function ProfileSettingsModal({
   const handleSave = async () => {
     if (!isConnected || !address) {
       toast.error("Wallet not connected")
+      return
+    }
+    if (!isVerified) {
+      setShowVerifyModal(true)
       return
     }
     if (usernameError) {
@@ -378,6 +386,32 @@ export function ProfileSettingsModal({
               </div>
             )}
 
+            {/* ── Wallet verification prompt ──────────────────────── */}
+            {!isVerified ? (
+              <div className="flex gap-3 px-3.5 py-3 rounded-xl bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-800/40">
+                <ShieldAlert className="h-4 w-4 text-amber-600 dark:text-amber-400 shrink-0 mt-0.5" />
+                <div className="flex-1 min-w-0">
+                  <p className="text-xs font-bold text-amber-800 dark:text-amber-200">
+                    Verify wallet ownership to edit your profile
+                  </p>
+                  <p className="text-[11px] text-amber-600 dark:text-amber-400 mt-0.5">
+                    One-time proof that you control this address — prevents anyone else from claiming it.
+                  </p>
+                  <button
+                    onClick={() => setShowVerifyModal(true)}
+                    className="mt-2 text-xs font-bold text-amber-700 dark:text-amber-300 underline underline-offset-2 hover:opacity-70 transition-opacity"
+                  >
+                    Verify now →
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <div className="flex items-center gap-2 px-3.5 py-2.5 rounded-xl bg-emerald-50 dark:bg-emerald-950/20 border border-emerald-200 dark:border-emerald-800/40">
+                <ShieldCheck className="h-4 w-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
+                <p className="text-xs font-bold text-emerald-700 dark:text-emerald-300">Wallet ownership verified</p>
+              </div>
+            )}
+
           </div>
         )}
 
@@ -385,11 +419,13 @@ export function ProfileSettingsModal({
         <div className="px-5 pb-5 pt-3 border-t bg-background">
           <Button
             onClick={handleSave}
-            disabled={saving || pageLoading || !!usernameError}
+            disabled={saving || pageLoading || (isVerified && !!usernameError)}
             className="w-full h-11 font-bold text-sm"
           >
             {saving ? (
               <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Saving…</>
+            ) : !isVerified ? (
+              <><ShieldAlert className="mr-2 h-4 w-4" /> Verify Wallet to Save</>
             ) : (
               <><Save className="mr-2 h-4 w-4" /> Save Profile</>
             )}
@@ -397,6 +433,14 @@ export function ProfileSettingsModal({
         </div>
 
       </DialogContent>
+
+      {showVerifyModal && address && (
+        <VerifyWalletModal
+          walletAddress={address}
+          onVerified={() => { setIsVerified(true); setShowVerifyModal(false) }}
+          onClose={() => setShowVerifyModal(false)}
+        />
+      )}
     </Dialog>
   )
 }
