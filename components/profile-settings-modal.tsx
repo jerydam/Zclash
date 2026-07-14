@@ -153,10 +153,6 @@ export function ProfileSettingsModal({
       toast.error("Wallet not connected")
       return
     }
-    if (!isVerified) {
-      setShowVerifyModal(true)
-      return
-    }
     if (usernameError) {
       toast.error("Fix username first")
       return
@@ -419,13 +415,11 @@ export function ProfileSettingsModal({
         <div className="px-5 pb-5 pt-3 border-t bg-background">
           <Button
             onClick={handleSave}
-            disabled={saving || pageLoading || (isVerified && !!usernameError)}
+            disabled={saving || pageLoading || !!usernameError}
             className="w-full h-11 font-bold text-sm"
           >
             {saving ? (
               <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Saving…</>
-            ) : !isVerified ? (
-              <><ShieldAlert className="mr-2 h-4 w-4" /> Verify Wallet to Save</>
             ) : (
               <><Save className="mr-2 h-4 w-4" /> Save Profile</>
             )}
