@@ -1,20 +1,10 @@
 "use client";
 /**
  * components/wallet-connect-button.tsx  (Zcash edition)
- * ─────────────────────────────────────────────────────────────────────────────
- * Replaced all EVM / MetaMask / window.ethereum references with the Zcash
- * wallet provider.  The public API (WalletConnectButton component + props)
- * is identical to the original so every import site works unchanged.
- *
- * Changes from EVM version
- * ────────────────────────
- *   REMOVED  usePrivy / Privy email & Google avatar logic
- *   REMOVED  window.ethereum checks
- *   REMOVED  BrowserProvider / ethers references
- *   CHANGED  address display  →  shows t1Abc…xyz4 instead of 0xAbc…xyz4
- *   CHANGED  connect()        →  opens Zcash connect modal / window.zcash
- *   KEPT     profile fetch from /api/profile/{wallet} (unchanged)
- *   KEPT     dropdown menu, avatar, dashboard link, copy address
+ * FIXED: dashboard link no longer lowercases the t-address. Zcash t-addresses
+ * are case-sensitive base58 — a lowercased address is a different, invalid
+ * string and misses the profile row (this was the wallet-connect "profile
+ * not found" / dashboard-doesn't-load bug).
  */
 
 import Link from "next/link";
@@ -67,71 +57,71 @@ export function WalletConnectButton({ className }: WalletConnectButtonProps) {
     setLoading(true);
 
     const fetchOrSync = async () => {
-  try {
-    // ✅ Don't lowercase — Zcash addresses are case-sensitive
-    const res  = await fetch(`${API_BASE_URL}/api/profile/${address}`)
-    const data = await res.json()
-    const profile = data.profile ?? null
+      try {
+        // Don't lowercase — Zcash addresses are case-sensitive
+        const res  = await fetch(`${API_BASE_URL}/api/profile/${address}`);
+        const data = await res.json();
+        const profile = data.profile ?? null;
 
-    // ✅ If any username exists, use it
-    if (profile?.username) {
-      if (isMounted) {
-        setDbUsername(profile.username)
-        setDbAvatarUrl(profile.avatar_url || "")
-        setDbVerified(Boolean(profile.wallet_verified))
-      }
-      return
-    }
+        if (profile?.username) {
+          if (isMounted) {
+            setDbUsername(profile.username);
+            setDbAvatarUrl(profile.avatar_url || "");
+            setDbVerified(Boolean(profile.wallet_verified));
+          }
+          return;
+        }
 
-    // No profile yet — create stub
-    if (!hasSyncedRef.current) {
-      hasSyncedRef.current = true
-      const fallback = `user_${address.slice(-4)}`
-      const syncRes  = await fetch(`${API_BASE_URL}/api/profile/sync`, {
-        method:  "POST",
-        headers: { "Content-Type": "application/json" },
-        body:    JSON.stringify({
-          wallet_address: address,   // ✅ no lowercase
-          username:   fallback,
-          avatar_url: "",
-          email:      "",
-        }),
-      })
-      const syncData = await syncRes.json()
-      if (syncData.success && syncData.profile && isMounted) {
-        setDbUsername(syncData.profile.username)
-        setDbAvatarUrl(syncData.profile.avatar_url || "")
-        window.dispatchEvent(
-          new CustomEvent("profileUpdated", {
-            detail: {
-              username:  syncData.profile.username,
-              avatarUrl: syncData.profile.avatar_url,
-            },
-          })
-        )
+        // No profile yet — create stub
+        if (!hasSyncedRef.current) {
+          hasSyncedRef.current = true;
+          const fallback = `user_${address.slice(-4)}`;
+          const syncRes  = await fetch(`${API_BASE_URL}/api/profile/sync`, {
+            method:  "POST",
+            headers: { "Content-Type": "application/json" },
+            body:    JSON.stringify({
+              wallet_address: address,   // no lowercase
+              username:   fallback,
+              avatar_url: "",
+              email:      "",
+            }),
+          });
+          const syncData = await syncRes.json();
+          if (syncData.success && syncData.profile && isMounted) {
+            setDbUsername(syncData.profile.username);
+            setDbAvatarUrl(syncData.profile.avatar_url || "");
+            setDbVerified(Boolean(syncData.profile.wallet_verified));
+            window.dispatchEvent(
+              new CustomEvent("profileUpdated", {
+                detail: {
+                  username:  syncData.profile.username,
+                  avatarUrl: syncData.profile.avatar_url,
+                },
+              })
+            );
+          }
+        }
+      } catch (err) {
+        console.error("[WalletConnectButton] profile fetch failed:", err);
+      } finally {
+        if (isMounted) setLoading(false);
       }
-    }
-  } catch (err) {
-    console.error("[WalletConnectButton] profile fetch failed:", err)
-  } finally {
-    if (isMounted) setLoading(false)
-  }
-}
+    };
 
     fetchOrSync();
     return () => { isMounted = false; };
   }, [address, isConnected]);
 
   // ── Listen for profile updates from modal ─────────────────────────────────
- useEffect(() => {
-  const handler = (e: CustomEvent) => {
-    const { username, avatarUrl } = e.detail ?? {}
-    if (username)  setDbUsername(username)
-    if (avatarUrl !== undefined) setDbAvatarUrl(avatarUrl)  // ✅ update even if empty string
-  }
-  window.addEventListener("profileUpdated" as any, handler)
-  return () => window.removeEventListener("profileUpdated" as any, handler)
-}, [])
+  useEffect(() => {
+    const handler = (e: CustomEvent) => {
+      const { username, avatarUrl } = e.detail ?? {};
+      if (username)  setDbUsername(username);
+      if (avatarUrl !== undefined) setDbAvatarUrl(avatarUrl);
+    };
+    window.addEventListener("profileUpdated" as any, handler);
+    return () => window.removeEventListener("profileUpdated" as any, handler);
+  }, []);
 
   // Short display of t-address: t1Abc…xyz4
   const shortAddress = address
@@ -140,9 +130,10 @@ export function WalletConnectButton({ className }: WalletConnectButtonProps) {
 
   const displayName   = dbUsername || shortAddress;
   const displayAvatar = dbAvatarUrl || "";
+  // FIX: exact-case address in the fallback link (was .toLowerCase())
   const dashboardLink = dbUsername
     ? `/dashboard/${dbUsername}`
-    : `/dashboard/${address?.toLowerCase() ?? ""}`;
+    : `/dashboard/${address ?? ""}`;
 
   // ── Connecting state ──────────────────────────────────────────────────────
   if (isConnecting) {
