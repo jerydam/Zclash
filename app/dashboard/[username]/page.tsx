@@ -114,10 +114,10 @@ function ChallengeRow({
     >
       <div className={cn(
         "w-9 h-9 rounded-xl border flex items-center justify-center shrink-0 transition-transform group-hover:scale-105",
-        isWinner ? "bg-blue-500/10 border-blue-400/30" : "bg-muted/40 border-border",
+        isWinner ? "bg-primary/10 border-primary/30" : "bg-muted/40 border-border",
       )}>
         {isWinner
-          ? <Trophy className="h-4 w-4 text-blue-500" />
+          ? <Trophy className="h-4 w-4 text-primary" />
           : <XCircle className="h-4 w-4 text-muted-foreground/50" />}
       </div>
 
@@ -135,7 +135,7 @@ function ChallengeRow({
         <span className={cn(
           "inline-flex items-center gap-1 px-2 py-0.5 rounded-full border text-[10px] font-black",
           isWinner
-            ? "text-blue-600 dark:text-primary bg-blue-500/10 border-blue-400/30"
+            ? "text-primary dark:text-primary bg-primary/10 border-primary/30"
             : "text-muted-foreground bg-muted/30 border-border",
         )}>
           {isWinner ? "Won" : "Lost"}
@@ -201,8 +201,8 @@ export default function DashboardPage() {
       // If it looks like a t-address, fetch by address; otherwise by username
       const isAddr = isTAddress(targetParam);
       const url = isAddr
-        ? `${BACKEND_URL}/api/profile/${targetParam.toLowerCase()}`
-        : `${BACKEND_URL}/api/profile/user/${targetParam}`;
+        ? `${BACKEND_URL}/api/profile/${targetParam}`
+        : `${BACKEND_URL}/api/profile/user/${encodeURIComponent(targetParam)}`;
 
       const res  = await fetch(url);
       const data = await res.json();
@@ -211,7 +211,7 @@ export default function DashboardPage() {
       if (!p && !isAddr) { setProfile(null); return; }
 
       setProfile({
-        wallet_address: p?.wallet_address || targetParam.toLowerCase(),
+        wallet_address: p?.wallet_address || targetParam,
         username:       p?.username || "Anon",
         email:          p?.email,
         phone:          p?.phone,
@@ -337,7 +337,7 @@ export default function DashboardPage() {
                 <div className="flex items-center gap-2">
                   <h1 className="text-xl font-black text-foreground truncate">{displayName}</h1>
                   {won.length >= 5 && (
-                    <Crown className="h-4 w-4 text-blue-500 shrink-0" title="5+ wins" />
+                    <Crown className="h-4 w-4 text-primary shrink-0" title="5+ wins" />
                   )}
                 </div>
 
@@ -388,8 +388,8 @@ export default function DashboardPage() {
 
             {/* Stats */}
             <div className="grid grid-cols-4 gap-1.5">
-              <StatPill icon={Swords}       label="Played"   value={played.length} accent="text-blue-500" />
-              <StatPill icon={Trophy}       label="Won"      value={won.length}    accent="text-blue-500" />
+              <StatPill icon={Swords}       label="Played"   value={played.length} accent="text-primary" />
+              <StatPill icon={Trophy}       label="Won"      value={won.length}    accent="text-primary" />
               <StatPill icon={CheckCircle2} label="Win rate" value={`${winRate}%`} accent="text-emerald-500" />
 
               {/* Tier pill */}

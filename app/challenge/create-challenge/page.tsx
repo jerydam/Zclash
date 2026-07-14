@@ -144,22 +144,22 @@ function SuccessScreen({
             </div>
 
             {/* Escrow address — creator must send their stake here */}
-            <div className="bg-amber-50 dark:bg-amber-950/20 rounded-2xl p-4 border border-amber-200 dark:border-amber-800 text-left space-y-2">
-              <p className="text-xs font-bold text-amber-700 dark:text-amber-400 uppercase tracking-widest">
+            <div className="bg-primary dark:bg-primary/20 rounded-2xl p-4 border border-primary dark:border-primary text-left space-y-2">
+              <p className="text-xs font-bold text-primary dark:text-primary uppercase tracking-widest">
                 Send your stake here
               </p>
-              <p className="text-xs text-amber-600 dark:text-amber-500 leading-relaxed">
+              <p className="text-xs text-primary dark:text-primary leading-relaxed">
                 Send exactly <strong>{stakeAmount} ZEC</strong> to this escrow address to activate your slot.
               </p>
               <div className="flex items-center gap-2">
-                <code className="text-[11px] font-mono text-amber-800 dark:text-amber-200 break-all flex-1">
+                <code className="text-[11px] font-mono text-primary dark:text-primary break-all flex-1">
                   {escrowAddress}
                 </code>
                 <button
                   onClick={() => copy(escrowAddress)}
-                  className="shrink-0 w-8 h-8 rounded-lg bg-amber-100 dark:bg-amber-900/40 flex items-center justify-center hover:bg-amber-200 dark:hover:bg-amber-900/60 transition-colors"
+                  className="shrink-0 w-8 h-8 rounded-lg bg-primary dark:bg-primary/40 flex items-center justify-center hover:bg-primary dark:hover:bg-primary/60 transition-colors"
                 >
-                  {copied ? <Check size={14} className="text-amber-700 dark:text-amber-300" /> : <Copy size={14} className="text-amber-700 dark:text-amber-300" />}
+                  {copied ? <Check size={14} className="text-primary dark:text-primary" /> : <Copy size={14} className="text-primary dark:text-primary" />}
                 </button>
               </div>
             </div>
@@ -182,7 +182,6 @@ function SuccessScreen({
 export default function CreateChallengePage() {
   const { zecUsd, minimums, loading: priceLoading } = useZecPrice(); // ✅ already here
   const MIN_STAKE = minimums.duelStakeZec;
-  const price = useZecPrice();
   const router       = useRouter();
   const { address: userWalletAddress } = useWallet();
   const searchParams = useSearchParams();
@@ -268,7 +267,7 @@ export default function CreateChallengePage() {
     try {
       if (creatorUsername) {
         await fetch(
-          `${API_BASE_URL}/api/players/register?wallet=${userWalletAddress}&username=${creatorUsername}`,
+          `${API_BASE_URL}/api/players/register?wallet=${encodeURIComponent(userWalletAddress)}&username=${encodeURIComponent(creatorUsername)}`,
           { method: "POST" }
         ).catch(() => {});
       }
@@ -429,8 +428,6 @@ export default function CreateChallengePage() {
   const stakeUsd = stakeAmount ? (parseFloat(stakeAmount) * zecUsd).toFixed(2) : "0.00";
   const feeZec   = minimums.duelPlatformFeeZec;
   const feeUsd   = (feeZec * zecUsd).toFixed(2);
-  const totalZec = stakeAmount ? (parseFloat(stakeAmount) + feeZec).toFixed(8) : "—";
-
   // Quick picks: $1, $2, $5, $10 converted to ZEC
   const quickPicksUsd = [1, 2, 5, 10];
   const quickPicks = quickPicksUsd.map(usd => ({
@@ -511,17 +508,17 @@ export default function CreateChallengePage() {
             <span className="font-bold">{parseFloat(stakeAmount).toFixed(6)} ZEC</span>
           </div>
           <div className="flex justify-between">
-            <span className="text-muted-foreground">Platform fee ($0.25)</span>
+            <span className="text-muted-foreground">Platform fee ($0.25, deducted from pot)</span>
             <span className="font-bold">{feeZec.toFixed(6)} ZEC</span>
           </div>
           <div className="h-px bg-border" />
           <div className="flex justify-between font-black">
-            <span>Total to send</span>
-            <span>{totalZec} ZEC</span>
+            <span>You send to escrow</span>
+            <span>{parseFloat(stakeAmount).toFixed(6)} ZEC</span>
           </div>
           <div className="flex justify-between text-emerald-600">
-            <span>Winner receives</span>
-            <span>{(parseFloat(stakeAmount) * 2).toFixed(6)} ZEC</span>
+            <span>Winner receives ≈</span>
+            <span>{(parseFloat(stakeAmount) * 2 - feeZec * 2).toFixed(6)} ZEC</span>
           </div>
         </div>
       )}

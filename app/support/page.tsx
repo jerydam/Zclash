@@ -24,7 +24,7 @@ const FAQ_SECTIONS: FAQSection[] = [
   {
     icon: <Zap className="h-4 w-4" />,
     title: "Getting Started",
-    color: "text-yellow-500 bg-yellow-500/10 border-yellow-500/20",
+    color: "text-primary bg-primary/10 border-primary/20",
     items: [
       {
         q: "What is Z-clash?",
@@ -78,7 +78,7 @@ const FAQ_SECTIONS: FAQSection[] = [
   {
     icon: <Trophy className="h-4 w-4" />,
     title: "Gameplay",
-    color: "text-blue-500 bg-blue-500/10 border-primary/20",
+    color: "text-primary bg-primary/10 border-primary/20",
     items: [
       {
         q: "How are questions generated?",
@@ -101,7 +101,7 @@ const FAQ_SECTIONS: FAQSection[] = [
   {
     icon: <Shield className="h-4 w-4" />,
     title: "Security & Smart Contract",
-    color: "text-purple-500 bg-purple-500/10 border-purple-500/20",
+    color: "text-primary bg-primary/10 border-primary/20",
     items: [
       {
         q: "Is my stake safe?",
@@ -124,7 +124,7 @@ const FAQ_SECTIONS: FAQSection[] = [
   {
     icon: <Wifi className="h-4 w-4" />,
     title: "Technical Issues",
-    color: "text-orange-500 bg-orange-500/10 border-orange-500/20",
+    color: "text-primary bg-primary/10 border-primary/20",
     items: [
       {
         q: "My stake transaction failed — what do I do?",
@@ -238,7 +238,7 @@ export default function SupportPage() {
         <div className="rounded-3xl border border-border bg-card overflow-hidden">
           <div className="px-5 py-4 border-b border-border">
             <h3 className="font-black text-foreground text-sm flex items-center gap-2">
-              <Shield className="h-4 w-4 text-purple-500" /> Smart Contract
+              <Shield className="h-4 w-4 text-primary" /> Smart Contract
             </h3>
           </div>
           <div className="px-5 py-4 space-y-3">

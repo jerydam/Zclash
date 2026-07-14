@@ -209,12 +209,7 @@ function ConnectModal({
 
               {/* contextual hint for Brave / MetaMask */}
               {detected.type !== "none" && (
-                <div className={cn(
-                  "flex gap-2.5 p-3 rounded-xl border text-xs leading-relaxed",
-                  detected.type === "brave"
-                    ? "bg-orange-50 dark:bg-orange-950/20 border-orange-200 dark:border-orange-800/40 text-orange-800 dark:text-orange-300"
-                    : "bg-yellow-50 dark:bg-yellow-950/20 border-yellow-200 dark:border-yellow-800/40 text-yellow-800 dark:text-yellow-300"
-                )}>
+                <div className="flex gap-2.5 p-3 rounded-xl border text-xs leading-relaxed bg-primary/10 border-primary/30 text-primary">
                   <span className="text-base leading-none shrink-0">
                     {detected.type === "brave" ? "🦁" : "🦊"}
                   </span>

@@ -280,18 +280,18 @@ function ZecRewardPreview({ config }: { config: RewardConfig }) {
         {rows.map(row => (
           <div key={row.rank} className={cn(
             "flex items-center gap-3 rounded-xl px-3 py-2.5 border",
-            row.rank === 1 ? "bg-yellow-50 dark:bg-yellow-950/20 border-yellow-200 dark:border-yellow-800"
+            row.rank === 1 ? "bg-primary dark:bg-primary/20 border-primary dark:border-primary"
             : row.rank === 2 ? "bg-muted/30 border-border"
-            : row.rank === 3 ? "bg-orange-50 dark:bg-orange-950/20 border-orange-200 dark:border-orange-800"
+            : row.rank === 3 ? "bg-primary dark:bg-primary/20 border-primary dark:border-primary"
             : "bg-muted/20 border-border"
           )}>
             <span className="text-lg shrink-0">{podiumEmoji[row.rank - 1] ?? "🏅"}</span>
             <div className="flex-1 h-2 bg-muted rounded-full overflow-hidden">
               <div
                 className={cn("h-full rounded-full",
-                  row.rank === 1 ? "bg-yellow-500"
+                  row.rank === 1 ? "bg-primary"
                   : row.rank === 2 ? "bg-muted-foreground/50"
-                  : row.rank === 3 ? "bg-amber-500"
+                  : row.rank === 3 ? "bg-primary"
                   : "bg-primary"
                 )}
                 style={{ width: `${row.pct}%` }}
@@ -305,8 +305,8 @@ function ZecRewardPreview({ config }: { config: RewardConfig }) {
         ))}
       </div>
       {pool > 0 && (
-        <div className="flex items-center gap-2 px-3 py-2 rounded-xl bg-blue-50 dark:bg-blue-950/20 border border-blue-200 dark:border-blue-800">
-          <p className="text-[11px] text-blue-700 dark:text-blue-300 font-medium">
+        <div className="flex items-center gap-2 px-3 py-2 rounded-xl bg-primary dark:bg-primary/20 border border-primary dark:border-primary">
+          <p className="text-[11px] text-primary dark:text-primary font-medium">
             You'll send exactly <span className="font-black">{pool} ZEC</span> to the platform address shown in the lobby after launching.
           </p>
         </div>
@@ -655,9 +655,9 @@ export default function CreateQuizPage() {
           </span>
         </div>
       ) : (
-        <div className="flex items-center gap-2 px-3 py-2 rounded-xl bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-800">
-          <AlertCircle className="h-4 w-4 text-amber-500 shrink-0" />
-          <span className="text-xs text-amber-700 dark:text-amber-300">Connect your wallet to continue</span>
+        <div className="flex items-center gap-2 px-3 py-2 rounded-xl bg-primary dark:bg-primary/20 border border-primary dark:border-primary">
+          <AlertCircle className="h-4 w-4 text-primary shrink-0" />
+          <span className="text-xs text-primary dark:text-primary">Connect your wallet to continue</span>
         </div>
       )}
 
@@ -695,7 +695,7 @@ export default function CreateQuizPage() {
               <div className="flex flex-wrap gap-1.5">
                 {([
                   { d: "easy",   emoji: "😊", color: "bg-emerald-500 border-emerald-500 text-white" },
-                  { d: "medium", emoji: "🤔", color: "bg-yellow-500 border-yellow-500 text-black" },
+                  { d: "medium", emoji: "🤔", color: "bg-primary border-primary text-black" },
                   { d: "hard",   emoji: "🔥", color: "bg-red-500 border-red-500 text-white" },
                 ] as const).map(({ d, emoji, color }) => (
                   <button key={d} onClick={() => setAiDifficulty(d)}
@@ -876,11 +876,11 @@ export default function CreateQuizPage() {
       </div>
 
       {/* ZEC pill */}
-      <div className="flex items-center justify-center gap-2 px-4 py-3 rounded-2xl bg-blue-50 dark:bg-blue-950/20 border border-blue-200 dark:border-blue-800">
+      <div className="flex items-center justify-center gap-2 px-4 py-3 rounded-2xl bg-primary dark:bg-primary/20 border border-primary dark:border-primary">
         <span className="text-2xl">🛡️</span>
         <div>
-          <p className="text-sm font-bold text-blue-800 dark:text-blue-300">Zcash (ZEC) rewards</p>
-          <p className="text-xs text-blue-600 dark:text-blue-400">Private, shielded payouts via z_sendmany</p>
+          <p className="text-sm font-bold text-primary dark:text-primary">Zcash (ZEC) rewards</p>
+          <p className="text-xs text-primary dark:text-primary">Private, shielded payouts via z_sendmany</p>
         </div>
       </div>
 
@@ -913,7 +913,7 @@ export default function CreateQuizPage() {
             {parseFloat(reward.poolAmount) < MIN_POOL_ZEC && (
               <p className="text-destructive font-bold">Below $5.00 minimum</p>
             )}
-            <p className="text-amber-600 dark:text-amber-400">
+            <p className="text-primary dark:text-primary">
               + 5% platform fee = {(parseFloat(reward.poolAmount) * 1.05).toFixed(6)} ZEC total to send
             </p>
           </div>
@@ -992,7 +992,7 @@ export default function CreateQuizPage() {
               return (
                 <span className={cn("text-xs font-black tabular-nums",
                   total > 100.01 ? "text-destructive"
-                  : total < 99.99 ? "text-amber-500" : "text-emerald-500")}>
+                  : total < 99.99 ? "text-primary" : "text-emerald-500")}>
                   {total.toFixed(1)}% {total > 100.01 ? "⚠ over!" : total < 99.99 ? `(${(100 - total).toFixed(1)}% left)` : "✓"}
                 </span>
               );
@@ -1109,9 +1109,9 @@ export default function CreateQuizPage() {
       </div>
 
       {/* What happens next */}
-      <div className="flex items-start gap-3 px-4 py-3 rounded-2xl bg-blue-50 dark:bg-blue-950/20 border border-blue-200 dark:border-blue-800">
+      <div className="flex items-start gap-3 px-4 py-3 rounded-2xl bg-primary dark:bg-primary/20 border border-primary dark:border-primary">
         <span className="text-xl shrink-0 mt-0.5">ℹ️</span>
-        <div className="text-xs text-blue-700 dark:text-blue-300 space-y-1">
+        <div className="text-xs text-primary dark:text-primary space-y-1">
           <p className="font-bold">What happens after launch:</p>
           <p>1. You'll see a ZEC deposit address in the lobby.</p>
           <p>2. Send exactly <strong>{reward.poolAmount || "?"} ZEC</strong> to that address.</p>

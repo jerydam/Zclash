@@ -78,7 +78,7 @@ export default function QuizListPage() {
     setHistoryLoading(true);
     try {
       const r = await fetch(
-        `${API_BASE_URL}/api/duel/${userWalletAddress.toLowerCase()}/history?limit=50`
+        `${API_BASE_URL}/api/duel/${userWalletAddress}/history?limit=50`
       );
       const d = await r.json();
       if (d.success)

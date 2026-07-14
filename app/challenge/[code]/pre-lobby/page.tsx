@@ -28,8 +28,8 @@ const MIN_STAKE = 0.5
 function getWsBase() {
   if (typeof window === "undefined") return "wss://127.0.0.1:8000";
   return window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1"
-    ? "ws://127.0.0.1:8000"
-    : "wss://faucetpay-backend.koyeb.app";
+     ? "ws://127.0.0.1:8000"
+    : "wss://zclash-backend.onrender.com";
 }
 
 function fmt(n: number) {
@@ -112,10 +112,10 @@ function CounterOfferBanner({
   submitting: boolean;
 }) {
   return (
-    <div className="bg-blue-500/10 border-2 border-blue-400/50 rounded-3xl overflow-hidden">
-      <div className="px-5 pt-4 pb-3 border-b border-blue-400/20">
+    <div className="bg-primary/10 border-2 border-primary/50 rounded-3xl overflow-hidden">
+      <div className="px-5 pt-4 pb-3 border-b border-primary/20">
         <div className="flex items-center gap-2">
-          <MessageSquare className="h-4 w-4 text-blue-500" />
+          <MessageSquare className="h-4 w-4 text-primary" />
           <p className="text-sm font-black text-foreground">Counter Offer from {counter.fromName}</p>
           <span className="ml-auto text-[10px] text-muted-foreground">{timeAgo(counter.sentAt)}</span>
         </div>
@@ -139,7 +139,7 @@ function CounterOfferBanner({
           <button
             onClick={() => onAccept(counter.amount)}
             disabled={submitting}
-            className="flex-2 flex-1 py-3 rounded-2xl bg-blue-500 hover:bg-blue-400 text-white font-black text-sm transition-all active:scale-[0.99] disabled:opacity-50"
+            className="flex-2 flex-1 py-3 rounded-2xl bg-primary hover:bg-primary text-white font-black text-sm transition-all active:scale-[0.99] disabled:opacity-50"
           >
             {submitting
               ? <Loader2 className="inline h-4 w-4 animate-spin" />
@@ -171,7 +171,7 @@ function OfferCard({
       "flex flex-col sm:flex-row sm:items-center gap-3 px-4 py-3 rounded-2xl border transition-all duration-200",
       "bg-card border-border hover:border-primary/40 shadow-sm",
       isSelf && "opacity-50 pointer-events-none",
-      isCounterTarget && "border-blue-400/60 bg-blue-500/5",
+      isCounterTarget && "border-primary/60 bg-primary/5",
     )}>
       <div className="flex items-center gap-3 flex-1 min-w-0">
         <Avatar className="h-9 w-9 shrink-0">
@@ -185,7 +185,7 @@ function OfferCard({
             {offer.username}
             {isSelf && <span className="ml-2 text-[10px] text-muted-foreground">(you)</span>}
             {isCounterTarget && (
-              <span className="ml-2 text-[10px] font-black text-blue-500 uppercase tracking-wider">Countering</span>
+              <span className="ml-2 text-[10px] font-black text-primary uppercase tracking-wider">Countering</span>
             )}
           </p>
           <p className="text-[10px] text-muted-foreground font-mono truncate">
@@ -220,8 +220,8 @@ function OfferCard({
             className={cn(
               "flex-1 flex items-center justify-center gap-1 px-3 py-2 sm:py-1.5 rounded-xl text-xs font-black transition-all",
               isCounterTarget
-                ? "bg-blue-500 hover:bg-blue-400 text-white"
-                : "border-2 border-blue-400/50 text-blue-500 hover:bg-blue-500/10",
+                ? "bg-primary hover:bg-primary text-white"
+                : "border-2 border-primary/50 text-primary hover:bg-primary/10",
               "active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed",
             )}
           >
@@ -330,6 +330,8 @@ export default function PreLobbyPage() {
   const code   = ((params.code as string) ?? "").toUpperCase();
   const { address: userWalletAddress } = useWallet();
   const myWallet = useMemo(() => userWalletAddress?.toLowerCase() ?? "", [userWalletAddress]);
+  // Exact-case address for anything sent to the backend (t-addrs are case-sensitive)
+  const walletExact = userWalletAddress ?? "";
   const [avatarCache, setAvatarCache] = useState<Record<string, string>>({});
 
   const fetchAvatar = useCallback((wallet: string) => {
@@ -518,7 +520,7 @@ useEffect(() => {
       const res = await fetch(`${API_BASE_URL}/api/duel/${code}/offer`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ walletAddress: myWallet, username, amount }),
+        body: JSON.stringify({ walletAddress: walletExact, username, amount }),
       });
       const d = await res.json();
       if (!d.success) throw new Error(d.detail ?? "Offer failed");
@@ -547,7 +549,7 @@ useEffect(() => {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          creatorWallet: myWallet,
+          creatorWallet: walletExact,
           creatorName:   username,
           targetWallet:  target.wallet,
           amount,
@@ -572,7 +574,7 @@ useEffect(() => {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          creatorWallet:    myWallet,
+          creatorWallet:    walletExact,
           challengerWallet: offer.wallet,
           amount:           offer.amount,
         }),
@@ -712,7 +714,7 @@ useEffect(() => {
 
           <div className="flex items-center gap-2">
             <Badge variant="outline" className="font-mono font-black">{code}</Badge>
-            <Badge className="bg-blue-500/10 text-blue-600 dark:text-primary border-blue-200 dark:border-primary/30 text-[10px] font-bold">
+            <Badge className="bg-primary/10 text-primary dark:text-primary border-primary dark:border-primary/30 text-[10px] font-bold">
               PRE-LOBBY
             </Badge>
           </div>
@@ -753,7 +755,7 @@ useEffect(() => {
                 </h1>
                 <div className="flex items-center gap-2 mt-2 flex-wrap">
                   <div className="flex items-center gap-1.5">
-                    <Crown className="h-3.5 w-3.5 text-blue-500" />
+                    <Crown className="h-3.5 w-3.5 text-primary" />
                     <span className="text-xs font-bold text-muted-foreground">{challenge.creatorName}</span>
                   </div>
                   <span className="text-muted-foreground/30">·</span>
@@ -769,7 +771,7 @@ useEffect(() => {
 
             <div className="mt-4 flex items-center justify-between px-4 py-3 rounded-2xl bg-primary/5 border border-primary/20">
               <div className="flex items-center gap-2">
-                <Trophy className="h-4 w-4 text-blue-500" />
+                <Trophy className="h-4 w-4 text-primary" />
                 <span className="text-xs font-bold text-muted-foreground">Opening stake</span>
               </div>
               <div className="text-right">
@@ -836,8 +838,8 @@ useEffect(() => {
                 <div className="px-5 pt-4 pb-2 border-b border-border">
                   <div className="flex items-center justify-between">
                     <h3 className="font-black text-foreground text-sm flex items-center gap-2">
-                      <Zap className="h-4 w-4 text-blue-500" />
-                      Counter to <span className="text-blue-500">{counterTarget.username}</span>
+                      <Zap className="h-4 w-4 text-primary" />
+                      Counter to <span className="text-primary">{counterTarget.username}</span>
                     </h3>
                     <button onClick={() => setCounterTarget(null)} className="text-muted-foreground hover:text-foreground transition-colors">
                       <X className="h-4 w-4" />
@@ -855,7 +857,7 @@ useEffect(() => {
                      
                     token={challenge.token}
                     label={myOffer === counterTarget.amount ? "= Their offer" : undefined}
-                    borderClass="border-blue-400/50"
+                    borderClass="border-primary/50"
                   />
 
                   {/* Quick picks */}
@@ -867,8 +869,8 @@ useEffect(() => {
                         className={cn(
                           "flex-1 min-w-[70px] py-2 rounded-xl border-2 text-xs font-black transition-all",
                           myOffer === v
-                            ? "border-primary bg-blue-500/10 text-blue-500"
-                            : "border-border text-muted-foreground hover:border-blue-400/40",
+                            ? "border-primary bg-primary/10 text-primary"
+                            : "border-border text-muted-foreground hover:border-primary/40",
                         )}
                       >
                         {v === challenge.stake ? `${fmt(v)} ✓` : fmt(v)}
@@ -888,7 +890,7 @@ useEffect(() => {
                     <button
                       onClick={() => handleSendCounter(myOffer, counterTarget)}
                       disabled={submitting || myOffer === counterTarget.amount}
-                      className="flex-1 py-3 rounded-2xl bg-blue-500 hover:bg-blue-400 text-white font-black text-sm transition-all active:scale-[0.99] disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="flex-1 py-3 rounded-2xl bg-primary hover:bg-primary text-white font-black text-sm transition-all active:scale-[0.99] disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       {submitting
                         ? <><Loader2 className="inline mr-2 h-4 w-4 animate-spin" /> Sending…</>

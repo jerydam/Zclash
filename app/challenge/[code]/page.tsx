@@ -42,8 +42,8 @@ function getWsBaseUrl(): string {
   if (typeof window === "undefined") return "wss://127.0.0.1:8000";
   return window.location.hostname === "localhost" ||
     window.location.hostname === "127.0.0.1"
-    ? "ws://127.0.0.1:8000"
-    : "wss://faucetpay-backend.koyeb.app";
+     ? "ws://127.0.0.1:8000"
+    : "wss://zclash-backend.onrender.com";
 }
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -77,8 +77,8 @@ interface FinalScore { username: string; points: number }
 
 const OPTION_STYLES: Record<string, { bg: string; shape: string; ring: string }> = {
   A: { bg: "bg-red-500 hover:bg-red-600",     shape: "▲", ring: "ring-red-400"  },
-  B: { bg: "bg-blue-500 hover:bg-primary",   shape: "◆", ring: "ring-primary400" },
-  C: { bg: "bg-blue-500 hover:bg-primary",   shape: "●", ring: "ring-primary400" },
+  B: { bg: "bg-primary hover:opacity-90",   shape: "◆", ring: "ring-primary/70" },
+  C: { bg: "bg-primary hover:opacity-90",   shape: "●", ring: "ring-primary/70" },
   D: { bg: "bg-green-500 hover:bg-green-600", shape: "■", ring: "ring-green-400" },
 };
 
@@ -86,7 +86,7 @@ const OPTION_STYLES: Record<string, { bg: string; shape: string; ring: string }>
 
 function LinearTimer({ seconds, total }: { seconds: number; total: number }) {
   const pct   = Math.max(0, (seconds / total) * 100);
-  const color = pct > 50 ? "bg-green-500" : pct > 25 ? "bg-blue-500" : "bg-red-500";
+  const color = pct > 50 ? "bg-green-500" : pct > 25 ? "bg-primary" : "bg-red-500";
   return (
     <div className="w-full h-2 bg-slate-200 dark:bg-slate-800 overflow-hidden shrink-0">
       <div className={cn("h-full transition-all duration-300 ease-linear", color)} style={{ width: `${pct}%` }} />
@@ -146,67 +146,67 @@ function EscrowPanel({
   };
 
   return (
-    <div className="flex gap-3 bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800/60 rounded-2xl p-4">
+    <div className="flex gap-3 bg-primary dark:bg-primary/30 border border-primary dark:border-primary/60 rounded-2xl p-4">
       <div className="shrink-0 mt-0.5">
-        <div className="w-8 h-8 rounded-xl bg-amber-100 dark:bg-amber-900/50 flex items-center justify-center">
-          <ShieldCheck className="h-4 w-4 text-amber-600 dark:text-amber-400" />
+        <div className="w-8 h-8 rounded-xl bg-primary dark:bg-primary/50 flex items-center justify-center">
+          <ShieldCheck className="h-4 w-4 text-primary dark:text-primary" />
         </div>
       </div>
       <div className="flex flex-col gap-3 min-w-0 flex-1">
         <div>
-          <p className="text-xs font-black text-amber-800 dark:text-amber-200 uppercase tracking-wide">
+          <p className="text-xs font-black text-primary dark:text-primary uppercase tracking-wide">
             Send your stake
           </p>
-          <p className="text-xs text-amber-600 dark:text-amber-400 mt-0.5">
+          <p className="text-xs text-primary dark:text-primary mt-0.5">
             Send exactly <strong>{formatZEC(stakeAmount)} {token}</strong> to your dedicated escrow address below, then input your Transaction ID to verify.
           </p>
         </div>
 
-        <div className="flex items-center gap-2 bg-amber-100 dark:bg-amber-900/40 rounded-xl px-3 py-2">
-          <code className="text-[11px] font-mono text-amber-900 dark:text-amber-100 break-all flex-1 leading-relaxed">
+        <div className="flex items-center gap-2 bg-primary dark:bg-primary/40 rounded-xl px-3 py-2">
+          <code className="text-[11px] font-mono text-primary dark:text-primary break-all flex-1 leading-relaxed">
             {escrowAddress}
           </code>
           <button
             onClick={copy}
-            className="shrink-0 w-7 h-7 rounded-lg bg-amber-200 dark:bg-amber-800/60 flex items-center justify-center hover:bg-amber-300 dark:hover:bg-amber-700/60 transition-colors"
+            className="shrink-0 w-7 h-7 rounded-lg bg-primary dark:bg-primary/60 flex items-center justify-center hover:bg-primary dark:hover:bg-primary/60 transition-colors"
             title="Copy address"
           >
             {copied
-              ? <Check size={13} className="text-amber-700 dark:text-amber-200" />
-              : <Copy size={13} className="text-amber-700 dark:text-amber-200" />}
+              ? <Check size={13} className="text-primary dark:text-primary" />
+              : <Copy size={13} className="text-primary dark:text-primary" />}
           </button>
         </div>
 
         <a
           href={zcashURI}
-          className="text-[11px] text-amber-700 dark:text-amber-400 underline underline-offset-2 hover:opacity-70 transition-opacity"
+          className="text-[11px] text-primary dark:text-primary underline underline-offset-2 hover:opacity-70 transition-opacity"
         >
           Open in Zcash wallet
         </a>
 
         {/* TxID Tracking Input */}
         <div className="space-y-1 pt-1">
-          <label className="text-[10px] font-bold uppercase tracking-wider text-amber-800 dark:text-amber-300">Transaction ID (TxID)</label>
+          <label className="text-[10px] font-bold uppercase tracking-wider text-primary dark:text-primary">Transaction ID (TxID)</label>
           <input 
             type="text"
             value={txid}
             onChange={(e) => setTxid(e.target.value)}
             placeholder="Paste your payment transaction ID..."
-            className="w-full h-10 rounded-xl px-3 text-xs bg-background border border-amber-300 dark:border-amber-700 outline-none text-foreground focus:border-amber-500"
+            className="w-full h-10 rounded-xl px-3 text-xs bg-background border border-primary dark:border-primary outline-none text-foreground focus:border-primary"
           />
         </div>
 
         <button
           onClick={() => onVerify(txid.trim())}
           disabled={isSyncing || !txid.trim()}
-          className="w-full py-3 rounded-xl bg-amber-600 hover:bg-amber-500 disabled:opacity-50 text-white font-black text-sm transition-all active:scale-[0.99] flex items-center justify-center gap-2"
+          className="w-full py-3 rounded-xl bg-primary hover:bg-primary disabled:opacity-50 text-white font-black text-sm transition-all active:scale-[0.99] flex items-center justify-center gap-2"
         >
           {isSyncing
             ? <><Loader2 className="h-4 w-4 animate-spin" /> Verifying On-Chain…</>
             : <>Verify Stake Placement</>}
         </button>
 
-        <p className="text-[10px] text-amber-500 dark:text-amber-500 leading-relaxed">
+        <p className="text-[10px] text-primary dark:text-primary leading-relaxed">
           The engine validates your individual contribution parameters against zcashd live states. Requires 1 block confirmation.
         </p>
       </div>
@@ -389,6 +389,8 @@ export default function ChallengePage() {
 
   const { address: userWalletAddress } = useWallet();
   const myWallet = useMemo(() => userWalletAddress?.toLowerCase() ?? "", [userWalletAddress]);
+  // Exact-case address for anything sent to the backend (t-addrs are case-sensitive)
+  const walletExact = userWalletAddress ?? "";
 
   const searchParams     = useSearchParams();
   const agreedStake      = searchParams.get("stake");
@@ -558,7 +560,8 @@ export default function ChallengePage() {
 
   // Fetch individual assigned escrow addresses from state allocations
   useEffect(() => {
-    if (escrowAddress || !code || phase === "loading" || phase === "game_over" || !userWalletAddress) return;
+    if (!code || phase === "loading" || phase === "game_over" || !userWalletAddress) return;
+ 
     
     fetch(`${API_BASE_URL}/api/duel/${code}/escrow?walletAddress=${userWalletAddress}`)
       .then((r) => r.json())
@@ -568,7 +571,7 @@ export default function ChallengePage() {
         }
       })
       .catch(() => {});
-  }, [code, escrowAddress, phase, userWalletAddress]);
+  }, [code, phase, userWalletAddress]);
 
   useEffect(() => {
     if (cameFromPreLobby && agreedStake && userWalletAddress && !hasJoined) setHasJoined(true);
@@ -757,7 +760,7 @@ export default function ChallengePage() {
           setWinner(msg.winner ?? null);
           setCanRematch(!!msg.canRematch);
           setPhase("game_over");
-          if (msg.winner === currentMyWallet) { setShowConfetti(true); setTimeout(() => setShowConfetti(false), 6000); }
+          if (msg.winner?.toLowerCase() === currentMyWallet) { setShowConfetti(true); setTimeout(() => setShowConfetti(false), 6000); }
           break;
         }
         case "rematch_declined": { clearRematchTimers(); setRematchPending(false); setRematchCountdown(null); toast.error(`${msg.declinerName ?? "Opponent"} declined the rematch.`); break; }
@@ -1005,7 +1008,7 @@ if (isSyncing)        return <ZClashLoading context="stake_verifying" staticMess
   if (phase === "game_over") {
     const sortedPlayers = Object.entries(finalScores).sort(([, a], [, b]) => b.points - a.points);
     const isTie     = gameOutcome === "tie";
-    const isWinner  = winner === myWallet;
+    const isWinner  = winner?.toLowerCase() === myWallet;
 
     if (sortedPlayers.length === 0) {
       return (
@@ -1053,7 +1056,7 @@ if (isSyncing)        return <ZClashLoading context="stake_verifying" staticMess
             <div className="bg-card rounded-2xl border border-border overflow-hidden">
               <div className="px-4 py-3 border-b border-border flex items-center justify-between">
                 <h2 className="text-sm font-bold text-foreground flex items-center gap-2">
-                  <Trophy className="h-4 w-4 text-blue-500" /> Final Leaderboard
+                  <Trophy className="h-4 w-4 text-primary" /> Final Leaderboard
                 </h2>
               </div>
               <div className="divide-y divide-border">
@@ -1062,13 +1065,13 @@ if (isSyncing)        return <ZClashLoading context="stake_verifying" staticMess
                   const isThisWinner = wallet.toLowerCase() === winner?.toLowerCase();
                   const medals = ["🥇", "🥈", "🥉"];
                   return (
-                    <div key={wallet} className={cn("flex items-center gap-3 px-4 py-4", isMe && "bg-blue-50 dark:bg-blue-950/20")}>
+                    <div key={wallet} className={cn("flex items-center gap-3 px-4 py-4", isMe && "bg-primary/10 dark:bg-primary/15")}>
                       <div className="text-xl w-8 text-center shrink-0">{medals[i] ?? `${i + 1}`}</div>
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2 flex-wrap">
                           <p className="font-bold text-foreground text-sm">{data.username}</p>
                           {isMe         && <Badge className="text-[9px] h-4 px-1.5 bg-primary text-primary-foreground border-0">YOU</Badge>}
-                          {isThisWinner && <Badge className="text-[9px] h-4 px-1.5 bg-blue-400 text-blue-900 border-0">WINNER</Badge>}
+                          {isThisWinner && <Badge className="text-[9px] h-4 px-1.5 bg-primary text-primary-foreground border-0">WINNER</Badge>}
                           {isTie        && <Badge variant="outline" className="text-[9px] h-4 px-1.5">TIE</Badge>}
                         </div>
                         <p className="text-[10px] text-muted-foreground font-mono mt-0.5">{wallet.slice(0, 6)}…{wallet.slice(-4)}</p>
@@ -1084,7 +1087,7 @@ if (isSyncing)        return <ZClashLoading context="stake_verifying" staticMess
             </div>
 
             {/* Payout note — no claim button needed on Zcash */}
-            <div className={cn("rounded-2xl p-4 border text-center space-y-1", isWinner ? "bg-emerald-50 dark:bg-emerald-950/20 border-emerald-200" : isTie ? "bg-blue-50 dark:bg-blue-950/20 border-blue-200" : "bg-muted/50 border-border")}>
+            <div className={cn("rounded-2xl p-4 border text-center space-y-1", isWinner ? "bg-emerald-50 dark:bg-emerald-950/20 border-emerald-200" : isTie ? "bg-primary/10 dark:bg-primary/15 border-primary/20" : "bg-muted/50 border-border")}>
               <p className="text-sm font-bold text-foreground">
                 {isWinner ? "🏆 Payout sent automatically" : isTie ? "🤝 Refund sent automatically" : "💸 Payout sent to winner"}
               </p>
@@ -1327,7 +1330,7 @@ if (isSyncing)        return <ZClashLoading context="stake_verifying" staticMess
                       return               { text: "Awaiting stake…",    cls: "text-muted-foreground" };
                     })();
                     return (
-                      <div key={p.walletAddress} className={cn("flex flex-col items-center gap-2 rounded-2xl p-4 border text-center transition-colors", p.ready ? "border-emerald-400/40 bg-emerald-500/5" : p.txVerified ? "border-blue-400/30 bg-blue-500/5" : "border-border bg-muted/20")}>
+                      <div key={p.walletAddress} className={cn("flex flex-col items-center gap-2 rounded-2xl p-4 border text-center transition-colors", p.ready ? "border-emerald-400/40 bg-emerald-500/5" : p.txVerified ? "border-primary/30 bg-primary/5" : "border-border bg-muted/20")}>
                         <Avatar className="h-14 w-14 border-2 border-border">
                           <AvatarImage src={p.avatarUrl || undefined} />
                           <AvatarFallback className="font-bold text-base">{p.username?.slice(0, 2).toUpperCase()}</AvatarFallback>
@@ -1379,7 +1382,15 @@ if (isSyncing)        return <ZClashLoading context="stake_verifying" staticMess
                       : <><Zap className="mr-2 h-6 w-6" /> Stake {displayStake ? `${formatZEC(parseFloat(String(displayStake)))} ZEC` : "…"} to Play</>}
                   </Button>
                   <button
-                    onClick={handleSyncStake}
+                    onClick={async () => {
+                      if (!escrowAddress) {
+                        try {
+                          const info = await getEscrowInfo(code);
+                          setEscrowAddress(info.escrowAddress);
+                        } catch { toast.error("Could not load escrow address."); return; }
+                      }
+                      setShowEscrowPanel(true);
+                    }}
                     disabled={isSyncing}
                     className="w-full text-xs text-muted-foreground hover:text-foreground underline underline-offset-2 transition-colors py-1"
                   >
@@ -1420,28 +1431,28 @@ if (isSyncing)        return <ZClashLoading context="stake_verifying" staticMess
 
               {/* Security info */}
               {!myTxVerified && (
-                <div className="flex gap-3 bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-800/60 rounded-2xl p-4">
+                <div className="flex gap-3 bg-primary/10 dark:bg-primary/20 border border-primary/20 dark:border-primary/60 rounded-2xl p-4">
                   <div className="shrink-0 mt-0.5">
-                    <div className="w-8 h-8 rounded-xl bg-blue-100 dark:bg-blue-900/50 flex items-center justify-center">
-                      <ShieldCheck className="h-4 w-4 text-blue-500" />
+                    <div className="w-8 h-8 rounded-xl bg-primary/15 dark:bg-primary/20 flex items-center justify-center">
+                      <ShieldCheck className="h-4 w-4 text-primary" />
                     </div>
                   </div>
                   <div className="flex flex-col gap-2 min-w-0">
-                    <p className="text-xs font-black text-blue-800 dark:text-blue-200 uppercase tracking-wide">Zcash Escrow</p>
+                    <p className="text-xs font-black text-primary dark:text-primary uppercase tracking-wide">Zcash Escrow</p>
                     <div className="space-y-1.5">
                       <div className="flex items-center justify-between gap-2">
-                        <span className="text-xs text-blue-600 dark:text-primary">Your stake</span>
-                        <span className="text-xs font-bold text-blue-800 dark:text-blue-200 font-mono">
+                        <span className="text-xs text-primary dark:text-primary">Your stake</span>
+                        <span className="text-xs font-bold text-primary dark:text-primary font-mono">
                           {displayStake ? formatZEC(parseFloat(String(displayStake))) : "…"} ZEC
                         </span>
                       </div>
-                      <div className="h-px bg-blue-200 dark:bg-blue-800/60" />
+                      <div className="h-px bg-primary/20 dark:bg-primary/25" />
                       <div className="flex items-center justify-between gap-2">
-                        <span className="text-xs text-blue-600 dark:text-primary">Winner takes</span>
-                        <span className="text-xs font-bold text-blue-800 dark:text-blue-200 font-mono">{totalPool} ZEC</span>
+                        <span className="text-xs text-primary dark:text-primary">Winner takes</span>
+                        <span className="text-xs font-bold text-primary dark:text-primary font-mono">{totalPool} ZEC</span>
                       </div>
                     </div>
-                    <p className="text-[10px] text-blue-500 leading-relaxed pt-0.5">
+                    <p className="text-[10px] text-primary leading-relaxed pt-0.5">
                       Funds are held in a zcashd escrow address. Payout is automatic when the game ends — no claim step needed.
                     </p>
                   </div>

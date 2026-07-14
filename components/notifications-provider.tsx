@@ -115,7 +115,7 @@ function ChallengePopupOverlay({ popup, onAccept, onDecline }: {
                   className="h-14 w-14 rounded-full object-cover border-2 border-primary/30 shadow-[0_0_20px_rgba(59,130,246,0.2)]"
                 />
               ) : (
-                <div className="h-14 w-14 rounded-full bg-blue-500/20 flex items-center justify-center text-primary font-bold border-2 border-primary/30 text-lg shadow-[0_0_20px_rgba(59,130,246,0.2)]">
+                <div className="h-14 w-14 rounded-full bg-primary/20 flex items-center justify-center text-primary font-bold border-2 border-primary/30 text-lg shadow-[0_0_20px_rgba(59,130,246,0.2)]">
                   {creatorName.slice(0, 2).toUpperCase()}
                 </div>
               )}
@@ -140,8 +140,8 @@ function ChallengePopupOverlay({ popup, onAccept, onDecline }: {
 
           {/* Stake badge — blue not amber */}
           {n.data?.stake && (
-            <div className="flex items-center justify-center gap-2 bg-blue-500/10 rounded-xl py-2 px-4 border border-primary/20 mb-4 w-fit mx-auto">
-              <Zap size={13} className="text-primary fill-blue-400" />
+            <div className="flex items-center justify-center gap-2 bg-primary/10 rounded-xl py-2 px-4 border border-primary/20 mb-4 w-fit mx-auto">
+              <Zap size={13} className="text-primary fill-primary" />
               <span className="text-[11px] font-black text-primary uppercase tracking-widest">
                 Stake: {n.data.stake} {n.data.token}
               </span>
@@ -156,7 +156,7 @@ function ChallengePopupOverlay({ popup, onAccept, onDecline }: {
                   "h-full transition-all duration-1000 linear rounded-full",
                   isUrgent
                     ? "bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.4)]"
-                    : "bg-blue-500",
+                    : "bg-primary",
                 )}
                 style={{ width: `${pct}%` }}
               />
@@ -185,7 +185,7 @@ function ChallengePopupOverlay({ popup, onAccept, onDecline }: {
           <div className="flex flex-col gap-2.5">
             <button
               onClick={onAccept}
-              className="w-full py-4 rounded-2xl bg-primary text-white font-black text-base hover:bg-blue-500 shadow-lg shadow-blue-600/20 transition-all active:scale-[0.98] flex items-center justify-center gap-2"
+              className="w-full py-4 rounded-2xl bg-primary text-white font-black text-base hover:bg-primary shadow-lg shadow-primary/20 transition-all active:scale-[0.98] flex items-center justify-center gap-2"
             >
               <Zap className="h-4 w-4 fill-white" /> Accept Challenge
             </button>
@@ -490,7 +490,7 @@ const navigateToChallenge = useCallback(async (code: string, type: string) => {
             <div className="flex items-center justify-between px-5 py-4 border-b border-border bg-muted/30">
               <span className="text-sm font-black text-foreground">Activity</span>
               {unreadCount > 0 && (
-                <button onClick={markAllRead} className="text-xs font-bold text-blue-500 hover:text-blue-600 transition-colors">
+                <button onClick={markAllRead} className="text-xs font-bold text-primary hover:text-primary transition-colors">
                   Clear All
                 </button>
               )}
@@ -527,12 +527,12 @@ const navigateToChallenge = useCallback(async (code: string, type: string) => {
                       className={cn(
                         "group flex gap-3 px-5 py-4 border-b border-border/50 transition-colors",
                         isInteractive ? "cursor-pointer" : "cursor-default",
-                        !n.isRead ? "bg-blue-500/[0.04]" : "hover:bg-muted/50"
+                        !n.isRead ? "bg-primary/[0.04]" : "hover:bg-muted/50"
                       )}
                     >
                       <div className={cn(
                         "mt-1.5 h-2 w-2 rounded-full shrink-0 transition-transform group-hover:scale-125",
-                        n.isRead ? "bg-transparent" : "bg-blue-500 shadow-[0_0_8px_rgba(59,130,246,0.5)]"
+                        n.isRead ? "bg-transparent" : "bg-primary shadow-[0_0_8px_rgba(59,130,246,0.5)]"
                       )} />
                       
                       <div className="flex-1 min-w-0">
@@ -542,7 +542,7 @@ const navigateToChallenge = useCallback(async (code: string, type: string) => {
                           </p>
                           {/* Visual indicator that this notification is actionable */}
                           {isInteractive && (
-                            <div className="shrink-0 text-[9px] bg-blue-500/10 text-blue-500 px-1.5 py-0.5 rounded flex items-center font-black uppercase tracking-tighter">
+                            <div className="shrink-0 text-[9px] bg-primary/10 text-primary px-1.5 py-0.5 rounded flex items-center font-black uppercase tracking-tighter">
                               Join
                             </div>
                           )}

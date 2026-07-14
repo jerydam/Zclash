@@ -63,8 +63,8 @@ interface PersonalResult { isCorrect: boolean; pointsEarned: number; streak: num
 
 const OPTION_STYLES: Record<string, { bg: string; shape: string; selectedRing: string }> = {
   A: { bg: "bg-red-500 hover:bg-red-600",    shape: "▲", selectedRing: "ring-red-400" },
-  B: { bg: "bg-blue-500 hover:bg-primary",   shape: "◆", selectedRing: "ring-primary" },
-  C: { bg: "bg-yellow-500 hover:bg-yellow-600", shape: "●", selectedRing: "ring-yellow-400" },
+  B: { bg: "bg-primary hover:bg-primary",   shape: "◆", selectedRing: "ring-primary" },
+  C: { bg: "bg-primary hover:bg-primary", shape: "●", selectedRing: "ring-primary" },
   D: { bg: "bg-green-500 hover:bg-green-600",  shape: "■", selectedRing: "ring-green-400" },
 };
 
@@ -131,7 +131,7 @@ function RankBadge({ change }: { change: number }) {
 
 function LinearTimer({ seconds, total }: { seconds: number; total: number }) {
   const pct = Math.max(0, (seconds / total) * 100);
-  const color = pct > 50 ? "bg-green-500" : pct > 25 ? "bg-yellow-500" : "bg-red-500";
+  const color = pct > 50 ? "bg-green-500" : pct > 25 ? "bg-primary" : "bg-red-500";
   return (
     <div className="w-full h-2.5 bg-slate-200 dark:bg-slate-800 overflow-hidden shrink-0">
       <div className={cn("h-full transition-all duration-300 ease-linear", color)} style={{ width: `${pct}%` }} />
@@ -151,8 +151,8 @@ function ZecFundPanel({
   code, quizReward, onFunded,
 }: {
   code: string;
-  quizReward: { poolAmount: number; fromAddress?: string; isFunded: boolean } | null;
-  onFunded: () => void;
+  quizReward: { poolAmount: number; totalSend?: number; fromAddress?: string; isFunded: boolean } | null;
+    onFunded: () => void;
 }) {
   const [isFunded, setIsFunded] = useState(quizReward?.isFunded ?? false);
   const [isMarking, setIsMarking] = useState(false);
@@ -163,11 +163,10 @@ function ZecFundPanel({
 
   const address = quizReward?.fromAddress ?? "";
   const poolAmount = quizReward?.poolAmount ?? 0;
+  const sendAmount = quizReward?.totalSend ?? Math.round(poolAmount * 1.05 * 1e8) / 1e8;
 
   // Auto-poll metadata check
   useEffect(() => {
-    if (isFunded) return;
-
     const check = async () => {
       try {
         const r = await fetch(`${API_BASE_URL}/api/quiz/${code}`);
@@ -213,7 +212,7 @@ function ZecFundPanel({
       const r = await fetch(`${API_BASE_URL}/api/quiz/${code}/mark-funded`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ txHash: txHash.trim(), fromAddress: address }),
+        body: JSON.stringify({ txHash: txHash.trim() }),
       });
       const d = await r.json();
       if (r.ok && d.success) {
@@ -244,12 +243,12 @@ function ZecFundPanel({
 
   return (
     <div className="space-y-3">
-      <div className="flex items-start gap-3 bg-amber-500/8 border border-amber-200 rounded-xl px-4 py-3">
-        <AlertCircle className="h-5 w-5 text-amber-400 shrink-0 mt-0.5" />
+      <div className="flex items-start gap-3 bg-primary/8 border border-primary rounded-xl px-4 py-3">
+        <AlertCircle className="h-5 w-5 text-primary shrink-0 mt-0.5" />
         <div>
-          <p className="text-amber-400 font-bold text-sm">Fund the ZEC reward pool</p>
-          <p className="text-amber-500/70 text-xs mt-0.5">
-            Send exactly <span className="font-black text-amber-300">{poolAmount} ZEC</span> to the address below. Paste the Transaction Hash to verify.
+          <p className="text-primary font-bold text-sm">Fund the ZEC reward pool</p>
+          <p className="text-primary/70 text-xs mt-0.5">
+            Send exactly <span className="font-black text-primary">{sendAmount} ZEC</span> ({poolAmount} pool + 5% fee) to the address below. Paste the Transaction Hash to verify.
           </p>
         </div>
       </div>
@@ -258,11 +257,11 @@ function ZecFundPanel({
         <div className="bg-surface-card border border-surface rounded-2xl p-4 space-y-3">
           <div className="flex justify-center">
             <div className="bg-white p-3 rounded-xl">
-              <QRCodeSVG value={`zcash:${address}?amount=${poolAmount}`} size={140} level="M" includeMargin />
+             <QRCodeSVG value={`zcash:${address}?amount=${sendAmount}`} size={140} level="M" includeMargin />
             </div>
           </div>
           <div className="space-y-1">
-            <p className="text-surface-muted text-xs text-center">Send {poolAmount} ZEC to:</p>
+            <p className="text-surface-muted text-xs text-center">Send {sendAmount} ZEC to:</p>
             <div className="flex items-center gap-2 bg-white/5 border border-surface rounded-xl px-3 py-2">
               <p className="text-surface-primary font-mono text-xs flex-1 break-all leading-relaxed">{address}</p>
               <button
@@ -276,8 +275,8 @@ function ZecFundPanel({
           {polledBalance !== null && (
             <div className="flex items-center justify-between text-xs px-1">
               <span className="text-surface-muted">Current address balance:</span>
-              <span className={cn("font-bold", polledBalance >= poolAmount ? "text-green-400" : "text-amber-400")}>
-                {polledBalance.toFixed(4)} / {poolAmount} ZEC
+              <span className={cn("font-bold", polledBalance >= sendAmount ? "text-green-400" : "text-primary")}>
+                {polledBalance.toFixed(4)} / {sendAmount} ZEC
               </span>
             </div>
           )}
@@ -376,13 +375,13 @@ function ZecGameOver({
             ⚡ {payout.amountZec.toFixed(4)} ZEC
           </Badge>
         ) : (
-          <Badge className="text-[9px] h-4 px-1.5 bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400 border-0 shrink-0">
+          <Badge className="text-[9px] h-4 px-1.5 bg-primary/15 text-primary border-0 shrink-0">
             ⏳ pending
           </Badge>
         )}
         {txUrl && (
           <a href={txUrl} target="_blank" rel="noopener noreferrer"
-            className="text-blue-400 hover:text-blue-300 shrink-0" title="View on explorer">
+            className="text-primary hover:text-primary shrink-0" title="View on explorer">
             <ExternalLink className="h-3 w-3" />
           </a>
         )}
@@ -421,25 +420,25 @@ function ZecGameOver({
               <div className="flex flex-col items-center gap-3 pt-2">
                 <Avatar className="h-20 w-20 border-4 border-primary/30 shadow-xl">
                   <AvatarImage src={viewingProfile.avatarUrl ?? undefined} />
-                  <AvatarFallback className="bg-blue-900/50 text-blue-200 font-black text-2xl">{viewingProfile.username?.slice(0, 2).toUpperCase()}</AvatarFallback>
+                  <AvatarFallback className="bg-primary/50 text-primary font-black text-2xl">{viewingProfile.username?.slice(0, 2).toUpperCase()}</AvatarFallback>
                 </Avatar>
                 <div className="text-center">
                   <p className="text-surface-primary font-black text-xl">{viewingProfile.username}</p>
-                  <p className="text-blue-300/50 text-xs font-mono mt-1">{viewingProfile.walletAddress.slice(0, 6)}…{viewingProfile.walletAddress.slice(-4)}</p>
+                  <p className="text-primary/50 text-xs font-mono mt-1">{viewingProfile.walletAddress.slice(0, 6)}…{viewingProfile.walletAddress.slice(-4)}</p>
                 </div>
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div className="bg-white/5 rounded-2xl px-4 py-3 text-center">
-                  <p className="text-blue-300/50 text-xs font-bold uppercase tracking-widest">Rank</p>
+                  <p className="text-primary/50 text-xs font-bold uppercase tracking-widest">Rank</p>
                   <p className="text-surface-primary font-black text-2xl mt-1">{viewingProfile.rank <= 3 ? ["🥇","🥈","🥉"][viewingProfile.rank-1] : `#${viewingProfile.rank}`}</p>
                 </div>
                 <div className="bg-white/5 rounded-2xl px-4 py-3 text-center">
-                  <p className="text-blue-300/50 text-xs font-bold uppercase tracking-widest">Points</p>
+                  <p className="text-primary/50 text-xs font-bold uppercase tracking-widest">Points</p>
                   <p className="text-surface-primary font-black text-2xl mt-1">{viewingProfile.points}</p>
                 </div>
               </div>
               <button onClick={() => { router.push(`/dashboard/${viewingProfile.username}`); setViewingProfile(null); }}
-                className="w-full h-11 rounded-xl bg-primary hover:bg-blue-500 text-white font-bold text-sm transition-all active:scale-95">
+                className="w-full h-11 rounded-xl bg-primary hover:bg-primary text-primary-foreground font-bold text-sm transition-all active:scale-95">
                 View Full Profile
               </button>
             </div>
@@ -472,10 +471,10 @@ function ZecGameOver({
 
           {/* ZEC reward summary */}
           {rQuiz?.reward && (
-            <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-700/30 rounded-2xl px-5 py-4 flex items-center justify-between gap-4">
+            <div className="bg-primary dark:bg-primary/20 border border-primary dark:border-primary/30 rounded-2xl px-5 py-4 flex items-center justify-between gap-4">
               <div>
-                <p className="text-yellow-700 dark:text-yellow-400 font-black text-lg">{rQuiz.reward.poolAmount} ZEC</p>
-                <p className="text-yellow-600 dark:text-yellow-500 text-xs mt-0.5">Prize pool — sent via z_sendmany</p>
+                <p className="text-primary dark:text-primary font-black text-lg">{rQuiz.reward.poolAmount} ZEC</p>
+                <p className="text-primary dark:text-primary text-xs mt-0.5">Prize pool — sent via z_sendmany</p>
               </div>
               <span className="text-3xl">⚡</span>
             </div>
@@ -489,7 +488,7 @@ function ZecGameOver({
                 const rankVal = [2, 1, 3][podiumIdx];
                 const heights = ["h-20 sm:h-32", "h-28 sm:h-44", "h-16 sm:h-24"];
                 const widths  = ["w-16 sm:w-28", "w-20 sm:w-36", "w-14 sm:w-24"];
-                const bgCols  = ["bg-slate-300 dark:bg-slate-700", "bg-yellow-400 dark:bg-yellow-600", "bg-amber-600 dark:bg-amber-800"];
+                const bgCols  = ["bg-slate-300 dark:bg-slate-700", "bg-primary dark:bg-primary", "bg-primary dark:bg-primary"];
                 const medals  = ["🥈", "🥇", "🥉"];
                 return (
                   <div key={entry.walletAddress} className="flex flex-col items-center gap-1.5 sm:gap-2">
@@ -516,7 +515,7 @@ function ZecGameOver({
           <div className="bg-surface-card rounded-2xl overflow-hidden border border-surface shadow-sm">
             <div className="px-4 sm:px-5 py-3 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
               <h2 className="text-slate-800 dark:text-surface-primary font-bold text-sm flex items-center gap-2">
-                <Trophy className="h-4 w-4 text-yellow-500" /> Final Standings
+                <Trophy className="h-4 w-4 text-primary" /> Final Standings
               </h2>
               <span className="text-surface-muted text-xs">{totalPlayers} players</span>
             </div>
@@ -528,13 +527,13 @@ function ZecGameOver({
                   <div key={entry.walletAddress}
                     onClick={() => setViewingProfile({ walletAddress: entry.walletAddress, username: entry.username, avatarUrl: entry.avatarUrl, points: entry.points, rank: entry.rank })}
                     className={cn("flex items-center gap-3 px-4 sm:px-5 py-3 sm:py-4 cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800/50 transition-colors",
-                      isMe && "bg-blue-50 dark:bg-[#072474]/30",
+                      isMe && "bg-primary dark:bg-primary/30",
                       payout && "border-l-4 border-l-yellow-400 dark:border-l-yellow-500"
                     )}>
                     <div className={cn("w-8 h-8 sm:w-9 sm:h-9 rounded-lg flex items-center justify-center font-black text-xs sm:text-sm shrink-0",
-                      entry.rank === 1 ? "bg-yellow-400 text-yellow-900"
+                      entry.rank === 1 ? "bg-primary text-primary-foreground"
                       : entry.rank === 2 ? "bg-slate-300 text-slate-800 dark:bg-slate-600 dark:text-white"
-                      : entry.rank === 3 ? "bg-amber-600 text-white"
+                      : entry.rank === 3 ? "bg-primary text-primary-foreground"
                       : "bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400")}>
                       {entry.rank <= 3 ? ["🥇","🥈","🥉"][entry.rank-1] : `#${entry.rank}`}
                     </div>
@@ -545,7 +544,7 @@ function ZecGameOver({
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-1.5 flex-wrap">
                         <span className="text-surface-primary font-bold text-xs sm:text-sm truncate">{entry.username}</span>
-                        {isMe && <Badge className="text-[9px] h-4 px-1 bg-[#072474] text-white border-0 shrink-0">YOU</Badge>}
+                        {isMe && <Badge className="text-[9px] h-4 px-1 bg-primary text-primary-foreground border-0 shrink-0">YOU</Badge>}
                       </div>
                       <PayoutBadge wallet={entry.walletAddress} />
                     </div>
@@ -595,9 +594,9 @@ function ZecGameOver({
             </div>
           </div>
         ) : (
-          <div className="max-w-xl mx-auto bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-500/30 rounded-2xl p-4 text-center">
-            <p className="text-amber-700 dark:text-amber-400 text-xs font-black tracking-widest uppercase">Sending ZEC rewards…</p>
-            <p className="text-amber-600 dark:text-amber-500/80 text-sm mt-1 flex items-center justify-center gap-2">
+          <div className="max-w-xl mx-auto bg-primary dark:bg-primary/20 border border-primary dark:border-primary/30 rounded-2xl p-4 text-center">
+            <p className="text-primary dark:text-primary text-xs font-black tracking-widest uppercase">Sending ZEC rewards…</p>
+            <p className="text-primary dark:text-primary/80 text-sm mt-1 flex items-center justify-center gap-2">
               <Loader2 className="h-4 w-4 animate-spin" /> Broadcasting via z_sendmany
             </p>
           </div>
@@ -611,7 +610,7 @@ function ZecGameOver({
               const rankVal = [2, 1, 3][podiumIdx];
               const heights = ["h-20 sm:h-28 md:h-36", "h-28 sm:h-40 md:h-48", "h-16 sm:h-22 md:h-28"];
               const widths  = ["w-16 sm:w-24 md:w-32", "w-20 sm:w-32 md:w-40", "w-14 sm:w-22 md:w-28"];
-              const bgCols  = ["bg-slate-300 dark:bg-slate-700", "bg-yellow-400 dark:bg-yellow-600", "bg-amber-600 dark:bg-amber-800"];
+              const bgCols  = ["bg-slate-300 dark:bg-slate-700", "bg-primary dark:bg-primary", "bg-primary dark:bg-primary"];
               const medals  = ["🥈", "🥇", "🥉"];
               const avatarSizes = ["h-12 w-12 sm:h-16 sm:w-16", "h-16 w-16 sm:h-24 sm:w-24 md:h-28 md:w-28", "h-10 w-10 sm:h-14 sm:w-14 md:h-16 md:w-16"];
               return (
@@ -639,9 +638,9 @@ function ZecGameOver({
         <div className="max-w-2xl mx-auto bg-surface-card rounded-2xl overflow-hidden border border-surface shadow-sm">
           <div className="px-4 py-3 border-b border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 flex items-center justify-between">
             <span className="text-surface-secondary text-xs font-bold uppercase tracking-widest flex items-center gap-1.5">
-              <Trophy className="h-3.5 w-3.5 text-yellow-500" /> Final Standings
+              <Trophy className="h-3.5 w-3.5 text-primary" /> Final Standings
             </span>
-            {isCreator && <span className="text-[#072474] font-mono text-xs">HOST VIEW</span>}
+            {isCreator && <span className="text-primary font-mono text-xs">HOST VIEW</span>}
           </div>
           {loadingPayouts ? (
             <div className="flex items-center justify-center py-10"><Loader2 className="h-6 w-6 animate-spin text-slate-400" /></div>
@@ -654,13 +653,13 @@ function ZecGameOver({
                   <div key={entry.walletAddress}
                     onClick={() => setViewingProfile({ walletAddress: entry.walletAddress, username: entry.username, avatarUrl: entry.avatarUrl, points: entry.points, rank: entry.rank })}
                     className={cn("flex items-center gap-2 sm:gap-3 px-3 sm:px-4 py-3 sm:py-4 cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800/50 transition-colors",
-                      isMe && "bg-blue-50 dark:bg-[#072474]/30",
+                      isMe && "bg-primary dark:bg-primary/30",
                       payout && "border-l-4 border-l-yellow-400 dark:border-l-yellow-500"
                     )}>
                     <div className={cn("w-7 h-7 sm:w-8 sm:h-8 rounded-lg flex items-center justify-center font-black text-xs shrink-0",
-                      entry.rank === 1 ? "bg-yellow-400 text-yellow-900"
+                      entry.rank === 1 ? "bg-primary text-primary-foreground"
                       : entry.rank === 2 ? "bg-slate-300 text-slate-800 dark:bg-slate-600 dark:text-white"
-                      : entry.rank === 3 ? "bg-amber-600 text-white"
+                      : entry.rank === 3 ? "bg-primary text-primary-foreground"
                       : "bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400")}>
                       {entry.rank <= 3 ? ["🥇","🥈","🥉"][entry.rank-1] : entry.rank}
                     </div>
@@ -671,7 +670,7 @@ function ZecGameOver({
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-1.5 flex-wrap">
                         <span className="text-surface-primary font-bold text-xs sm:text-sm truncate">{entry.username}</span>
-                        {isMe && <Badge className="text-[9px] h-4 px-1 bg-[#072474] text-white border-0 shrink-0">YOU</Badge>}
+                        {isMe && <Badge className="text-[9px] h-4 px-1 bg-primary text-primary-foreground border-0 shrink-0">YOU</Badge>}
                       </div>
                       <PayoutBadge wallet={entry.walletAddress} />
                     </div>
@@ -688,7 +687,7 @@ function ZecGameOver({
         <div className="max-w-2xl mx-auto space-y-3">
           <div className="grid grid-cols-2 gap-3">
             <Button
-              className="h-12 font-bold bg-[#072474] hover:bg-[#0a32a0] text-white border-0"
+              className="h-12 font-bold bg-primary hover:bg-primary/90 text-primary-foreground border-0"
               onClick={fetchResults} disabled={loadingResults}
             >
               {loadingResults ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" />Loading…</> : <><Trophy className="mr-2 h-4 w-4" />Full Results</>}
@@ -735,7 +734,7 @@ function FloatingChat({ messages, chatInput, setChatInput, onSend, onSendPreset,
       <button onClick={() => setOpen(true)}
         className={cn("fixed bottom-6 right-6 z-40 w-14 h-14 rounded-full shadow-2xl flex items-center justify-center transition-all active:scale-90",
           open ? "scale-0 opacity-0 pointer-events-none" : "scale-100 opacity-100",
-          "bg-[#072474] hover:bg-[#0a32a0] border border-[#072474]/30"
+          "bg-primary hover:bg-primary/90 border border-primary/30"
         )}>
         <svg viewBox="0 0 24 24" className="h-6 w-6 fill-white"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>
         {unread > 0 && (
@@ -743,7 +742,7 @@ function FloatingChat({ messages, chatInput, setChatInput, onSend, onSendPreset,
             <span className="text-white text-[10px] font-black leading-none">{unread > 9 ? "9+" : unread}</span>
           </div>
         )}
-        {unread > 0 && <div className="absolute inset-0 rounded-full bg-[#072474] animate-ping opacity-30" />}
+        {unread > 0 && <div className="absolute inset-0 rounded-full bg-primary animate-ping opacity-30" />}
       </button>
 
       {open && <div className="fixed inset-0 z-40 bg-black/40 backdrop-blur-sm" onClick={() => setOpen(false)} />}
@@ -782,12 +781,12 @@ function FloatingChat({ messages, chatInput, setChatInput, onSend, onSendPreset,
                     {showMeta && (
                       <div className={cn("flex items-center gap-1.5 px-1", isMe && "flex-row-reverse")}>
                         <span className="text-surface-muted text-[10px] font-semibold truncate max-w-[100px]">{isMe ? "You" : m.username}</span>
-                        {m.isHost && <span className="text-[9px] bg-yellow-500/20 text-yellow-400 border border-yellow-500/20 px-1.5 py-px rounded-full font-bold">HOST</span>}
+                        {m.isHost && <span className="text-[9px] bg-primary/20 text-primary border border-primary/20 px-1.5 py-px rounded-full font-bold">HOST</span>}
                       </div>
                     )}
                     <div className={cn("px-3.5 py-2 rounded-2xl text-sm leading-snug break-words",
-                      isMe ? "bg-[#072474] text-white rounded-br-md"
-                      : m.isHost ? "bg-yellow-500/10 text-yellow-700 dark:text-yellow-100 border border-yellow-500/20 rounded-bl-md"
+                      isMe ? "bg-primary text-primary-foreground rounded-br-md"
+                      : m.isHost ? "bg-primary/10 text-primary dark:text-primary border border-primary/20 rounded-bl-md"
                       : "text-slate-800 dark:text-white rounded-bl-md bg-slate-200 dark:bg-slate-700 border border-transparent dark:border-slate-600"
                     )}>{m.text}</div>
                   </div>
@@ -800,7 +799,7 @@ function FloatingChat({ messages, chatInput, setChatInput, onSend, onSendPreset,
             <div className="flex gap-1.5 overflow-x-auto pb-2" style={{ scrollbarWidth: "none" }}>
               {PRESETS.map(p => (
                 <button key={p} onClick={() => onSendPreset(p)}
-                  className="shrink-0 text-[11px] font-semibold px-3 py-1.5 rounded-full bg-surface-card-2 hover:bg-[#072474]/20 border border-surface hover:border-[#072474]/30 text-surface-secondary hover:text-surface-primary transition-all active:scale-95 whitespace-nowrap">
+                  className="shrink-0 text-[11px] font-semibold px-3 py-1.5 rounded-full bg-surface-card-2 hover:bg-primary/20 border border-surface hover:border-primary/30 text-surface-secondary hover:text-surface-primary transition-all active:scale-95 whitespace-nowrap">
                   {p}
                 </button>
               ))}
@@ -811,10 +810,10 @@ function FloatingChat({ messages, chatInput, setChatInput, onSend, onSendPreset,
               <input type="text" value={chatInput} onChange={e => setChatInput(e.target.value)}
                 onKeyDown={e => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); onSend(); } }}
                 placeholder="Say something…" maxLength={200}
-                className="flex-1 bg-white/5 border border-surface rounded-xl px-3.5 py-2.5 text-surface-primary text-sm placeholder:text-surface-secondary outline-none focus:border-[#072474]/40 transition-all"
+                className="flex-1 bg-white/5 border border-surface rounded-xl px-3.5 py-2.5 text-surface-primary text-sm placeholder:text-surface-secondary outline-none focus:border-primary/40 transition-all"
               />
               <button onClick={onSend} disabled={!chatInput.trim()}
-                className="h-10 w-10 rounded-xl bg-[#072474] hover:bg-[#0a32a0] disabled:bg-white/5 disabled:text-surface-muted text-white flex items-center justify-center transition-all active:scale-95 shrink-0">
+                className="h-10 w-10 rounded-xl bg-primary hover:bg-primary/90 disabled:bg-white/5 disabled:text-surface-muted text-primary-foreground flex items-center justify-center transition-all active:scale-95 shrink-0">
                 <svg viewBox="0 0 24 24" className="h-4 w-4 fill-current" style={{ transform: "rotate(45deg)" }}><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z" /></svg>
               </button>
             </div>
@@ -841,7 +840,7 @@ export default function QuizCodePage() {
 
   // ZEC reward state (replaces EVM quizReward state)
   const [quizReward, setQuizReward] = useState<{
-    poolAmount: number; fromAddress?: string; isFunded: boolean;
+    poolAmount: number; totalSend?: number; fromAddress?: string; isFunded: boolean;
     totalWinners: number; distributionType: string;
   } | null>(null);
 
@@ -878,6 +877,8 @@ export default function QuizCodePage() {
   const [isJoining, setIsJoining] = useState(false);
   const wsRef = useRef<WebSocket | null>(null);
   const myWallet = useMemo(() => userWalletAddress?.toLowerCase() ?? "", [userWalletAddress]);
+  // Exact-case address for anything sent to the backend (t-addrs are case-sensitive)
+  const walletExact = userWalletAddress ?? "";
 
   // Load profile
   useEffect(() => {
@@ -903,7 +904,8 @@ export default function QuizCodePage() {
           if (d.quiz.reward?.poolAmount > 0) {
             setQuizReward({
               poolAmount: parseFloat(d.quiz.reward.poolAmount),
-              fromAddress: d.quiz.reward.fromAddress ?? d.quiz.escrowAddress ?? undefined,
+              totalSend: parseFloat(d.quiz.reward.totalSend ?? String(parseFloat(d.quiz.reward.poolAmount) * 1.05)),
+              fromAddress: d.quiz.reward.poolAddress ?? d.quiz.escrowAddress ?? undefined,
               isFunded: d.quiz.reward.isFunded ?? false,
               totalWinners: d.quiz.reward.totalWinners ?? 1,
               distributionType: d.quiz.reward.distributionType ?? "equal",
@@ -1175,7 +1177,7 @@ export default function QuizCodePage() {
           <h2 className="text-2xl font-black text-surface-primary leading-tight">{quizMeta?.title}</h2>
           <p className="text-surface-secondary text-sm">{quizMeta?.totalQuestions} questions</p>
           {quizReward && (
-            <p className="text-yellow-600 dark:text-yellow-400 font-bold text-sm">⚡ {quizReward.poolAmount} ZEC prize pool</p>
+            <p className="text-primary dark:text-primary font-bold text-sm">⚡ {quizReward.poolAmount} ZEC prize pool</p>
           )}
         </div>
         {players.length > 0 && (
@@ -1187,7 +1189,7 @@ export default function QuizCodePage() {
         <div className="space-y-3">
           {!username ? (
             <div className="space-y-2">
-              <div className="bg-amber-50 dark:bg-amber-500/10 border border-amber-200 dark:border-amber-500/30 rounded-xl px-4 py-3 text-amber-700 dark:text-amber-300 text-sm font-medium flex items-center gap-2">
+              <div className="bg-primary/10 border border-primary/30 rounded-xl px-4 py-3 text-primary text-sm font-medium flex items-center gap-2">
                 <AlertCircle className="h-4 w-4 shrink-0" /> Connect your profile to join
               </div>
               <WalletConnectButton />
@@ -1197,7 +1199,7 @@ export default function QuizCodePage() {
               <div className="flex items-center gap-3 bg-surface-card border border-surface rounded-xl px-4 py-3">
                 <Avatar className="h-10 w-10 shrink-0 border-2 border-surface">
                   <AvatarImage src={avatarUrl || undefined} />
-                  <AvatarFallback className="bg-blue-100 dark:bg-[#072474] text-[#072474] dark:text-white font-bold text-sm">{username?.slice(0, 2).toUpperCase()}</AvatarFallback>
+                  <AvatarFallback className="bg-primary text-primary-foreground font-bold text-sm">{username?.slice(0, 2).toUpperCase()}</AvatarFallback>
                 </Avatar>
                 <div className="flex-1 min-w-0 text-left">
                   <p className="text-surface-primary font-bold text-sm truncate">{username}</p>
@@ -1206,7 +1208,7 @@ export default function QuizCodePage() {
                 <CheckCircle2 className="h-5 w-5 text-green-500 shrink-0" />
               </div>
               <Button
-                className="w-full h-14 text-lg font-bold bg-[#072474] hover:bg-[#0a32a0] active:bg-[#05184d] text-white rounded-2xl shadow-xl shadow-[#072474]/20 border-0 transition-all active:scale-95"
+                className="w-full h-14 text-lg font-bold bg-primary hover:bg-primary/90 active:bg-primary/80 text-primary-foreground rounded-2xl shadow-xl shadow-primary/20 border-0 transition-all active:scale-95"
                 onClick={handleJoin} disabled={isJoining}
               >
                 {isJoining ? <><Loader2 className="mr-2 h-5 w-5 animate-spin" />Joining…</> : <><Zap className="mr-2 h-5 w-5" />{isReturningPlayer ? "Rejoin Quiz" : "Join Quiz"}</>}
@@ -1247,9 +1249,9 @@ export default function QuizCodePage() {
               </div>
             </div>
             <div className="flex items-center gap-2 shrink-0">
-              <div className="flex items-center gap-1.5 bg-[#072474]/15 border border-[#072474]/20 rounded-full px-3 py-1.5">
+              <div className="flex items-center gap-1.5 bg-primary/15 border border-primary/20 rounded-full px-3 py-1.5">
                 <div className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />
-                <span className="text-[#072474] dark:text-blue-200 text-xs font-bold">{players.length} in lobby</span>
+                <span className="text-primary dark:text-primary text-xs font-bold">{players.length} in lobby</span>
               </div>
               <Button variant="outline" size="sm"
                 className="border-surface text-surface-secondary hover:text-surface-primary hover:bg-surface-card-2 bg-transparent h-8 px-3"
@@ -1272,7 +1274,7 @@ export default function QuizCodePage() {
                   </h2>
                   {totalCount > 0 && (
                     <span className={cn("text-xs font-bold px-3 py-1 rounded-full border",
-                      allReady ? "bg-green-500/10 border-green-500/30 text-green-400" : "bg-amber-500/10 border-amber-500/30 text-amber-400")}>
+                      allReady ? "bg-green-500/10 border-green-500/30 text-green-400" : "bg-primary/10 border-primary/30 text-primary")}>
                       {allReady ? "✓ All ready" : `${readyCount}/${totalCount} ready`}
                     </span>
                   )}
@@ -1323,13 +1325,13 @@ export default function QuizCodePage() {
               {/* Host Controls */}
               <div className="space-y-4 lg:sticky lg:top-20 self-start">
                 <div className="bg-surface-card border border-surface rounded-2xl overflow-hidden">
-                  <div className="bg-gradient-to-r from-[#072474]/80 to-blue-900/80 px-5 py-4 flex items-center gap-3 border-b border-surface">
-                    <div className="w-10 h-10 rounded-xl bg-yellow-400/10 border border-yellow-400/20 flex items-center justify-center">
-                      <Crown className="h-5 w-5 text-yellow-400" />
+                  <div className="bg-gradient-to-r from-primary/80 to-primary/80 px-5 py-4 flex items-center gap-3 border-b border-surface">
+                    <div className="w-10 h-10 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center">
+                      <Crown className="h-5 w-5 text-primary" />
                     </div>
                     <div>
                       <p className="text-surface-primary font-black text-sm">Host Controls</p>
-                      <p className="text-blue-300/60 text-xs">You control the quiz</p>
+                      <p className="text-primary/60 text-xs">You control the quiz</p>
                     </div>
                   </div>
                   <div className="p-4 space-y-3">
@@ -1337,14 +1339,14 @@ export default function QuizCodePage() {
                     <div className={cn("rounded-xl px-4 py-3 flex items-center gap-3 border",
                       allReady ? "bg-green-500/8 border-green-500/20"
                       : totalCount === 0 ? "bg-white/3 border-white/8"
-                      : "bg-amber-500/8 border-amber-500/20")}>
+                      : "bg-primary/8 border-primary/20")}>
                       <div className={cn("w-8 h-8 rounded-lg flex items-center justify-center shrink-0",
-                        allReady ? "bg-green-500/20" : totalCount === 0 ? "bg-white/8" : "bg-amber-500/15")}>
-                        {allReady ? <Check className="h-4 w-4 text-green-400 stroke-[3px]" /> : <Users className="h-4 w-4 text-amber-400" />}
+                        allReady ? "bg-green-500/20" : totalCount === 0 ? "bg-white/8" : "bg-primary/15")}>
+                        {allReady ? <Check className="h-4 w-4 text-green-400 stroke-[3px]" /> : <Users className="h-4 w-4 text-primary" />}
                       </div>
                       <div className="flex-1 min-w-0">
                         <p className={cn("text-sm font-bold",
-                          allReady ? "text-green-400" : totalCount === 0 ? "text-surface-muted" : "text-amber-400")}>
+                          allReady ? "text-green-400" : totalCount === 0 ? "text-surface-muted" : "text-primary")}>
                           {totalCount === 0 ? "Waiting for players" : allReady ? "Everyone is ready!" : `${readyCount} of ${totalCount} ready`}
                         </p>
                       </div>
@@ -1362,7 +1364,7 @@ export default function QuizCodePage() {
                     {/* Start button — only enabled when funded */}
                     {isFunded && (
                       <Button
-                        className="w-full h-14 text-base font-black text-white border-0 rounded-xl shadow-lg shadow-[#072474]/40 disabled:opacity-50 transition-all hover:scale-[1.02] active:scale-[0.98] bg-[#072474] hover:bg-[#0a32a0]"
+                        className="w-full h-14 text-base font-black text-primary-foreground border-0 rounded-xl shadow-lg shadow-primary/40 disabled:opacity-50 transition-all hover:scale-[1.02] active:scale-[0.98] bg-primary hover:bg-primary/90"
                         onClick={handleStartQuiz} disabled={isStarting}
                       >
                         {isStarting ? <><Loader2 className="mr-2 h-5 w-5 animate-spin" />Starting…</>
@@ -1402,7 +1404,7 @@ export default function QuizCodePage() {
                   </span>
                   {totalCount > 0 && (
                     <span className={cn("text-xs font-bold px-2.5 py-1 rounded-full border",
-                      allReady ? "bg-green-500/10 border-green-500/20 text-green-400" : "bg-amber-500/10 border-amber-500/20 text-amber-400")}>
+                      allReady ? "bg-green-500/10 border-green-500/20 text-green-400" : "bg-primary/10 border-primary/20 text-primary")}>
                       {readyCount}/{totalCount} ready
                     </span>
                   )}
@@ -1414,7 +1416,7 @@ export default function QuizCodePage() {
                     return (
                       <div key={p.walletAddress} className="flex flex-col items-center gap-1.5 text-center">
                         <div className="relative">
-                          <Avatar className={cn("h-12 w-12 border-2", isMe ? "border-blue-400" : ready ? "border-green-400" : "border-surface")}>
+                          <Avatar className={cn("h-12 w-12 border-2", isMe ? "border-primary" : ready ? "border-green-400" : "border-surface")}>
                             <AvatarImage src={p.avatarUrl ?? undefined} />
                             <AvatarFallback className="bg-white/10 text-surface-primary font-bold text-sm">{p.username?.slice(0, 2).toUpperCase()}</AvatarFallback>
                           </Avatar>
@@ -1422,7 +1424,7 @@ export default function QuizCodePage() {
                             ready ? "bg-green-400" : "bg-white/20")} />
                         </div>
                         <p className="text-surface-primary text-[10px] font-bold truncate w-full max-w-[60px]">{p.username}</p>
-                        {isMe && <span className="text-[8px] bg-[#072474]/20 text-blue-300 px-1 py-px rounded font-bold">YOU</span>}
+                        {isMe && <span className="text-[8px] bg-primary/20 text-primary px-1 py-px rounded font-bold">YOU</span>}
                       </div>
                     );
                   })}
@@ -1435,7 +1437,7 @@ export default function QuizCodePage() {
                   <button onClick={handleToggleReady}
                     className={cn("w-full h-14 rounded-2xl font-black text-base flex items-center justify-center gap-2 transition-all active:scale-95 shadow-lg",
                       isReady ? "bg-green-500 hover:bg-green-400 text-white shadow-green-900/30"
-                               : "bg-[#072474] hover:bg-[#0a32a0] text-white shadow-[#072474]/40"
+                               : "bg-primary hover:bg-primary/90 text-primary-foreground shadow-primary/40"
                     )}>
                     {isReady ? <><Check className="h-5 w-5 stroke-[3px]" /> You're Ready! (tap to undo)</>
                              : <><Zap className="h-5 w-5 fill-current" /> Click to Ready Up</>}
@@ -1471,10 +1473,10 @@ export default function QuizCodePage() {
               })()}
               <div className="space-y-1.5">
                 <p className="text-surface-secondary text-xs font-bold uppercase tracking-widest">Quiz Code</p>
-                <div className="text-4xl font-black tracking-widest text-[#072474] dark:text-primary bg-[#072474]/5 dark:bg-[#072474]/20 py-3 rounded-xl border border-[#072474]/20">{code}</div>
+                <div className="text-4xl font-black tracking-widest text-primary dark:text-primary bg-primary/5 dark:bg-primary/20 py-3 rounded-xl border border-primary/20">{code}</div>
               </div>
               <Button
-                className="w-full h-12 font-bold bg-[#072474] hover:bg-[#0a32a0] text-white rounded-xl shadow-md border-0"
+                className="w-full h-12 font-bold bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl shadow-md border-0"
                 onClick={() => {
                   navigator.clipboard.writeText(`${typeof window !== "undefined" ? window.location.origin : ""}/quiz/${code}`);
                   toast.success("Link copied!"); setShowShareModal(false);
@@ -1502,7 +1504,7 @@ export default function QuizCodePage() {
       <div className="fixed inset-0 bg-surface-base flex items-center justify-center select-none z-50">
         <div className="text-center space-y-4">
           <p className="text-surface-secondary text-xl uppercase tracking-widest font-black">Get ready!</p>
-          <div key={countdownVal} className="text-[10rem] md:text-[15rem] font-black text-[#072474] dark:text-primary leading-none drop-shadow-sm"
+          <div key={countdownVal} className="text-[10rem] md:text-[15rem] font-black text-primary dark:text-primary leading-none drop-shadow-sm"
             style={{ animation: "zoomFade 0.9s ease-out forwards" }}>
             {countdownVal}
           </div>
@@ -1519,11 +1521,11 @@ export default function QuizCodePage() {
       <div className="fixed inset-0 bg-surface-base flex flex-col overflow-hidden select-none z-50">
         <div className="w-full shrink-0 bg-surface-card border-b border-surface shadow-sm">
           {!isReveal && <LinearTimer seconds={timeLeft} total={currentQ.timeLimit} />}
-          {isSpectator && <div className="bg-amber-100 dark:bg-amber-500/10 border-b border-amber-200 dark:border-amber-500 text-amber-800 dark:text-amber-400 py-1.5 px-4 text-center text-xs font-bold uppercase tracking-wider">👁️ Spectator Mode</div>}
+          {isSpectator && <div className="bg-primary/10 border-b border-primary/30 text-primary py-1.5 px-4 text-center text-xs font-bold uppercase tracking-wider">👁️ Spectator Mode</div>}
           <div className="flex items-center justify-between px-4 sm:px-6 py-3 max-w-5xl mx-auto w-full">
             <Badge variant="outline" className="bg-surface-card-2 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-700 rounded-full font-bold">Q{currentQ.index + 1} / {currentQ.total}</Badge>
             <div className="font-black text-slate-800 dark:text-white/80 italic tracking-tighter text-lg truncate max-w-[40%] text-center">{quizMeta?.title}</div>
-            <div className="flex items-center gap-1 font-bold text-[#072474] dark:text-blue-300 bg-blue-100 dark:bg-[#072474]/20 px-3 py-1 rounded-full">
+            <div className="flex items-center gap-1 font-bold text-primary bg-primary/15 px-3 py-1 rounded-full">
               <Zap className="h-4 w-4 fill-current" /> {myEntry?.points || 0}
             </div>
           </div>
@@ -1536,7 +1538,7 @@ export default function QuizCodePage() {
               personalResult.isCorrect ? "bg-green-50 dark:bg-green-500/10 text-green-600 dark:text-green-400 border-green-400 dark:border-green-500/50"
                                        : "bg-red-50 dark:bg-red-500/10 text-red-600 dark:text-red-400 border-red-400 dark:border-red-500/50")}>
               {personalResult.isCorrect
-                ? <span className="flex items-center gap-2"><Check className="h-7 w-7" /> CORRECT +{personalResult.pointsEarned}{personalResult.streak > 1 && <span className="ml-2 bg-orange-500 text-white px-2.5 py-0.5 rounded-full text-sm">🔥{personalResult.streak}</span>}</span>
+                ? <span className="flex items-center gap-2"><Check className="h-7 w-7" /> CORRECT +{personalResult.pointsEarned}{personalResult.streak > 1 && <span className="ml-2 bg-primary text-primary-foreground px-2.5 py-0.5 rounded-full text-sm">🔥{personalResult.streak}</span>}</span>
                 : <span className="flex items-center gap-2"><X className="h-7 w-7" /> INCORRECT</span>
               }
             </div>
@@ -1584,7 +1586,7 @@ export default function QuizCodePage() {
         <Confetti active={showConfetti} />
         <RankReaction change={myRankChange} />
         <div className="flex items-center justify-between px-4 sm:px-6 py-4 border-b border-surface bg-surface-card shadow-sm z-10">
-          <h2 className="text-surface-primary font-black text-xl flex items-center gap-2"><Trophy className="h-5 w-5 text-yellow-500" /> Leaderboard</h2>
+          <h2 className="text-surface-primary font-black text-xl flex items-center gap-2"><Trophy className="h-5 w-5 text-primary" /> Leaderboard</h2>
           <Badge variant="outline" className="bg-surface-card-2 text-slate-700 dark:text-slate-300 font-bold border-slate-200 dark:border-slate-700">
             {isLastQuestion ? "Final Results!" : `Q${(currentQ?.index ?? 0) + 1}/${currentQ?.total ?? "?"} done`}
           </Badge>
@@ -1595,11 +1597,11 @@ export default function QuizCodePage() {
             return (
               <div key={entry.walletAddress}
                 className={cn("flex items-center gap-3 sm:gap-4 rounded-2xl px-4 py-3 sm:py-4 transition-all duration-500 animate-in slide-in-from-bottom-4 shadow-sm",
-                  isMe ? "bg-blue-50 dark:bg-[#072474]/30 border-2 border-blue-300 dark:border-[#072474]/50" : "bg-surface-card border border-surface"
+                  isMe ? "bg-primary dark:bg-primary/30 border-2 border-primary dark:border-primary/50" : "bg-surface-card border border-surface"
                 )}
                 style={{ animationDelay: `${i * 50}ms` }}>
                 <div className={cn("w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center font-black text-lg sm:text-xl shrink-0",
-                  entry.rank === 1 ? "bg-yellow-400 text-yellow-900" : entry.rank === 2 ? "bg-slate-300 text-slate-800" : entry.rank === 3 ? "bg-amber-600 text-white" : "bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400")}>
+                  entry.rank === 1 ? "bg-primary text-primary-foreground" : entry.rank === 2 ? "bg-slate-300 text-slate-800" : entry.rank === 3 ? "bg-primary text-primary-foreground" : "bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400")}>
                   {entry.rank <= 3 ? ["🥇","🥈","🥉"][entry.rank-1] : entry.rank}
                 </div>
                 <Avatar className="h-10 w-10 sm:h-12 sm:w-12 shrink-0 border border-slate-200 dark:border-slate-700">
@@ -1609,8 +1611,8 @@ export default function QuizCodePage() {
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2">
                     <span className="text-surface-primary font-bold text-base truncate">{entry.username}</span>
-                    {isMe && <Badge className="text-[9px] h-4 px-1.5 bg-[#072474] text-white border-0 shrink-0">YOU</Badge>}
-                    {entry.streak > 1 && <Badge className="text-[9px] h-4 px-1.5 bg-orange-500 text-white border-0 shrink-0">🔥{entry.streak}</Badge>}
+                    {isMe && <Badge className="text-[9px] h-4 px-1.5 bg-primary text-primary-foreground border-0 shrink-0">YOU</Badge>}
+                    {entry.streak > 1 && <Badge className="text-[9px] h-4 px-1.5 bg-primary text-primary-foreground border-0 shrink-0">🔥{entry.streak}</Badge>}
                   </div>
                   {entry.pointsThisRound > 0 && <span className="text-green-600 dark:text-green-400 text-xs font-black">+{entry.pointsThisRound} pts</span>}
                 </div>

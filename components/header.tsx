@@ -151,7 +151,7 @@ export function Header({
             </Button>
            
             <h1 className="text-sm sm:text-base font-black tracking-tighter uppercase text-foreground/90">
-              <Link href="/" className="hover:text-blue-500 transition-colors">
+              <Link href="/" className="hover:text-primary transition-colors">
                 {pageTitle}
               </Link>
             </h1>

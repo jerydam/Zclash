@@ -388,18 +388,18 @@ export function ProfileSettingsModal({
 
             {/* ── Wallet verification prompt ──────────────────────── */}
             {!isVerified ? (
-              <div className="flex gap-3 px-3.5 py-3 rounded-xl bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-800/40">
-                <ShieldAlert className="h-4 w-4 text-amber-600 dark:text-amber-400 shrink-0 mt-0.5" />
+              <div className="flex gap-3 px-3.5 py-3 rounded-xl bg-primary dark:bg-primary/20 border border-primary dark:border-primary/40">
+                <ShieldAlert className="h-4 w-4 text-primary dark:text-primary shrink-0 mt-0.5" />
                 <div className="flex-1 min-w-0">
-                  <p className="text-xs font-bold text-amber-800 dark:text-amber-200">
+                  <p className="text-xs font-bold text-primary dark:text-primary">
                     Verify wallet ownership to edit your profile
                   </p>
-                  <p className="text-[11px] text-amber-600 dark:text-amber-400 mt-0.5">
+                  <p className="text-[11px] text-primary dark:text-primary mt-0.5">
                     One-time proof that you control this address — prevents anyone else from claiming it.
                   </p>
                   <button
                     onClick={() => setShowVerifyModal(true)}
-                    className="mt-2 text-xs font-bold text-amber-700 dark:text-amber-300 underline underline-offset-2 hover:opacity-70 transition-opacity"
+                    className="mt-2 text-xs font-bold text-primary dark:text-primary underline underline-offset-2 hover:opacity-70 transition-opacity"
                   >
                     Verify now →
                   </button>
