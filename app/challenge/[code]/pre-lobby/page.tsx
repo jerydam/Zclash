@@ -582,7 +582,10 @@ useEffect(() => {
         }),
       });
       const d = await res.json();
-      if (!d.success) throw new Error(d.detail ?? "Accept failed");
+        if (!d.success) throw new Error(d.detail ?? "Accept failed");
+        setLockedAmount(offer.amount);
+        setPageState("accepted");
+        setTimeout(() => router.push(`/challenge/${code}?stake=${offer.amount}&agreed=1`), 1200);
     } catch (err: any) {
       toast.error(err?.message ?? "Could not accept offer");
       setAccepting(false);
