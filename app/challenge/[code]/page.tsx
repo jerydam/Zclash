@@ -8,6 +8,8 @@ import { useParams, useRouter } from "next/navigation";
 import { useWallet } from "@/hooks/use-wallet";
 import { Header } from "@/components/header";
 import { Button } from "@/components/ui/button";
+import {normalizeChallenge} from "@/lib/zcash"
+
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -505,11 +507,12 @@ export default function ChallengePage() {
     fetch(`${API_BASE_URL}/api/duel/${code}`)
       .then((r) => r.json())
       .then((d) => {
-        if (!d.success) { toast.error("Challenge not found"); router.push("/challenge"); return; }
-        setChallenge(d.challenge);
-        // Store escrow address from challenge data
-        if (d.challenge.escrowAddress || d.challenge.escrow_address) {
-          setEscrowAddress(d.challenge.escrowAddress ?? d.challenge.escrow_address ?? "");
+        const raw = d.duel ?? d.challenge;
+        if (!d.success || !raw) { toast.error("Challenge not found"); router.push("/challenge"); return; }
+        const c = { ...raw, ...normalizeChallenge(raw) };  // keep escrow_address, players, etc.
+        setChallenge(c);
+        if (c.escrow_address || c.escrowAddress) {
+          setEscrowAddress(c.escrowAddress ?? c.escrow_address ?? "");
         }
         const playerEntries: PlayerState[] = Object.entries(d.challenge.players ?? {}).map(
           ([wallet, data]: [string, any]) => ({

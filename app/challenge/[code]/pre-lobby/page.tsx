@@ -15,6 +15,7 @@ import { useWallet } from "@/hooks/use-wallet";
 import { Header } from "@/components/header";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
+import {normalizeChallenge} from "@/lib/zcash"
 import {
   Loader2, ArrowLeft, Zap, Users, ChevronUp, ChevronDown,
   Check, Trophy, Clock, Lock, Swords, Crown, X,
@@ -375,17 +376,18 @@ export default function PreLobbyPage() {
     fetch(`${API_BASE_URL}/api/duel/${code}`)
       .then(r => r.json())
       .then(d => {
-        if (!d.success) { toast.error("Challenge not found"); router.push("/challenge"); return; }
-        const c: Challenge = d.challenge;
-        setChallenge(c);
-        setMyOffer(c.stake);
-        if (d.challenge?.creator) fetchAvatar(d.challenge.creator);
-        if (c.status === "active" || c.status === "finished") {
-          router.replace(`/challenge/${code}`);
-          return;
-        }
-        setPageState("loading");
-      })
+  const raw = d.duel ?? d.challenge;
+  if (!d.success || !raw) { toast.error("Challenge not found"); router.push("/challenge"); return; }
+  const c: Challenge = normalizeChallenge(raw);
+  setChallenge(c);
+  setMyOffer(c.stake);
+  if (c.creator) fetchAvatar(c.creator);   // was d.challenge?.creator
+  if (c.status === "active" || c.status === "finished") {
+    router.replace(`/challenge/${code}`);
+    return;
+  }
+  setPageState("loading");
+})
       .catch(() => { toast.error("Failed to load challenge"); setPageState("error"); });
   }, [code, router]);
   useEffect(() => {

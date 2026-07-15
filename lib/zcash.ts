@@ -120,6 +120,20 @@ export async function detectWallet(): Promise<DetectedWallet> {
   return { type: "none" };
 }
 
+
+export function normalizeChallenge(raw: any) {
+  return {
+    code:        raw.code,
+    topic:       raw.topic,
+    creator:     raw.creator_address ?? raw.creator ?? "",
+    creatorName: raw.creator_username ?? raw.creatorName ?? "",
+    stake:       raw.stake_amount ?? raw.stake ?? 0,
+    token:       "ZEC",
+    chainId:     0,
+    status:      raw.status,
+    isPublic:    raw.is_public ?? raw.isPublic ?? true,
+  };
+}
 /**
  * Sync detection — safe for SSR / initial render.
  * Cannot run the async clientVersion check so may misclassify old Brave
