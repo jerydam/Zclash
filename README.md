@@ -233,9 +233,9 @@ Total questions: 15 (5 per round) → Max score: **15,000 points**
 
 ## 📞 Support & Community
 
-* **Twitter/X** — [@ZClash](https://x.com/ZClash)
-* **Telegram** — [t.me/ZClashChat](https://t.me/ZClashChat)
-* **Email** — drops.faucet@gmail.com
+* **Twitter/X** — [@ZClash](https://x.com/jerydam00)
+* **Telegram** — [t.me/ZClashChat](https://t.me/jerydam)
+* **Email** — jerydan148@gmail.com 
 
 ---
 
@@ -250,4 +250,4 @@ ZClash is built by the same team behind FaucetDrops, powered by:
 ---
 
 **Ready to stake your knowledge?**  
-[Play Now](https://app.zclash.io) · [Leaderboard](https://app.zclash.io/ranks) · [Join Community](https://t.me/ZClashChat)
+[Play Now](https://zclash.vercel.app) · [Leaderboard](https://zclash.vercel.app/ranks) · [Demo Video](https://www.loom.com/share/55b9ec7ef835498cbf35aff7f8760324) - [Backend repo](https://github.com/jerydam/Zclash-backend)
